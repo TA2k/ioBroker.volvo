@@ -349,7 +349,7 @@ class Volvo extends utils.Adapter {
      */
     onStateChange(id, state) {
         if (state) {
-            if (!state.ack) {
+            if (!state.ack && state.val) {
                 const vin = id.split(".")[2];
                 let body = "";
                 let contentType = "";
