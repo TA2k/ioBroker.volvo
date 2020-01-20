@@ -11,6 +11,8 @@
 
 [![NPM](https://nodei.co/npm/iobroker.volvo.png?downloads=true)](https://nodei.co/npm/iobroker.volvo/)
 
+**Tests:**: [![Travis-CI](http://img.shields.io/travis/TA2k/ioBroker.volvo/master.svg)](https://travis-ci.org/TA2k/ioBroker.volvo)
+
 ## volvo adapter for ioBroker
 
 Volvo On Call Adapter
