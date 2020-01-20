@@ -54,7 +54,7 @@ class Volvo extends utils.Adapter {
         this.setState("info.connection", false, true);
         const buff = new Buffer(this.config.user + ":" + this.config.password);
         const base64data = buff.toString("base64");
-        this.baseHeader["Authorization"] = base64data;
+        this.baseHeader["Authorization"] = "Basic " + base64data;
         this.login().then(() => {
             this.log.debug("Login successful");
             this.setState("info.connection", true, true);
@@ -102,6 +102,66 @@ class Volvo extends utils.Adapter {
                         }
                         customer.accountVehicleRelations.forEach(vehicle => {
                             this.vinArray.push(vehicle.vehicle.vehicleId);
+                            this.setObjectNotExists(vehicle, {
+                                type: "device",
+                                common: {
+                                    name: vehicle.vehicle.registrationNumber,
+                                    role: "indicator",
+                                    type: "mixed",
+                                    write: false,
+                                    read: true
+                                },
+                                native: {}
+                            });
+                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote", {
+                                type: "state",
+                                common: {
+                                    name: "Remote controls",
+                                    write: true
+                                },
+                                native: {}
+                            });
+
+                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote.honk", {
+                                type: "state",
+                                common: {
+                                    name: "Start Honk",
+                                    type: "boolean",
+                                    role: "button",
+                                    write: true
+                                },
+                                native: {}
+                            });
+                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote.flash", {
+                                type: "state",
+                                common: {
+                                    name: "Start Flash",
+                                    type: "boolean",
+                                    role: "button",
+                                    write: true
+                                },
+                                native: {}
+                            });
+                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote.standheizung", {
+                                type: "state",
+                                common: {
+                                    name: "Standheizung aktiviert",
+                                    type: "boolean",
+                                    role: "switch",
+                                    write: true
+                                },
+                                native: {}
+                            });
+                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote.lock", {
+                                type: "state",
+                                common: {
+                                    name: "Verriegeln (true) / Entriegeln (false)",
+                                    type: "boolean",
+                                    role: "switch",
+                                    write: true
+                                },
+                                native: {}
+                            });
                         });
                         const adapter = this;
                         traverse(customer).forEach(function(value) {
@@ -286,10 +346,8 @@ class Volvo extends utils.Adapter {
     onStateChange(id, state) {
         if (state) {
             // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
         } else {
             // The state was deleted
-            this.log.info(`state ${id} deleted`);
         }
     }
 }
