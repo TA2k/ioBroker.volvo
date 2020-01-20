@@ -239,6 +239,8 @@ class Volvo extends utils.Adapter {
                 (err, resp, body) => {
                     if (err || resp.statusCode >= 400 || !body) {
                         this.log.error(err);
+                        this.log.error(resp && resp.statusCode);
+                        this.log.error(body);
                         reject();
                         return;
                     }
