@@ -60,12 +60,25 @@ class Volvo extends utils.Adapter {
             this.setState("info.connection", true, true);
 
             this.vinArray.forEach(vin => {
-                this.getVehicleAttribute(vin).then(() => {
-                    this.getVehicleStatus(vin).then(() => {});
-                });
+                this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/attributes", "VehicleAttributes", "attributes").then(() => {});
+                this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status").then(() => {});
+                this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/trips?quantity=1", "Trip", "trip").then(() => {});
+                this.getMethod(
+                    vin,
+                    "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/position?client_longitude=0.000000&client_precision=0.000000&client_latitude=0.000000 ",
+                    "Position",
+                    "position"
+                ).then(() => {});
+
                 this.updateInterval = setInterval(() => {
                     this.vinArray.forEach(vin => {
-                        this.getVehicleStatus(vin).then(() => {});
+                        this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status").then(() => {});
+                        this.getMethod(
+                            vin,
+                            "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/position?client_longitude=0.000000&client_precision=0.000000&client_latitude=0.000000 ",
+                            "Position",
+                            "position"
+                        ).then(() => {});
                     });
                 }, this.config.interval * 60 * 1000);
             });
@@ -102,7 +115,7 @@ class Volvo extends utils.Adapter {
                         }
                         customer.accountVehicleRelations.forEach(vehicle => {
                             this.vinArray.push(vehicle.vehicle.vehicleId);
-                            this.setObjectNotExists(vehicle, {
+                            this.setObjectNotExists(vehicle.vehicle.vehicleId, {
                                 type: "device",
                                 common: {
                                     name: vehicle.vehicle.registrationNumber,
@@ -122,45 +135,35 @@ class Volvo extends utils.Adapter {
                                 native: {}
                             });
 
-                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote.honk", {
-                                type: "state",
-                                common: {
-                                    name: "Start Honk",
-                                    type: "boolean",
-                                    role: "button",
-                                    write: true
-                                },
-                                native: {}
-                            });
-                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote.flash", {
-                                type: "state",
-                                common: {
-                                    name: "Start Flash",
-                                    type: "boolean",
-                                    role: "button",
-                                    write: true
-                                },
-                                native: {}
-                            });
-                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote.standheizung", {
-                                type: "state",
-                                common: {
-                                    name: "Standheizung aktiviert",
-                                    type: "boolean",
-                                    role: "switch",
-                                    write: true
-                                },
-                                native: {}
-                            });
-                            this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote.lock", {
-                                type: "state",
-                                common: {
-                                    name: "Verriegeln (true) / Entriegeln (false)",
-                                    type: "boolean",
-                                    role: "switch",
-                                    write: true
-                                },
-                                native: {}
+                            const remotes = [
+                                "lock",
+                                "unlock",
+                                "heater/start",
+                                "heater/stop",
+                                "preclimatization/start",
+                                "preclimatization/stop",
+                                "parkingclimate/start",
+                                "parkingclimate/stop",
+                                "precleaning/start",
+                                "precleaning/stop",
+                                "engine/start",
+                                "engine/stop",
+                                "honk_and_flash",
+                                "honk_blink/both",
+                                "honk_blink/horn",
+                                "honk_blink/lights"
+                            ];
+                            remotes.forEach(service => {
+                                this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote." + service, {
+                                    type: "state",
+                                    common: {
+                                        name: "",
+                                        type: "boolean",
+                                        role: "button",
+                                        write: true
+                                    },
+                                    native: {}
+                                });
                             });
                         });
                         const adapter = this;
@@ -184,7 +187,7 @@ class Volvo extends utils.Adapter {
                                     common: {
                                         name: this.key,
                                         role: "indicator",
-                                        type: "mixed",
+                                        type: typeof value,
                                         write: false,
                                         read: true
                                     },
@@ -203,12 +206,17 @@ class Volvo extends utils.Adapter {
             );
         });
     }
-    getVehicleAttribute(vin) {
+
+    getMethod(vin, url, accept, path) {
         return new Promise((resolve, reject) => {
+            this.log.debug("Get " + path);
             this.baseHeader["X-Request-Id"] = uuidv4();
+            this.baseHeader["Accept"] = "application/vnd.wirelesscar.com.voc.$format.v4+json; charset=utf-8".replace("$format", accept);
+            url = url.replace("/$vin/", "/" + vin + "/");
+
             request.get(
                 {
-                    url: "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/" + vin + "/attributes",
+                    url: url,
                     headers: this.baseHeader,
                     followAllRedirects: true
                 },
@@ -239,18 +247,18 @@ class Volvo extends utils.Adapter {
                                         modPath.splice(parentIndex + 1, 1);
                                     }
                                 });
-                                adapter.setObjectNotExists(vin + ".attributes." + modPath.join("."), {
+                                adapter.setObjectNotExists(vin + "." + path + "." + modPath.join("."), {
                                     type: "state",
                                     common: {
                                         name: this.key,
                                         role: "indicator",
-                                        type: "mixed",
+                                        type: typeof value,
                                         write: false,
                                         read: true
                                     },
                                     native: {}
                                 });
-                                adapter.setState(vin + ".attributes." + modPath.join("."), value, true);
+                                adapter.setState(vin + "." + path + "." + modPath.join("."), value, true);
                             }
                         });
                         resolve();
@@ -263,14 +271,26 @@ class Volvo extends utils.Adapter {
             );
         });
     }
-    getVehicleStatus(vin, url, path) {
-        return new Promise((resolve, reject) => {
+    async setMethod(vin, service, position) {
+        return new Promise(async (resolve, reject) => {
             this.baseHeader["X-Request-Id"] = uuidv4();
-            request.get(
+            this.baseHeader["Accept"] = "application/vnd.wirelesscar.com.voc.Service.v4+json; charset=utf-8";
+            this.baseHeader["Content-Type"] = "application/json; charset=utf-";
+            let body = "";
+            if (position) {
+                this.baseHeader["Content-Type"] = "application/vnd.wirelesscar.com.voc.ClientPosition.v4+json; charset=utf-8";
+                const latState = await this.getStateAsync(vin + ".position.position.latitude");
+                const longState = await this.getStateAsync(vin + ".position.position.longitude");
+                body = '{"clientAccuracy":0,"clientLatitude":' + latState.val + ',"clientLongitude":' + longState.val + "}";
+            }
+            const url = "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/" + vin + "/" + service;
+
+            request.post(
                 {
-                    url: "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/" + vin + "/status",
+                    url: url,
                     headers: this.baseHeader,
-                    followAllRedirects: true
+                    followAllRedirects: true,
+                    body: body
                 },
                 (err, resp, body) => {
                     if (err || resp.statusCode >= 400 || !body) {
@@ -281,38 +301,7 @@ class Volvo extends utils.Adapter {
                     this.log.debug(body);
 
                     try {
-                        const customer = JSON.parse(body);
-
-                        const adapter = this;
-                        traverse(customer).forEach(function(value) {
-                            if (this.path.length > 0 && this.isLeaf) {
-                                const modPath = this.path;
-                                this.path.forEach((pathElement, pathIndex) => {
-                                    if (!isNaN(parseInt(pathElement))) {
-                                        let stringPathIndex = parseInt(pathElement) + 1 + "";
-                                        while (stringPathIndex.length < 2) stringPathIndex = "0" + stringPathIndex;
-                                        const key = this.path[pathIndex - 1] + stringPathIndex;
-                                        const parentIndex = modPath.indexOf(pathElement) - 1;
-                                        //if (this.key === pathElement) {
-                                        modPath[parentIndex] = key;
-                                        //}
-                                        modPath.splice(parentIndex + 1, 1);
-                                    }
-                                });
-                                adapter.setObjectNotExists(vin + ".status." + modPath.join("."), {
-                                    type: "state",
-                                    common: {
-                                        name: this.key,
-                                        role: "indicator",
-                                        type: "mixed",
-                                        write: false,
-                                        read: true
-                                    },
-                                    native: {}
-                                });
-                                adapter.setState(vin + ".status." + modPath.join("."), value, true);
-                            }
-                        });
+                        this.log.info(body);
                         resolve();
                     } catch (error) {
                         this.log.error(error);
@@ -323,7 +312,6 @@ class Volvo extends utils.Adapter {
             );
         });
     }
-
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      * @param {() => void} callback
@@ -345,7 +333,15 @@ class Volvo extends utils.Adapter {
      */
     onStateChange(id, state) {
         if (state) {
-            // The state was changed
+            if (!state.ack) {
+                const vin = id.split(".")[2];
+                let body = "";
+                let contentType = "";
+                if (id.indexOf("remote") !== -1) {
+                    const action = id.split(".")[4];
+                    this.setMethod(vin, action, action.indexOf("honk") !== -1);
+                }
+            }
         } else {
             // The state was deleted
         }
