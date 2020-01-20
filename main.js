@@ -55,34 +55,50 @@ class Volvo extends utils.Adapter {
         const buff = new Buffer(this.config.user + ":" + this.config.password);
         const base64data = buff.toString("base64");
         this.baseHeader["Authorization"] = "Basic " + base64data;
-        this.login().then(() => {
-            this.log.debug("Login successful");
-            this.setState("info.connection", true, true);
+        this.login()
+            .then(() => {
+                this.log.debug("Login successful");
+                this.setState("info.connection", true, true);
 
-            this.vinArray.forEach(vin => {
-                this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/attributes", "VehicleAttributes", "attributes").then(() => {});
-                this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status").then(() => {});
-                this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/trips?quantity=1", "Trip", "trip").then(() => {});
-                this.getMethod(
-                    vin,
-                    "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/position?client_longitude=0.000000&client_precision=0.000000&client_latitude=0.000000 ",
-                    "Position",
-                    "position"
-                ).then(() => {});
+                this.vinArray.forEach(vin => {
+                    this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/attributes", "VehicleAttributes", "attributes")
+                        .then(() => {})
+                        .catch(() => {});
+                    this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status")
+                        .then(() => {})
+                        .catch(() => {});
+                    this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/trips?quantity=1", "Trip", "trip")
+                        .then(() => {})
+                        .catch(() => {});
+                    this.getMethod(
+                        vin,
+                        "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/position?client_longitude=0.000000&client_precision=0.000000&client_latitude=0.000000 ",
+                        "Position",
+                        "position"
+                    )
+                        .then(() => {})
+                        .catch(() => {});
 
-                this.updateInterval = setInterval(() => {
-                    this.vinArray.forEach(vin => {
-                        this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status").then(() => {});
-                        this.getMethod(
-                            vin,
-                            "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/position?client_longitude=0.000000&client_precision=0.000000&client_latitude=0.000000 ",
-                            "Position",
-                            "position"
-                        ).then(() => {});
-                    });
-                }, this.config.interval * 60 * 1000);
+                    this.updateInterval = setInterval(() => {
+                        this.vinArray.forEach(vin => {
+                            this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status")
+                                .then(() => {})
+                                .catch(() => {});
+                            this.getMethod(
+                                vin,
+                                "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/position?client_longitude=0.000000&client_precision=0.000000&client_latitude=0.000000 ",
+                                "Position",
+                                "position"
+                            )
+                                .then(() => {})
+                                .catch(() => {});
+                        });
+                    }, this.config.interval * 60 * 1000);
+                });
+            })
+            .catch(() => {
+                this.log.error("Login failed");
             });
-        });
 
         // in this template all states changes inside the adapters namespace are subscribed
         this.subscribeStates("*");
