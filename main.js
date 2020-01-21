@@ -67,7 +67,7 @@ class Volvo extends utils.Adapter {
                     this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status")
                         .then(() => {})
                         .catch(() => {});
-                    this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/trips?quantity=1", "Trip", "trip")
+                    this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/trips?quantity=5", "Trip", "trip")
                         .then(() => {})
                         .catch(() => {});
                     this.getMethod(
@@ -82,6 +82,9 @@ class Volvo extends utils.Adapter {
                     this.updateInterval = setInterval(() => {
                         this.vinArray.forEach(vin => {
                             this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status")
+                                .then(() => {})
+                                .catch(() => {});
+                            this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/trips?quantity=5", "Trip", "trip")
                                 .then(() => {})
                                 .catch(() => {});
                             this.getMethod(
