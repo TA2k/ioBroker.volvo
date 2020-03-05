@@ -1,98 +1,98 @@
 {
-	"common": {
-		"name": "volvo",
-		"version": "0.0.1",
-		"news": {
-			"0.0.1": {
-				"en": "initial release",
-				"de": "Erstveröffentlichung",
-				"ru": "Начальная версия",
-				"pt": "lançamento inicial",
-				"nl": "Eerste uitgave",
-				"fr": "Première version",
-				"it": "Versione iniziale",
-				"es": "Versión inicial",
-				"pl": "Pierwsze wydanie",
-				"zh-cn": "首次出版"
-			}
-		},
-		"title": "Volvo On Call",
-		"titleLang": {
-			"en": "Volvo On Call",
-			"de": "Volvo On Call",
-			"ru": "Volvo On Call",
-			"pt": "Volvo On Call",
-			"nl": "Volvo On Call",
-			"fr": "Volvo On Call",
-			"it": "Volvo On Call",
-			"es": "Volvo On Call",
-			"pl": "Volvo On Call",
-			"zh-cn": "沃尔沃待命"
-		},
-		"desc": {
-			"en": "Volvo On Call Adapter",
-			"de": "Volvo On Call Adapter",
-			"ru": "Volvo On Call Адаптер",
-			"pt": "Adaptador Volvo On Call",
-			"nl": "Volvo On Call adapter",
-			"fr": "Adaptateur Volvo On Call",
-			"it": "Adattatore Volvo On Call",
-			"es": "Adaptador Volvo On Call",
-			"pl": "Adapter Volvo On Call",
-			"zh-cn": "沃尔沃随车转接器"
-		},
-		"authors": [
-			"TA2k <tombox2020@gmail.com>"
-		],
-		"keywords": [
-			"volvo",
-			"volvo on call"
-		],
-		"license": "MIT",
-		"platform": "Javascript/Node.js",
-		"main": "main.js",
-		"icon": "volvo.png",
-		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/TA2k/ioBroker.volvo/master/admin/volvo.png",
-		"readme": "https://github.com/TA2k/ioBroker.volvo/blob/master/README.md",
-		"loglevel": "info",
-		"mode": "daemon",
-		"type": "vehicle",
-		"compact": true,
-		"materialize": true,
-		"dependencies": [
-			{
-				"js-controller": ">=1.4.2"
-			}
-		]
-	},
-	"native": {
-		"user": "",
-		"password": "",
-		"interval": 5
-	},
-	"objects": [],
-	"instanceObjects": [
-		{
-			"_id": "info",
-			"type": "channel",
-			"common": {
-				"name": "Information"
-			},
-			"native": {}
-		},
-		{
-			"_id": "info.connection",
-			"type": "state",
-			"common": {
-				"role": "indicator.connected",
-				"name": "Device or service connected",
-				"type": "boolean",
-				"read": true,
-				"write": false,
-				"def": false
-			},
-			"native": {}
-		}
-	]
+  "common": {
+    "name": "volvo",
+    "version": "0.0.2",
+    "news": {
+      "0.0.2": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "zh-cn": "首次出版"
+      }
+    },
+    "title": "Volvo On Call",
+    "titleLang": {
+      "en": "Volvo On Call",
+      "de": "Volvo On Call",
+      "ru": "Volvo On Call",
+      "pt": "Volvo On Call",
+      "nl": "Volvo On Call",
+      "fr": "Volvo On Call",
+      "it": "Volvo On Call",
+      "es": "Volvo On Call",
+      "pl": "Volvo On Call",
+      "zh-cn": "沃尔沃待命"
+    },
+    "desc": {
+      "en": "Volvo On Call Adapter",
+      "de": "Volvo On Call Adapter",
+      "ru": "Volvo On Call Адаптер",
+      "pt": "Adaptador Volvo On Call",
+      "nl": "Volvo On Call adapter",
+      "fr": "Adaptateur Volvo On Call",
+      "it": "Adattatore Volvo On Call",
+      "es": "Adaptador Volvo On Call",
+      "pl": "Adapter Volvo On Call",
+      "zh-cn": "沃尔沃随车转接器"
+    },
+    "authors": [
+      "TA2k <tombox2020@gmail.com>"
+    ],
+    "keywords": [
+      "volvo",
+      "volvo on call"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "volvo.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/TA2k/ioBroker.volvo/master/admin/volvo.png",
+    "readme": "https://github.com/TA2k/ioBroker.volvo/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "vehicle",
+    "compact": true,
+    "materialize": true,
+    "dependencies": [
+      {
+        "js-controller": ">=1.4.2"
+      }
+    ]
+  },
+  "native": {
+    "user": "",
+    "password": "",
+    "interval": 5
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "Device or service connected",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }

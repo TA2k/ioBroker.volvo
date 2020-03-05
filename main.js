@@ -49,7 +49,12 @@ class Volvo extends utils.Adapter {
      */
     async onReady() {
         // Initialize your adapter here
-
+        const obj = await this.getForeignObjectAsync("system.config");
+        if (obj && obj.native && obj.native.secret) {
+            this.config.password = this.decrypt(obj.native.secret, this.config.password);
+        } else {
+            this.config.password = this.decrypt("Zgfr56gFe87jJOM", this.config.password);
+        }
         // Reset the connection indicator during startup
         this.setState("info.connection", false, true);
         const buff = new Buffer(this.config.user + ":" + this.config.password);
@@ -346,7 +351,13 @@ class Volvo extends utils.Adapter {
             callback();
         }
     }
-
+    decrypt(key, value) {
+        let result = "";
+        for (let i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
     /**
      * Is called if a subscribed state changes
      * @param {string} id
