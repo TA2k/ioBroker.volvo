@@ -20,7 +20,7 @@ class Volvo extends utils.Adapter {
     constructor(options) {
         super({
             ...options,
-            name: "volvo"
+            name: "volvo",
         });
         this.on("ready", this.onReady.bind(this));
         this.on("stateChange", this.onStateChange.bind(this));
@@ -40,7 +40,7 @@ class Volvo extends utils.Adapter {
             "X-Os-Version": "13.3.1",
             "X-Originator-Type": "app",
             "X-Request-Id": "",
-            Authorization: ""
+            Authorization: "",
         };
     }
 
@@ -65,7 +65,7 @@ class Volvo extends utils.Adapter {
                 this.log.debug("Login successful");
                 this.setState("info.connection", true, true);
 
-                this.vinArray.forEach(vin => {
+                this.vinArray.forEach((vin) => {
                     this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/attributes", "VehicleAttributes", "attributes")
                         .then(() => {})
                         .catch(() => {});
@@ -85,7 +85,7 @@ class Volvo extends utils.Adapter {
                         .catch(() => {});
 
                     this.updateInterval = setInterval(() => {
-                        this.vinArray.forEach(vin => {
+                        this.vinArray.forEach((vin) => {
                             this.getMethod(vin, "https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status", "VehicleStatus", "status")
                                 .then(() => {})
                                 .catch(() => {});
@@ -119,7 +119,7 @@ class Volvo extends utils.Adapter {
                 {
                     url: "https://vocapi.wirelesscar.net/customerapi/rest/customeraccounts",
                     headers: this.baseHeader,
-                    followAllRedirects: true
+                    followAllRedirects: true,
                 },
                 (err, resp, body) => {
                     if (err || resp.statusCode >= 400 || !body) {
@@ -137,7 +137,7 @@ class Volvo extends utils.Adapter {
                             reject();
                             return;
                         }
-                        customer.accountVehicleRelations.forEach(vehicle => {
+                        customer.accountVehicleRelations.forEach((vehicle) => {
                             this.vinArray.push(vehicle.vehicle.vehicleId);
                             this.setObjectNotExists(vehicle.vehicle.vehicleId, {
                                 type: "device",
@@ -146,17 +146,17 @@ class Volvo extends utils.Adapter {
                                     role: "indicator",
                                     type: "mixed",
                                     write: false,
-                                    read: true
+                                    read: true,
                                 },
-                                native: {}
+                                native: {},
                             });
                             this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote", {
                                 type: "state",
                                 common: {
                                     name: "Remote controls",
-                                    write: true
+                                    write: true,
                                 },
-                                native: {}
+                                native: {},
                             });
 
                             const remotes = [
@@ -175,23 +175,23 @@ class Volvo extends utils.Adapter {
                                 "honk_and_flash",
                                 "honk_blink/both",
                                 "honk_blink/horn",
-                                "honk_blink/lights"
+                                "honk_blink/lights",
                             ];
-                            remotes.forEach(service => {
+                            remotes.forEach((service) => {
                                 this.setObjectNotExists(vehicle.vehicle.vehicleId + ".remote." + service, {
                                     type: "state",
                                     common: {
                                         name: "",
                                         type: "boolean",
                                         role: "button",
-                                        write: true
+                                        write: true,
                                     },
-                                    native: {}
+                                    native: {},
                                 });
                             });
                         });
                         const adapter = this;
-                        traverse(customer).forEach(function(value) {
+                        traverse(customer).forEach(function (value) {
                             if (this.path.length > 0 && this.isLeaf) {
                                 const modPath = this.path;
                                 this.path.forEach((pathElement, pathIndex) => {
@@ -213,9 +213,9 @@ class Volvo extends utils.Adapter {
                                         role: "indicator",
                                         type: typeof value,
                                         write: false,
-                                        read: true
+                                        read: true,
                                     },
-                                    native: {}
+                                    native: {},
                                 });
                                 adapter.setState("customer." + modPath.join("."), value, true);
                             }
@@ -242,7 +242,7 @@ class Volvo extends utils.Adapter {
                 {
                     url: url,
                     headers: this.baseHeader,
-                    followAllRedirects: true
+                    followAllRedirects: true,
                 },
                 (err, resp, body) => {
                     if (err || resp.statusCode >= 400 || !body) {
@@ -258,7 +258,7 @@ class Volvo extends utils.Adapter {
                         const customer = JSON.parse(body);
 
                         const adapter = this;
-                        traverse(customer).forEach(function(value) {
+                        traverse(customer).forEach(function (value) {
                             if (this.path.length > 0 && this.isLeaf) {
                                 const modPath = this.path;
                                 this.path.forEach((pathElement, pathIndex) => {
@@ -280,9 +280,9 @@ class Volvo extends utils.Adapter {
                                         role: "indicator",
                                         type: typeof value,
                                         write: false,
-                                        read: true
+                                        read: true,
                                     },
-                                    native: {}
+                                    native: {},
                                 });
                                 adapter.setState(vin + "." + path + "." + modPath.join("."), value, true);
                             }
@@ -316,7 +316,7 @@ class Volvo extends utils.Adapter {
                     url: url,
                     headers: this.baseHeader,
                     followAllRedirects: true,
-                    body: body
+                    body: body,
                 },
                 (err, resp, body) => {
                     if (err || resp.statusCode >= 400 || !body) {
@@ -386,7 +386,7 @@ if (module.parent) {
     /**
      * @param {Partial<ioBroker.AdapterOptions>} [options={}]
      */
-    module.exports = options => new Volvo(options);
+    module.exports = (options) => new Volvo(options);
 } else {
     // otherwise start the instance directly
     new Volvo();
