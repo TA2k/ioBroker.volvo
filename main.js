@@ -319,8 +319,11 @@ class Volvo extends utils.Adapter {
                     body: body,
                 },
                 (err, resp, body) => {
-                    if (err || resp.statusCode >= 400 || !body) {
-                        this.log.error(err);
+                    if (err || (resp && resp.statusCode >= 400)) {
+                        this.log.error("Failed to setMethod ");
+                        err && this.log.error(err);
+                        resp && this.log.error(resp.statusCode);
+                        body && this.log.error(JSON.stringify(body));
                         reject();
                         return;
                     }
@@ -371,7 +374,9 @@ class Volvo extends utils.Adapter {
                 let contentType = "";
                 if (id.indexOf("remote") !== -1) {
                     const action = id.split(".")[4];
-                    this.setMethod(vin, action, action.indexOf("honk") !== -1);
+                    this.setMethod(vin, action, action.indexOf("honk") !== -1).catch(() => {
+                        this.log.error("failed set method");
+                    });;
                 }
             }
         } else {
