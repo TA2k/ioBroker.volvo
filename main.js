@@ -301,8 +301,11 @@ class Volvo extends utils.Adapter {
         return new Promise(async (resolve, reject) => {
             this.baseHeader["X-Request-Id"] = uuidv4();
             this.baseHeader["Accept"] = "application/vnd.wirelesscar.com.voc.Service.v4+json; charset=utf-8";
-            this.baseHeader["Content-Type"] = "application/json; charset=utf-";
-            let body = "";
+            this.baseHeader["Content-Type"] = "application/json; charset=utf-8";
+            let body = "{}";
+            if (service==="preclimatization/start") {
+                this.baseHeader["Content-Type"] = "application/vnd.wirelesscar.com.voc.RemotePreClimatization.v4+json; charset=utf-8";
+            }
             if (position) {
                 this.baseHeader["Content-Type"] = "application/vnd.wirelesscar.com.voc.ClientPosition.v4+json; charset=utf-8";
                 const latState = await this.getStateAsync(vin + ".position.position.latitude");
@@ -317,6 +320,7 @@ class Volvo extends utils.Adapter {
                     headers: this.baseHeader,
                     followAllRedirects: true,
                     body: body,
+                    gzip:true
                 },
                 (err, resp, body) => {
                     if (err || (resp && resp.statusCode >= 400)) {
