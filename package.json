@@ -1,6 +1,6 @@
 {
   "name": "iobroker.volvo",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Volvo On Call Adapter",
   "author": {
     "name": "TA2k",
