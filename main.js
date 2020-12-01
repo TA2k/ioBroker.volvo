@@ -30,14 +30,14 @@ class Volvo extends utils.Adapter {
         this.vinArray = [];
         this.baseHeader = {
             Accept: "application/vnd.wirelesscar.com.voc.AppUser.v4+json; charset=utf-8",
-            "X-Client-Version": "4.6.10.275495",
+            "X-Client-Version": "4.8.14.350668",
             "X-App-Name": "Volvo On Call",
             "Accept-Language": "de-de",
             "Content-Type": "application/json; charset=utf-8",
-            "User-Agent": "Volvo%20On%20Call/4.6.10.275495 CFNetwork/1121.2.2 Darwin/19.3.0",
+            "User-Agent": "Volvo%20On%20Call/4.8.14.350668 CFNetwork/1206 Darwin/20.1.0",
             "X-Os-Type": "iPhone OS",
             "X-Device-Id": uuidv4(),
-            "X-Os-Version": "13.3.1",
+            "X-Os-Version": "14.2",
             "X-Originator-Type": "app",
             "X-Request-Id": "",
             Authorization: "",
