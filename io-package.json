@@ -1,8 +1,11 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "news": {
+      "0.0.4": {
+        "en": "fix jscontroller"
+      },
       "0.0.3": {
         "en": "fix preclimate"
       },

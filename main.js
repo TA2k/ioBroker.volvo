@@ -191,7 +191,7 @@ class Volvo extends utils.Adapter {
                             });
                         });
                         const adapter = this;
-                        traverse(customer).forEach(function (value) {
+                        traverse(customer).forEach(async function (value) {
                             if (this.path.length > 0 && this.isLeaf) {
                                 const modPath = this.path;
                                 this.path.forEach((pathElement, pathIndex) => {
@@ -206,7 +206,7 @@ class Volvo extends utils.Adapter {
                                         modPath.splice(parentIndex + 1, 1);
                                     }
                                 });
-                                adapter.setObjectNotExists("customer." + modPath.join("."), {
+                                await adapter.setObjectNotExistsAsync("customer." + modPath.join("."), {
                                     type: "state",
                                     common: {
                                         name: this.key,
@@ -217,6 +217,9 @@ class Volvo extends utils.Adapter {
                                     },
                                     native: {},
                                 });
+                                if (typeof value === "object") {
+                                    value = JSON.stringify(value);
+                                }
                                 adapter.setState("customer." + modPath.join("."), value, true);
                             }
                         });
@@ -258,7 +261,7 @@ class Volvo extends utils.Adapter {
                         const customer = JSON.parse(body);
 
                         const adapter = this;
-                        traverse(customer).forEach(function (value) {
+                        traverse(customer).forEach(async function (value) {
                             if (this.path.length > 0 && this.isLeaf) {
                                 const modPath = this.path;
                                 this.path.forEach((pathElement, pathIndex) => {
@@ -273,7 +276,7 @@ class Volvo extends utils.Adapter {
                                         modPath.splice(parentIndex + 1, 1);
                                     }
                                 });
-                                adapter.setObjectNotExists(vin + "." + path + "." + modPath.join("."), {
+                                await adapter.setObjectNotExistsAsync(vin + "." + path + "." + modPath.join("."), {
                                     type: "state",
                                     common: {
                                         name: this.key,
@@ -284,6 +287,9 @@ class Volvo extends utils.Adapter {
                                     },
                                     native: {},
                                 });
+                                if (typeof value === "object") {
+                                    value = JSON.stringify(value);
+                                }
                                 adapter.setState(vin + "." + path + "." + modPath.join("."), value, true);
                             }
                         });
@@ -303,7 +309,7 @@ class Volvo extends utils.Adapter {
             this.baseHeader["Accept"] = "application/vnd.wirelesscar.com.voc.Service.v4+json; charset=utf-8";
             this.baseHeader["Content-Type"] = "application/json; charset=utf-8";
             let body = "{}";
-            if (service==="preclimatization/start") {
+            if (service === "preclimatization/start") {
                 this.baseHeader["Content-Type"] = "application/vnd.wirelesscar.com.voc.RemotePreClimatization.v4+json; charset=utf-8";
             }
             if (position) {
@@ -320,7 +326,7 @@ class Volvo extends utils.Adapter {
                     headers: this.baseHeader,
                     followAllRedirects: true,
                     body: body,
-                    gzip:true
+                    gzip: true,
                 },
                 (err, resp, body) => {
                     if (err || (resp && resp.statusCode >= 400)) {
@@ -380,7 +386,7 @@ class Volvo extends utils.Adapter {
                     const action = id.split(".")[4];
                     this.setMethod(vin, action, action.indexOf("honk") !== -1).catch(() => {
                         this.log.error("failed set method");
-                    });;
+                    });
                 }
             }
         } else {
