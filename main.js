@@ -9,7 +9,7 @@
 const utils = require("@iobroker/adapter-core");
 const uuidv4 = require("uuid/v4");
 const request = require("request");
-const traverse = require("traverse");
+const { extractKeys } = require("./lib/extractKeys");
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
@@ -26,6 +26,7 @@ class Volvo extends utils.Adapter {
         this.on("stateChange", this.onStateChange.bind(this));
         this.on("unload", this.onUnload.bind(this));
 
+        this.extractKeys = extractKeys;
         this.updateInterval = null;
         this.vinArray = [];
         this.baseHeader = {
@@ -190,39 +191,7 @@ class Volvo extends utils.Adapter {
                                 });
                             });
                         });
-                        const adapter = this;
-                        traverse(customer).forEach(async function (value) {
-                            if (this.path.length > 0 && this.isLeaf) {
-                                const modPath = this.path;
-                                this.path.forEach((pathElement, pathIndex) => {
-                                    if (!isNaN(parseInt(pathElement))) {
-                                        let stringPathIndex = parseInt(pathElement) + 1 + "";
-                                        while (stringPathIndex.length < 2) stringPathIndex = "0" + stringPathIndex;
-                                        const key = this.path[pathIndex - 1] + stringPathIndex;
-                                        const parentIndex = modPath.indexOf(pathElement) - 1;
-                                        //if (this.key === pathElement) {
-                                        modPath[parentIndex] = key;
-                                        //}
-                                        modPath.splice(parentIndex + 1, 1);
-                                    }
-                                });
-                                await adapter.setObjectNotExistsAsync("customer." + modPath.join("."), {
-                                    type: "state",
-                                    common: {
-                                        name: this.key,
-                                        role: "indicator",
-                                        type: typeof value,
-                                        write: false,
-                                        read: true,
-                                    },
-                                    native: {},
-                                });
-                                if (typeof value === "object") {
-                                    value = JSON.stringify(value);
-                                }
-                                adapter.setState("customer." + modPath.join("."), value, true);
-                            }
-                        });
+                        this.extractKeys(this, "customer", customer, null, true);
                         resolve();
                     } catch (error) {
                         this.log.error(error);
@@ -259,41 +228,9 @@ class Volvo extends utils.Adapter {
 
                     try {
                         const customer = JSON.parse(body);
-
-                        const adapter = this;
-                        traverse(customer).forEach(async function (value) {
-                            if (this.path.length > 0 && this.isLeaf) {
-                                const modPath = this.path;
-                                this.path.forEach((pathElement, pathIndex) => {
-                                    if (!isNaN(parseInt(pathElement))) {
-                                        let stringPathIndex = parseInt(pathElement) + 1 + "";
-                                        while (stringPathIndex.length < 2) stringPathIndex = "0" + stringPathIndex;
-                                        const key = this.path[pathIndex - 1] + stringPathIndex;
-                                        const parentIndex = modPath.indexOf(pathElement) - 1;
-                                        //if (this.key === pathElement) {
-                                        modPath[parentIndex] = key;
-                                        //}
-                                        modPath.splice(parentIndex + 1, 1);
-                                    }
-                                });
-                                await adapter.setObjectNotExistsAsync(vin + "." + path + "." + modPath.join("."), {
-                                    type: "state",
-                                    common: {
-                                        name: this.key,
-                                        role: "indicator",
-                                        type: typeof value,
-                                        write: false,
-                                        read: true,
-                                    },
-                                    native: {},
-                                });
-                                if (typeof value === "object") {
-                                    value = JSON.stringify(value);
-                                }
-                                adapter.setState(vin + "." + path + "." + modPath.join("."), value, true);
-                            }
-                        });
+                        this.extractKeys(this, vin + "." + path, customer);
                         resolve();
+                        return;
                     } catch (error) {
                         this.log.error(error);
                         this.log.error(error.stack);
