@@ -228,7 +228,11 @@ class Volvo extends utils.Adapter {
 
                     try {
                         const customer = JSON.parse(body);
-                        this.extractKeys(this, vin + "." + path, customer);
+                        if (path === "trip") {
+                            this.extractKeys(this, vin + "." + path, customer, null, true);
+                        } else {
+                            this.extractKeys(this, vin + "." + path, customer);
+                        }
                         resolve();
                         return;
                     } catch (error) {
