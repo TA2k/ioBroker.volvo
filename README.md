@@ -23,6 +23,9 @@ Use objects under remote to control the vehicle
 
 ## Changelog
 
+### 0.1.0
+
+* (TA2k) add new api for electric cars
 ### 0.0.6
 
 * (TA2k) fix trip object naming

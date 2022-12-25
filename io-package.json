@@ -1,8 +1,11 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.0.6",
+    "version": "0.1.0",
     "news": {
+      "0.1.0": {
+        "en": "add new API for electric cars"
+      },
       "0.0.6": {
         "en": "fix trip objects naming"
       },
@@ -53,13 +56,8 @@
       "pl": "Adapter Volvo On Call",
       "zh-cn": "沃尔沃随车转接器"
     },
-    "authors": [
-      "TA2k <tombox2020@gmail.com>"
-    ],
-    "keywords": [
-      "volvo",
-      "volvo on call"
-    ],
+    "authors": ["TA2k <tombox2020@gmail.com>"],
+    "keywords": ["volvo", "volvo on call"],
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "main.js",
@@ -82,7 +80,9 @@
   },
   "native": {
     "user": "",
+    "vccapikey": "",
     "password": "",
+    "newApi": false,
     "interval": 5
   },
   "objects": [],
