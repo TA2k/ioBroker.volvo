@@ -35,8 +35,6 @@ class Volvo extends utils.Adapter {
     this.extractKeys = extractKeys;
     this.updateInterval = null;
     this.vinArray = [];
-    this.vinResources = {};
-    this.vinEnergies = {};
     this.baseHeader = {
       Accept: "application/vnd.wirelesscar.com.voc.AppUser.v4+json; charset=utf-8",
       "X-Client-Version": "4.8.14.350668",
@@ -68,7 +66,9 @@ class Volvo extends utils.Adapter {
     this.setState("info.connection", false, true);
     const buff = new Buffer(this.config.user + ":" + this.config.password);
     const base64data = buff.toString("base64");
+
     this.baseHeader["Authorization"] = "Basic " + base64data;
+    this.subscribeStates("*");
     if (this.config.newApi) {
       await this.newLogin();
       if (this.session.access_token) {
@@ -80,8 +80,9 @@ class Volvo extends utils.Adapter {
       }
       this.refreshTokenInterval = setInterval(() => {
         this.refreshToken();
-      }, 12 * 60 * 60 * 1000);
+      }, (this.session.expires_in || 1799) * 1000);
     } else {
+      //old volvo api
       this.login()
         .then(() => {
           this.log.debug("Login successful");
@@ -131,7 +132,6 @@ class Volvo extends utils.Adapter {
         });
     }
     // in this template all states changes inside the adapters namespace are subscribed
-    this.subscribeStates("*");
   }
   async newLogin() {
     await this.requestClient({
@@ -148,7 +148,7 @@ class Volvo extends utils.Adapter {
         access_token_manager_id: "JWTh4Yf0b",
         grant_type: "password",
         scope:
-          "openid email profile care_by_volvo:financial_information:invoice:read care_by_volvo:financial_information:payment_method care_by_volvo:subscription:read customer:attributes customer:attributes:write order:attributes vehicle:attributes tsp_customer_api:all  conve:brake_status conve:climatization_start_stop conve:command_accessibility conve:commands conve:connectivity_status conve:diagnostics_engine_status conve:diagnostics_workshop conve:doors_status conve:engine_start_stop conve:engine_status conve:environment conve:fuel_status conve:honk_flash conve:lock conve:lock_status conve:navigation conve:odometer_status conve:trip_statistics conve:tyre_status conve:unlock conve:vehicle_relation conve:warnings conve:windows_status energy:battery_charge_level energy:charging_connection_status energy:charging_system_status energy:electric_range energy:estimated_charging_time energy:recharge_status exve:brake_status exve:diagnostics_engine_status exve:diagnostics_workshop exve:doors_status exve:engine_status exve:fuel_status exve:lock_status exve:odometer_status exve:tyre_status exve:vehicle_statistics exve:warnings exve:windows_status vehicle:attributes",
+          "openid email profile care_by_volvo:financial_information:invoice:read care_by_volvo:financial_information:payment_method care_by_volvo:subscription:read customer:attributes customer:attributes:write order:attributes vehicle:attributes tsp_customer_api:all conve:brake_status conve:climatization_start_stop conve:command_accessibility conve:commands conve:diagnostics_engine_status conve:diagnostics_workshop conve:doors_status conve:engine_status conve:environment conve:fuel_status conve:honk_flash conve:lock conve:lock_status conve:navigation conve:odometer_status conve:trip_statistics conve:tyre_status conve:unlock conve:vehicle_relation conve:warnings conve:windows_status energy:battery_charge_level energy:charging_connection_status energy:charging_system_status energy:electric_range energy:estimated_charging_time energy:recharge_status vehicle:attributes",
       }),
     })
       .then((res) => {
@@ -177,7 +177,7 @@ class Volvo extends utils.Adapter {
       .then(async (res) => {
         this.log.debug(JSON.stringify(res.data));
         this.log.info(`Found ${res.data.vehicles.length} vehicles`);
-        for (const device of res.data.data) {
+        for (const device of res.data.vehicles) {
           this.log.info(JSON.stringify(device));
           const id = device.id;
           this.vinArray.push(device.id);
@@ -197,13 +197,20 @@ class Volvo extends utils.Adapter {
             },
             native: {},
           });
+          await this.setObjectNotExistsAsync(id + ".status", {
+            type: "channel",
+            common: {
+              name: "Status of the car via Connected Vehicle API",
+            },
+            native: {},
+          });
 
           let remoteArray = [{ command: "Refresh", name: "True = Refresh" }];
           await this.requestClient({
             method: "get",
             url: "https://api.volvocars.com/connected-vehicle/v1/vehicles/" + id + "/commands",
             headers: {
-              accept: "application/json",
+              accept: "application/vnd.volvocars.api.connected-vehicle.commandlist.v1+json",
               "vcc-api-key": this.config.vccapikey,
               Authorization: "Bearer " + this.session.access_token,
             },
@@ -212,8 +219,8 @@ class Volvo extends utils.Adapter {
               this.log.debug(JSON.stringify(res.data));
               for (const command of res.data.data) {
                 remoteArray.push({
-                  command: command.command,
-                  name: command.name,
+                  command: command.command.toLowerCase(),
+                  name: command.command.toLowerCase(),
                 });
               }
             })
@@ -247,11 +254,6 @@ class Volvo extends utils.Adapter {
           })
             .then(async (res) => {
               this.log.debug(JSON.stringify(res.data));
-              const resources = [];
-              for (const resource of res.data.resources) {
-                resources.push(resource.name);
-              }
-              this.vinResources[id] = resources;
             })
             .catch((error) => {
               this.log.error(error);
@@ -261,27 +263,43 @@ class Volvo extends utils.Adapter {
       })
       .catch((error) => {
         this.log.error(error);
-        this.log.error("Login failed");
+        this.log.error("get device list failed");
         error.response && this.log.error(JSON.stringify(error.response.data));
       });
   }
   async updateDevice() {
     for (const vin of this.vinArray) {
-      for (const resource of this.vinResources[vin]) {
+      const endpoints = [
+        "environment",
+        "engine",
+        "windows",
+        "diagnostics",
+        "brakes",
+        "doors",
+        "engine-status",
+        "fuel",
+        "battery-charge-level",
+        "odometer",
+        "statistics",
+        "tyres",
+        "warnings",
+      ];
+      for (const endpoint of endpoints) {
         await this.requestClient({
           method: "get",
-          url: "https://api.volvocars.com/extended-vehicle/v1/vehicles/" + vin + "/resources/" + resource,
+          url: "https://api.volvocars.com/connected-vehicle/v1/vehicles/" + vin + "/" + endpoint,
           headers: {
-            accept: "application/json",
+            accept: "application/json, */*",
             "vcc-api-key": this.config.vccapikey,
             Authorization: "Bearer " + this.session.access_token,
           },
         })
           .then(async (res) => {
             this.log.debug(JSON.stringify(res.data));
-            this.json2iob.parse(vin + ".status." + resource, res.data, { forceIndex: true });
+            this.json2iob.parse(vin + ".status." + endpoint, res.data.data, { forceIndex: true });
           })
           .catch((error) => {
+            this.log.error("Error: " + endpoint + " failed");
             this.log.error(error);
             error.response && this.log.error(JSON.stringify(error.response.data));
           });
@@ -289,16 +307,16 @@ class Volvo extends utils.Adapter {
 
       await this.requestClient({
         method: "get",
-        url: "'https://api.volvocars.com/energy/v1/vehicles/" + vin + "/recharge-status",
+        url: "https://api.volvocars.com/energy/v1/vehicles/" + vin + "/recharge-status",
         headers: {
-          accept: "application/json",
+          accept: "application/vnd.volvocars.api.energy.vehicledata.v1+json",
           "vcc-api-key": this.config.vccapikey,
           Authorization: "Bearer " + this.session.access_token,
         },
       })
         .then(async (res) => {
           this.log.debug(JSON.stringify(res.data));
-          this.json2iob.parse(vin + ".status.", res.data.data, { forceIndex: true });
+          this.json2iob.parse(vin + ".status", res.data.data, { forceIndex: true });
         })
         .catch((error) => {
           this.log.error(error);
@@ -538,17 +556,37 @@ class Volvo extends utils.Adapter {
    * @param {string} id
    * @param {ioBroker.State | null | undefined} state
    */
-  onStateChange(id, state) {
+  async onStateChange(id, state) {
     if (state) {
       if (!state.ack && state.val) {
         const vin = id.split(".")[2];
+        const command = id.split(".")[4];
         let body = "";
         let contentType = "";
-        if (id.indexOf("remote") !== -1) {
-          const action = id.split(".")[4];
-          this.setMethod(vin, action, action.indexOf("honk") !== -1).catch(() => {
-            this.log.error("failed set method");
-          });
+        if (this.config.newApi) {
+          await this.requestClient({
+            method: "post",
+            url: "https://api.volvocars.com/connected-vehicle/v1/vehicles/" + vin + "/commands/" + command,
+            headers: {
+              "content-type": "application/vnd.volvocars.api.connected-vehicle." + command + ".v1+json",
+              "vcc-api-key": this.config.vccapikey,
+              Authorization: "Bearer " + this.session.access_token,
+            },
+          })
+            .then(async (res) => {
+              this.log.info(JSON.stringify(res.data));
+            })
+            .catch((error) => {
+              this.log.error(error);
+              error.response && this.log.error(JSON.stringify(error.response.data));
+            });
+        } else {
+          if (id.indexOf("remote") !== -1) {
+            const action = id.split(".")[4];
+            this.setMethod(vin, action, action.indexOf("honk") !== -1).catch(() => {
+              this.log.error("failed set method");
+            });
+          }
         }
       }
     } else {
