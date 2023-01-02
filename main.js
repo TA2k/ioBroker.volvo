@@ -31,6 +31,7 @@ class Volvo extends utils.Adapter {
 
     this.json2iob = new Json2iob(this);
     this.session = {};
+    this.responseTimeout;
     this.requestClient = axios.create();
     this.extractKeys = extractKeys;
     this.updateInterval = null;
@@ -219,7 +220,7 @@ class Volvo extends utils.Adapter {
               this.log.debug(JSON.stringify(res.data));
               for (const command of res.data.data) {
                 remoteArray.push({
-                  command: command.command.toLowerCase(),
+                  command: command.command.toLowerCase().replace(/_/g, "-"),
                   name: command.command.toLowerCase(),
                 });
               }
@@ -278,7 +279,7 @@ class Volvo extends utils.Adapter {
         "doors",
         "engine-status",
         "fuel",
-        "battery-charge-level",
+        // "battery-charge-level",
         "odometer",
         "statistics",
         "tyres",
@@ -539,6 +540,7 @@ class Volvo extends utils.Adapter {
     try {
       this.log.info("cleaned everything up...");
       clearInterval(this.updateInterval);
+      this.responseTimeout && clearTimeout(this.responseTimeout);
       callback();
     } catch (e) {
       callback();
@@ -564,22 +566,48 @@ class Volvo extends utils.Adapter {
         let body = "";
         let contentType = "";
         if (this.config.newApi) {
-          await this.requestClient({
+          body = null;
+          if (command === "unlock") {
+            body = {
+              unlockDuration: 0,
+            };
+          }
+          const response = await this.requestClient({
             method: "post",
             url: "https://api.volvocars.com/connected-vehicle/v1/vehicles/" + vin + "/commands/" + command,
             headers: {
-              "content-type": "application/vnd.volvocars.api.connected-vehicle." + command + ".v1+json",
+              "content-type": "application/vnd.volvocars.api.connected-vehicle." + command.replace("-", "") + ".v1+json",
               "vcc-api-key": this.config.vccapikey,
               Authorization: "Bearer " + this.session.access_token,
             },
+            data: body,
           })
             .then(async (res) => {
               this.log.info(JSON.stringify(res.data));
+              return res.data;
             })
             .catch((error) => {
               this.log.error(error);
               error.response && this.log.error(JSON.stringify(error.response.data));
             });
+          this.responseTimeout = setTimeout(async () => {
+            await this.requestClient({
+              method: "get",
+              url: response.async.href,
+              headers: {
+                "content-type": "application/vnd.volvocars.api.connected-vehicle.requestdetailresponse.v1+json",
+                "vcc-api-key": this.config.vccapikey,
+                Authorization: "Bearer " + this.session.access_token,
+              },
+            })
+              .then(async (res) => {
+                this.log.info(JSON.stringify(res.data));
+              })
+              .catch((error) => {
+                this.log.error(error);
+                error.response && this.log.error(JSON.stringify(error.response.data));
+              });
+          }, 10000);
         } else {
           if (id.indexOf("remote") !== -1) {
             const action = id.split(".")[4];

@@ -6,7 +6,7 @@
 [![Downloads](https://img.shields.io/npm/dm/iobroker.volvo.svg)](https://www.npmjs.com/package/iobroker.volvo)
 ![Number of Installations (latest)](http://iobroker.live/badges/volvo-installed.svg)
 ![Number of Installations (stable)](http://iobroker.live/badges/volvo-stable.svg)
-[![Dependency Status](https://img.shields.io/david/TA2k/iobroker.volvo.svg)](https://david-dm.org/TA2k/iobroker.volvo)
+
 [![Known Vulnerabilities](https://snyk.io/test/github/TA2k/ioBroker.volvo/badge.svg)](https://snyk.io/test/github/TA2k/ioBroker.volvo)
 
 [![NPM](https://nodei.co/npm/iobroker.volvo.png?downloads=true)](https://nodei.co/npm/iobroker.volvo/)
