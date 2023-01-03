@@ -38,6 +38,8 @@ Paste the API Key in the Instance settings
 
 Enter Volvoe App Username and password.
 
+Remote controls are not working with the new API. The requests are accepted but not forwarded to the car.
+
 
 ## Getting started
 
