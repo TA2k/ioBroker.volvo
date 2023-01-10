@@ -16,12 +16,12 @@
 
 Volvo On Call and new Electric API for Android Automotive Cars Adapter
 
-## Login 
+## Login for non electric cars
 
 Non Eletric car can login via username and password.
 
 
-### Eletric Android Automotive Cars need a VCC API Key
+## Eletric Android Automotive Cars need a VCC API Key
 
 Register/Login into 
 <https://developer.volvocars.com/account/>
@@ -37,6 +37,9 @@ Copy VCC API Key Primary
 Paste the API Key in the Instance settings
 
 Enter Volvoe App Username and password.
+
+## Controling Eletric Android
+Controlling Eletric Android with the volvo.0.id.remote is not possible at the moment. The commands are send succeful to the API and are accepted but it looks like the API is not complete to control the car.
 
 
 ## Getting started
