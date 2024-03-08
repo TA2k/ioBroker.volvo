@@ -1,8 +1,11 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "news": {
+      "0.1.1": {
+        "en": "add location API for electric cars"
+      },
       "0.1.0": {
         "en": "add new API for electric cars"
       },
