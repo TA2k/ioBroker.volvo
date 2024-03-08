@@ -206,6 +206,16 @@ class Volvo extends utils.Adapter {
             native: {},
           });
 
+          //added for including location position
+          await this.setObjectNotExistsAsync(id + ".location", {
+            type: "channel",
+            common: {
+              name: "Location of the car via Connected Vehicle API",
+            },
+            native: {},
+          });
+          // end
+
           let remoteArray = [{ command: "Refresh", name: "True = Refresh" }];
           await this.requestClient({
             method: "get",
@@ -305,7 +315,26 @@ class Volvo extends utils.Adapter {
             error.response && this.log.error(JSON.stringify(error.response.data));
           });
       }
+// added for including location position
+      await this.requestClient({
+        method: "get",
+        url: "https://api.volvocars.com/location/v1/vehicles/" + vin + "/location",
+        headers: {
+          accept: "application/json",
+          "vcc-api-key": this.config.vccapikey,
+          Authorization: "Bearer " + this.session.access_token,
+        },
+      })
+        .then(async (res) => {
+          this.log.debug(JSON.stringify(res.data));
+          this.json2iob.parse(vin + ".location", res.data.data, { forceIndex: true });
+        })
+        .catch((error) => {
+          this.log.error(error);
+          error.response && this.log.error(JSON.stringify(error.response.data));
+        });
 
+//added for including location position
       await this.requestClient({
         method: "get",
         url: "https://api.volvocars.com/energy/v1/vehicles/" + vin + "/recharge-status",
