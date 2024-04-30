@@ -241,6 +241,7 @@ class Volvo extends utils.Adapter {
               }
             })
             .catch((error) => {
+              this.log.error('get command list failed');
               this.log.error(error);
               error.response && this.log.error(JSON.stringify(error.response.data));
             });
@@ -259,22 +260,23 @@ class Volvo extends utils.Adapter {
             });
           });
           this.json2iob.parse(id, device, { forceIndex: true });
-          await this.requestClient({
-            method: 'get',
-            url: 'https://api.volvocars.com/extended-vehicle/v1/vehicles/' + id + '/resources',
-            headers: {
-              accept: 'application/json',
-              'vcc-api-key': this.config.vccapikey,
-              Authorization: 'Bearer ' + this.session.access_token,
-            },
-          })
-            .then(async (res) => {
-              this.log.debug(JSON.stringify(res.data));
-            })
-            .catch((error) => {
-              this.log.error(error);
-              error.response && this.log.error(JSON.stringify(error.response.data));
-            });
+          // await this.requestClient({
+          //   method: 'get',
+          //   url: 'https://api.volvocars.com/extended-vehicle/v1/vehicles/' + id + '/resources',
+          //   headers: {
+          //     accept: 'application/json',
+          //     'vcc-api-key': this.config.vccapikey,
+          //     Authorization: 'Bearer ' + this.session.access_token,
+          //   },
+          // })
+          //   .then(async (res) => {
+          //     this.log.debug(JSON.stringify(res.data));
+          //   })
+          //   .catch((error) => {
+          //     this.log.error('get resources failed');
+          //     this.log.error(error);
+          //     error.response && this.log.error(JSON.stringify(error.response.data));
+          //   });
         }
       })
       .catch((error) => {
@@ -286,7 +288,7 @@ class Volvo extends utils.Adapter {
   async updateDevice() {
     for (const vin of this.vinArray) {
       const endpoints = [
-        'environment',
+        // 'environment',
         'engine',
         'windows',
         'diagnostics',
@@ -335,6 +337,7 @@ class Volvo extends utils.Adapter {
           this.json2iob.parse(vin + '.location', res.data.data, { forceIndex: true });
         })
         .catch((error) => {
+          this.log.error('failed to get location');
           this.log.error(error);
           error.response && this.log.error(JSON.stringify(error.response.data));
         });
@@ -354,6 +357,7 @@ class Volvo extends utils.Adapter {
           this.json2iob.parse(vin + '.status', res.data.data, { forceIndex: true });
         })
         .catch((error) => {
+          this.log.error("failed to get 'recharge-status'");
           this.log.error(error);
           error.response && this.log.error(JSON.stringify(error.response.data));
         });

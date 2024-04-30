@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.1.2-beta.0",
+    "version": "0.1.2-beta.1",
     "news": {
+      "0.1.2-beta.1": {
+        "en": "added support for v2 api",
+        "de": "Unterstützung für v2 api hinzugefügt",
+        "ru": "дополнительная поддержка v2 api",
+        "pt": "suporte adicionado para v2 api",
+        "nl": "toegevoegde ondersteuning voor v2 api",
+        "fr": "soutien supplémentaire pour v2 api",
+        "it": "supporto aggiunto per v2 api",
+        "es": "soporte añadido para v2 api",
+        "pl": "dodane wsparcie dla api v2",
+        "uk": "додано підтримку v2 api",
+        "zh-cn": "为 v2 api 添加支持"
+      },
       "0.1.2-beta.0": {
         "en": "add v2 support",
         "de": "v2 unterstützung hinzugefügt",
@@ -30,9 +43,6 @@
       },
       "0.0.4": {
         "en": "fix jscontroller"
-      },
-      "0.0.3": {
-        "en": "fix preclimate"
       }
     },
     "title": "Volvo On Call",
