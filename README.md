@@ -47,7 +47,7 @@ Controlling Eletric Android with the volvo.0.id.remote is not possible at the mo
 Use objects under remote to control the vehicle
 
 ## Changelog
-### 0.1.2-beta.1 (2024-04-30)
+### 0.1.2-beta.2 (2024-04-30)
 
 - added support for v2 api
 

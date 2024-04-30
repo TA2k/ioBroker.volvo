@@ -226,7 +226,7 @@ class Volvo extends utils.Adapter {
             method: 'get',
             url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + id + '/commands',
             headers: {
-              accept: 'application/vnd.volvocars.api.connected-vehicle.commandlist.v1+json',
+              accept: 'application/vnd.volvocars.api.connected-vehicle.commandlist.v1+json, application/json, */*',
               'vcc-api-key': this.config.vccapikey,
               Authorization: 'Bearer ' + this.session.access_token,
             },
