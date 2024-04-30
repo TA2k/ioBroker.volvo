@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.1.1",
+    "version": "0.1.2-beta.0",
     "news": {
+      "0.1.2-beta.0": {
+        "en": "add v2 support",
+        "de": "v2 unterstützung hinzugefügt",
+        "ru": "поддержка v2",
+        "pt": "adicionar suporte v2",
+        "nl": "v2 ondersteuning toevoegen",
+        "fr": "ajouter le support v2",
+        "it": "aggiungere v2 supporto",
+        "es": "add v2 support",
+        "pl": "dodaj obsługę v2",
+        "uk": "підтримка v2",
+        "zh-cn": "添加 v2 支持"
+      },
       "0.1.1": {
         "en": "add location API for electric cars"
       },
@@ -20,18 +33,6 @@
       },
       "0.0.3": {
         "en": "fix preclimate"
-      },
-      "0.0.2": {
-        "en": "initial release",
-        "de": "Erstveröffentlichung",
-        "ru": "Начальная версия",
-        "pt": "lançamento inicial",
-        "nl": "Eerste uitgave",
-        "fr": "Première version",
-        "it": "Versione iniziale",
-        "es": "Versión inicial",
-        "pl": "Pierwsze wydanie",
-        "zh-cn": "首次出版"
       }
     },
     "title": "Volvo On Call",

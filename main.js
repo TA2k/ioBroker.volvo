@@ -11,7 +11,7 @@ const { v4: uuidv4 } = require('uuid');
 const request = require('request');
 const axios = require('axios').default;
 const qs = require('qs');
-const Json2iob = require('./lib/json2iob');
+const Json2iob = require('json2iob');
 const { extractKeys } = require('./lib/extractKeys');
 // Load your modules here, e.g.:
 // const fs = require("fs");
@@ -90,7 +90,12 @@ class Volvo extends utils.Adapter {
           this.setState('info.connection', true, true);
 
           this.vinArray.forEach((vin) => {
-            this.getMethod(vin, 'https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/attributes', 'VehicleAttributes', 'attributes')
+            this.getMethod(
+              vin,
+              'https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/attributes',
+              'VehicleAttributes',
+              'attributes',
+            )
               .then(() => {})
               .catch(() => {});
             this.getMethod(vin, 'https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/status', 'VehicleStatus', 'status')
@@ -103,7 +108,7 @@ class Volvo extends utils.Adapter {
               vin,
               'https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/position?client_longitude=0.000000&client_precision=0.000000&client_latitude=0.000000 ',
               'Position',
-              'position'
+              'position',
             )
               .then(() => {})
               .catch(() => {});
@@ -120,7 +125,7 @@ class Volvo extends utils.Adapter {
                   vin,
                   'https://vocapi.wirelesscar.net/customerapi/rest/vehicles/$vin/position?client_longitude=0.000000&client_precision=0.000000&client_latitude=0.000000 ',
                   'Position',
-                  'position'
+                  'position',
                 )
                   .then(() => {})
                   .catch(() => {});
@@ -187,7 +192,7 @@ class Volvo extends utils.Adapter {
           await this.setObjectNotExistsAsync(id, {
             type: 'device',
             common: {
-              name: id,
+              name: id + name,
             },
             native: {},
           });
@@ -216,10 +221,10 @@ class Volvo extends utils.Adapter {
           });
           // end
 
-          let remoteArray = [{ command: 'Refresh', name: 'True = Refresh' }];
+          const remoteArray = [{ command: 'Refresh', name: 'True = Refresh' }];
           await this.requestClient({
             method: 'get',
-            url: 'https://api.volvocars.com/connected-vehicle/v1/vehicles/' + id + '/commands',
+            url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + id + '/commands',
             headers: {
               accept: 'application/vnd.volvocars.api.connected-vehicle.commandlist.v1+json',
               'vcc-api-key': this.config.vccapikey,
@@ -298,7 +303,7 @@ class Volvo extends utils.Adapter {
       for (const endpoint of endpoints) {
         await this.requestClient({
           method: 'get',
-          url: 'https://api.volvocars.com/connected-vehicle/v1/vehicles/' + vin + '/' + endpoint,
+          url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + vin + '/' + endpoint,
           headers: {
             accept: 'application/json, */*',
             'vcc-api-key': this.config.vccapikey,
@@ -467,7 +472,7 @@ class Volvo extends utils.Adapter {
             this.log.error(error.stack);
             reject();
           }
-        }
+        },
       );
     });
   }
@@ -509,11 +514,12 @@ class Volvo extends utils.Adapter {
             this.log.error(error.stack);
             reject();
           }
-        }
+        },
       );
     });
   }
   async setMethod(vin, service, position) {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       this.baseHeader['X-Request-Id'] = uuidv4();
       this.baseHeader['Accept'] = 'application/vnd.wirelesscar.com.voc.Service.v4+json; charset=utf-8';
@@ -559,7 +565,7 @@ class Volvo extends utils.Adapter {
             this.log.error(error.stack);
             reject();
           }
-        }
+        },
       );
     });
   }
@@ -595,7 +601,6 @@ class Volvo extends utils.Adapter {
         const vin = id.split('.')[2];
         const command = id.split('.')[4];
         let body = '';
-        let contentType = '';
         if (this.config.newApi) {
           body = null;
           if (command === 'unlock') {
@@ -605,7 +610,7 @@ class Volvo extends utils.Adapter {
           }
           const response = await this.requestClient({
             method: 'post',
-            url: 'https://api.volvocars.com/connected-vehicle/v1/vehicles/' + vin + '/commands/' + command,
+            url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + vin + '/commands/' + command,
             headers: {
               'content-type': 'application/vnd.volvocars.api.connected-vehicle.' + command.replace('-', '') + '.v1+json',
               'vcc-api-key': this.config.vccapikey,
