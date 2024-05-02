@@ -1,22 +1,9 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.1.2-beta.2",
+    "version": "0.1.2",
     "news": {
-      "0.1.2-beta.2": {
-        "en": "added support for v2 api",
-        "de": "unterstützung für v2 api",
-        "ru": "дополнительная поддержка v2 api",
-        "pt": "suporte adicionado para v2 api",
-        "nl": "toegevoegde ondersteuning voor v2 api",
-        "fr": "soutien supplémentaire pour v2 api",
-        "it": "supporto aggiunto per v2 api",
-        "es": "soporte añadido para v2 api",
-        "pl": "dodane wsparcie dla api v2",
-        "uk": "додано підтримку v2 api",
-        "zh-cn": "为 v2 api 添加支持"
-      },
-      "0.1.2-beta.1": {
+      "0.1.2": {
         "en": "added support for v2 api",
         "de": "Unterstützung für v2 api hinzugefügt",
         "ru": "дополнительная поддержка v2 api",
@@ -29,19 +16,6 @@
         "uk": "додано підтримку v2 api",
         "zh-cn": "为 v2 api 添加支持"
       },
-      "0.1.2-beta.0": {
-        "en": "add v2 support",
-        "de": "v2 unterstützung hinzugefügt",
-        "ru": "поддержка v2",
-        "pt": "adicionar suporte v2",
-        "nl": "v2 ondersteuning toevoegen",
-        "fr": "ajouter le support v2",
-        "it": "aggiungere v2 supporto",
-        "es": "add v2 support",
-        "pl": "dodaj obsługę v2",
-        "uk": "підтримка v2",
-        "zh-cn": "添加 v2 支持"
-      },
       "0.1.1": {
         "en": "add location API for electric cars"
       },
@@ -50,9 +24,6 @@
       },
       "0.0.6": {
         "en": "fix trip objects naming"
-      },
-      "0.0.5": {
-        "en": "fix receiving data"
       }
     },
     "title": "Volvo On Call",
@@ -80,13 +51,8 @@
       "pl": "Adapter Volvo On Call",
       "zh-cn": "沃尔沃随车转接器"
     },
-    "authors": [
-      "TA2k <tombox2020@gmail.com>"
-    ],
-    "keywords": [
-      "volvo",
-      "volvo on call"
-    ],
+    "authors": ["TA2k <tombox2020@gmail.com>"],
+    "keywords": ["volvo", "volvo on call"],
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "main.js",
