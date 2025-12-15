@@ -55,7 +55,6 @@
     "keywords": ["volvo", "volvo on call"],
     "license": "MIT",
     "platform": "Javascript/Node.js",
-    "main": "main.js",
     "icon": "volvo.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/TA2k/ioBroker.volvo/master/admin/volvo.png",
