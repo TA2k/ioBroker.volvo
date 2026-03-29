@@ -14,7 +14,7 @@ const qs = require('qs');
 const Json2iob = require('json2iob');
 const { extractKeys } = require('./lib/extractKeys');
 // Load your modules here, e.g.:
-// const fs = require("fs");
+// const fs = require("node:fs");
 
 class Volvo extends utils.Adapter {
   /**
