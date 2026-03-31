@@ -87,7 +87,7 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
-### 0.1.5
+### 0.2.0
 
 - **Complete rewrite of authentication**: Replaced dead `grant_type: password` OAuth flow with new multi-step OTP (one-time password) login via PingFederate
 - **All API endpoints updated to v2**: Vehicle list (`connected-vehicle/v2`), Energy (`energy/v2`), Commands (`connected-vehicle/v2/commands`)
@@ -100,6 +100,10 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 - **Removed dead code**: Old VOC API (`vocapi.wirelesscar.net`), `extended-vehicle/v1`, `energy/v1`, `newApi` checkbox — all removed
 - **Admin UI localized**: English + German via `words.js`
 - **Updated README** with new setup guide
+
+### 0.1.2 (2024-05-02)
+
+- Added support for v2 API
 
 ### 0.1.1
 
