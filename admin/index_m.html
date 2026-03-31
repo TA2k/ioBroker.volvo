@@ -17,6 +17,7 @@
 
     <script type="text/javascript">
       var secret;
+      var namespace;
 
       function encrypt(key, value) {
         var result = "";
@@ -32,6 +33,14 @@
           result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
         }
         return result;
+      }
+
+      function _(text) {
+        if (systemDictionary && systemDictionary[text]) {
+          var lang = systemLang || "en";
+          return systemDictionary[text][lang] || systemDictionary[text]["en"] || text;
+        }
+        return text;
       }
 
       // the function loadSettings has to exist ...
@@ -64,13 +73,64 @@
           }
         });
         onChange(false);
-        M.updateTextFields(); // function Materialize.updateTextFields(); to reinitialize all the Materialize labels on the page if you are dynamically adding inputs.
+        M.updateTextFields();
       }
+
       // This will be called by the admin adapter when the settings page loads
       function load(settings, onChange) {
         socket.emit("getObject", "system.config", function (err, obj) {
           secret = (obj.native ? obj.native.secret : "") || "Zgfr56gFe87jJOM";
           loadHelper(settings, onChange);
+        });
+
+        // OTP Login flow
+        $("#btn-start-login").click(function () {
+          var user = $("#user").val();
+          var password = $("#password").val();
+
+          if (!user || !password) {
+            $("#otp-status").text(_("Please enter username and password first.")).css("color", "red");
+            return;
+          }
+
+          $("#otp-status").text(_("Starting login... Sending OTP to your email...")).css("color", "orange");
+          $("#btn-start-login").prop("disabled", true);
+
+          // Determine the adapter instance namespace
+          var parts = window.location.hash.replace("#", "").split("/");
+          namespace = parts[0] || "volvo.0";
+
+          sendTo(namespace, "startLogin", { user: user, password: decrypt(secret, encrypt(secret, password)) }, function (result) {
+            $("#btn-start-login").prop("disabled", false);
+            if (result && result.success) {
+              $("#otp-status").text(result.message).css("color", "green");
+              $("#otp-section").show();
+            } else {
+              $("#otp-status").text(_("Login failed: ") + (result ? result.message : "Unknown error")).css("color", "red");
+            }
+          });
+        });
+
+        $("#btn-submit-otp").click(function () {
+          var otp = $("#otp-code").val();
+          if (!otp) {
+            $("#otp-status").text(_("Please enter the OTP code.")).css("color", "red");
+            return;
+          }
+
+          $("#otp-status").text(_("Verifying OTP...")).css("color", "orange");
+          $("#btn-submit-otp").prop("disabled", true);
+
+          sendTo(namespace, "submitOtp", { otp: otp }, function (result) {
+            $("#btn-submit-otp").prop("disabled", false);
+            if (result && result.success) {
+              $("#otp-status").text(result.message).css("color", "green");
+              $("#otp-section").hide();
+              $("#otp-code").val("");
+            } else {
+              $("#otp-status").text(_("OTP failed: ") + (result ? result.message : "Unknown error")).css("color", "red");
+            }
+          });
         });
       }
 
@@ -106,37 +166,56 @@
         </div>
       </div>
 
-      <!-- Put your content here -->
-
-      <!-- For example columns with settings: -->
+      <!-- Settings -->
       <div class="row">
         <div class="col s6 input-field">
           <input type="text" class="value" id="user" />
-          <label for="user" class="translate">Volvo On Call App User</label>
+          <label for="user" class="translate">Volvo ID Email</label>
         </div>
       </div>
       <div class="row">
         <div class="col s6 input-field">
           <input type="password" class="value" id="password" />
-          <label for="password" class="translate">Volvo On Call App Password</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s6 input-field">
-          <input type="checkbox" class="value" id="newApi" />
-          <label for="newApi" class="translate">Use new API for electric cars</label>
+          <label for="password" class="translate">Volvo ID Password</label>
         </div>
       </div>
       <div class="row">
         <div class="col s6 input-field">
           <input type="text" class="value" id="vccapikey" />
-          <label for="vccapikey" class="translate">new API VCC API Key</label>
+          <label for="vccapikey" class="translate">VCC API Key (from developer.volvocars.com)</label>
         </div>
       </div>
       <div class="row">
         <div class="col s6 input-field">
           <input type="number" class="value" id="interval" />
           <label for="interval" class="translate">Update interval in minutes</label>
+        </div>
+      </div>
+
+      <!-- OTP Login Section -->
+      <div class="row">
+        <div class="col s12">
+          <h5 class="translate">Login with OTP</h5>
+          <p class="translate">otp_description</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s6">
+          <a id="btn-start-login" class="btn waves-effect waves-light translate">Start Login (Send OTP)</a>
+        </div>
+      </div>
+      <div class="row" id="otp-section" style="display:none;">
+        <div class="col s4 input-field">
+          <input type="text" id="otp-code" />
+          <label for="otp-code" class="translate">OTP Code from Email</label>
+        </div>
+        <div class="col s2" style="margin-top: 20px;">
+          <a id="btn-submit-otp" class="btn waves-effect waves-light green translate">Submit OTP</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <span id="otp-status"></span>
         </div>
       </div>
     </div>
