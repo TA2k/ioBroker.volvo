@@ -79,33 +79,27 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 - `lock` / `unlock` — Lock or unlock the car
 - `climatization-start` / `climatization-stop` — Start or stop pre-conditioning
-- `honk` / `flash` / `honk-and-flash` — Sound horn or flash lights
-- `engine-start` / `engine-stop` — Remote engine start/stop
+- `honk` / `flash` / `honk-flash` — Sound horn, flash lights, or both
+- `lock-reduced-guard` — Lock with reduced guard
+- `refresh` — Manually refresh all data
 
 ---
 
 ## Changelog
 
-### 0.1.4
+### 0.1.5
 
-- Fixed Energy API v2 data parsing (batteryChargeLevel, electricRange, etc.)
-- Removed obsolete `newApi` checkbox — adapter always uses the new Connected Vehicle API
-- Cleaned up old stale data points from deprecated v1 API
-- Admin UI fully localized (English + German)
-- Updated README with new setup guide
-
-### 0.1.3
-
-- Fixed Energy API endpoint from v1 (`/energy/v1/vehicles/{vin}/recharge-status`, HTTP 410 GONE) to v2 (`/energy/v2/vehicles/{vin}/state`)
-
-### 0.1.2
-
-- Rewrote authentication: new multi-step OTP flow (old `grant_type: password` is dead)
-- Added OTP login UI in adapter settings
-- Added token persistence via ioBroker states (survives restarts)
-- Updated vehicle list endpoint from `extended-vehicle/v1` (HTTP 410) to `connected-vehicle/v2`
-- Fixed token refresh with correct headers
-- Added `messagebox: true` for admin ↔ adapter communication
+- **Complete rewrite of authentication**: Replaced dead `grant_type: password` OAuth flow with new multi-step OTP (one-time password) login via PingFederate
+- **All API endpoints updated to v2**: Vehicle list (`connected-vehicle/v2`), Energy (`energy/v2`), Commands (`connected-vehicle/v2/commands`)
+- **Fixed remote commands**: Changed `Content-Type` from deprecated vendor-specific format to `application/json` (was causing HTTP 415 errors)
+- **Fixed refresh button**: Now triggers a data re-fetch instead of sending an invalid API command (was causing HTTP 404)
+- **Buttons are now proper buttons**: Remote controls use `role: button` with auto-reset instead of toggle booleans
+- **Fixed Energy API parsing**: `batteryChargeLevel`, `electricRange`, `chargingStatus` etc. now update correctly (v2 response format differs from v1)
+- **Added OTP login UI** in adapter settings with step-by-step flow
+- **Added token persistence**: Refresh token stored in ioBroker state, survives adapter restarts
+- **Removed dead code**: Old VOC API (`vocapi.wirelesscar.net`), `extended-vehicle/v1`, `energy/v1`, `newApi` checkbox — all removed
+- **Admin UI localized**: English + German via `words.js`
+- **Updated README** with new setup guide
 
 ### 0.1.1
 
