@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "news": {
       "0.1.2": {
         "en": "added support for v2 api",
@@ -64,6 +64,7 @@
     "mode": "daemon",
     "type": "vehicle",
     "compact": true,
+    "messagebox": true,
     "connectionType": "cloud",
     "dataSource": "poll",
     "materialize": true,
