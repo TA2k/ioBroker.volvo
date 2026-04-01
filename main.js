@@ -110,8 +110,9 @@ class Volvo extends utils.Adapter {
       this.updateInterval = setInterval(async () => {
         await this.updateDevice();
       }, this.config.interval * 60 * 1000);
-      // Refresh token 5 minutes before expiry
+      // Refresh token before it expires (5 min before expiry, min 60s)
       const refreshMs = Math.max(60, (this.session.expires_in || 1799) - 300) * 1000;
+      this.log.info('Token refresh scheduled every ' + Math.round(refreshMs / 1000) + 's');
       this.refreshTokenInterval = setInterval(() => {
         this.refreshToken();
       }, refreshMs);
@@ -196,6 +197,10 @@ class Volvo extends utils.Adapter {
           }),
         });
         this.log.info('Login via stored refresh token successful');
+        // Preserve refresh_token if not returned in response
+        if (!res.data.refresh_token) {
+          res.data.refresh_token = storedTokenState.val;
+        }
         this.session = res.data;
         await this._persistTokens();
         this.setState('info.connection', true, true);
@@ -538,8 +543,9 @@ class Volvo extends utils.Adapter {
         error.response && this.log.error(JSON.stringify(error.response.data));
       });
   }
-  async updateDevice() {
-    for (const vin of this.vinArray) {
+  async updateDevice(singleVin) {
+    const vins = singleVin ? [singleVin] : this.vinArray;
+    for (const vin of vins) {
       const endpoints = [
         // 'environment',
         'engine',
@@ -618,10 +624,17 @@ class Volvo extends utils.Adapter {
   }
   async refreshToken() {
     if (!this.session.refresh_token) {
-      this.log.error('No refresh token available');
-      this.setState('info.connection', false, true);
-      return;
+      this.log.error('No refresh token available, trying stored token...');
+      const storedTokenState = await this.getStateAsync('auth.refreshToken');
+      if (storedTokenState && storedTokenState.val) {
+        this.session.refresh_token = storedTokenState.val;
+      } else {
+        this.log.error('No stored refresh token found. Please re-login via adapter settings.');
+        this.setState('info.connection', false, true);
+        return;
+      }
     }
+    const currentRefreshToken = this.session.refresh_token;
     await this.requestClient({
       method: 'post',
       url: TOKEN_URL,
@@ -632,12 +645,16 @@ class Volvo extends utils.Adapter {
       },
       data: qs.stringify({
         grant_type: 'refresh_token',
-        refresh_token: this.session.refresh_token,
+        refresh_token: currentRefreshToken,
       }),
     })
       .then(async (res) => {
         this.log.debug(JSON.stringify(res.data));
         this.log.info('Token refresh successful');
+        // Preserve refresh_token if not returned in response
+        if (!res.data.refresh_token) {
+          res.data.refresh_token = currentRefreshToken;
+        }
         this.session = res.data;
         await this._persistTokens();
         this.setState('info.connection', true, true);
