@@ -24,6 +24,24 @@ export default [
     },
   },
   {
-    ignores: ['.prettierrc.js', 'admin/words.js'],
+    files: ['admin/**/*.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: {
+        ...globals.browser,
+        ...globals.jquery,
+        systemDictionary: 'readonly',
+        systemLang: 'readonly',
+        sendTo: 'readonly',
+        M: 'readonly',
+        socket: 'readonly',
+      },
+    },
+    rules: {
+      'no-var': 'off',
+    },
+  },
+  {
+    ignores: ['admin/words.js'],
   },
 ];

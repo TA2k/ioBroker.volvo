@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "news": {
+      "0.2.7": {
+        "en": "Extracted inline JS from admin HTML into separate admin/index_m.js",
+        "de": "Inline-JS aus Admin-HTML in separate admin/index_m.js ausgelagert"
+      },
       "0.2.6": {
         "en": "Repository cleanup: removed obsolete files, updated CI to Node 20+",
         "de": "Repository aufgeräumt: veraltete Dateien entfernt, CI auf Node 20+ aktualisiert"
