@@ -87,6 +87,20 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 0.2.2
+
+- Fixed ESLint lint error (single quotes)
+- Removed credentials and IPs from AGENTS.md, added discovery instructions
+- Updated devDependencies: @iobroker/testing 5.2, @types/node 25.5, eslint 8.57
+
+### 0.2.1
+
+- Fixed refresh token not being preserved across token refreshes (caused 401 errors after ~25 minutes)
+- Removed dead legacy code: old VOC API (`vocapi.wirelesscar.net`), `request` module, `uuid`, `json-bigint`
+- Updated dependencies: axios 1.14, qs 6.15, json2iob 2.6.22, @iobroker/adapter-core 3.3
+- Added update migration notice for users upgrading from pre-0.2.0 versions
+- Removed unused `newApi` config option from io-package.json
+
 ### 0.2.0
 
 - **Complete rewrite of authentication**: Replaced dead `grant_type: password` OAuth flow with new multi-step OTP (one-time password) login via PingFederate

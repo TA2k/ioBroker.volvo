@@ -5,8 +5,6 @@
  */
 
 const utils = require('@iobroker/adapter-core');
-const { v4: uuidv4 } = require('uuid');
-const request = require('request');
 const axios = require('axios').default;
 const qs = require('qs');
 const Json2iob = require('json2iob');
@@ -69,20 +67,6 @@ class Volvo extends utils.Adapter {
     this.extractKeys = extractKeys;
     this.updateInterval = null;
     this.vinArray = [];
-    this.baseHeader = {
-      Accept: 'application/vnd.wirelesscar.com.voc.AppUser.v4+json; charset=utf-8',
-      'X-Client-Version': '4.8.14.350668',
-      'X-App-Name': 'Volvo On Call',
-      'Accept-Language': 'de-de',
-      'Content-Type': 'application/json; charset=utf-8',
-      'User-Agent': 'Volvo%20On%20Call/4.8.14.350668 CFNetwork/1206 Darwin/20.1.0',
-      'X-Os-Type': 'iPhone OS',
-      'X-Device-Id': uuidv4(),
-      'X-Os-Version': '14.2',
-      'X-Originator-Type': 'app',
-      'X-Request-Id': '',
-      Authorization: '',
-    };
   }
 
   /**
@@ -96,10 +80,6 @@ class Volvo extends utils.Adapter {
       this.config.password = this.decrypt('Zgfr56gFe87jJOM', this.config.password);
     }
     this.setState('info.connection', false, true);
-    const buff = Buffer.from(this.config.user + ':' + this.config.password);
-    const base64data = buff.toString('base64');
-
-    this.baseHeader['Authorization'] = 'Basic ' + base64data;
     this.subscribeStates('*');
 
     // Always use new Connected Vehicle API (old VOC API is dead)
@@ -616,7 +596,7 @@ class Volvo extends utils.Adapter {
           this.json2iob.parse(vin + '.energy', res.data, { forceIndex: true });
         })
         .catch((error) => {
-          this.log.error("failed to get energy state");
+          this.log.error('failed to get energy state');
           this.log.error(error);
           error.response && this.log.error(JSON.stringify(error.response.data));
         });
@@ -668,188 +648,6 @@ class Volvo extends utils.Adapter {
       });
   }
 
-  login() {
-    return new Promise((resolve, reject) => {
-      this.baseHeader['X-Request-Id'] = uuidv4();
-      request.get(
-        {
-          url: 'https://vocapi.wirelesscar.net/customerapi/rest/customeraccounts',
-          headers: this.baseHeader,
-          followAllRedirects: true,
-        },
-        (err, resp, body) => {
-          if (err || resp.statusCode >= 400 || !body) {
-            this.log.error(err);
-            reject();
-            return;
-          }
-          this.log.debug(body);
-
-          try {
-            const customer = JSON.parse(body);
-            if (!customer.accountVehicleRelations) {
-              this.log.error('No vehicles found');
-              this.log.error(body);
-              reject();
-              return;
-            }
-            customer.accountVehicleRelations.forEach((vehicle) => {
-              this.vinArray.push(vehicle.vehicle.vehicleId);
-              this.setObjectNotExists(vehicle.vehicle.vehicleId, {
-                type: 'device',
-                common: {
-                  name: vehicle.vehicle.registrationNumber,
-                  role: 'indicator',
-                  type: 'mixed',
-                  write: false,
-                  read: true,
-                },
-                native: {},
-              });
-              this.extendObjectAsync(vehicle.vehicle.vehicleId + '.remote', {
-                type: 'channel',
-                common: {
-                  name: 'Remote controls',
-                },
-                native: {},
-              });
-
-              const remotes = [
-                'lock',
-                'unlock',
-                'heater/start',
-                'heater/stop',
-                'preclimatization/start',
-                'preclimatization/stop',
-                'parkingclimate/start',
-                'parkingclimate/stop',
-                'precleaning/start',
-                'precleaning/stop',
-                'engine/start',
-                'engine/stop',
-                'honk_and_flash',
-                'honk_blink/both',
-                'honk_blink/horn',
-                'honk_blink/lights',
-              ];
-              remotes.forEach((service) => {
-                this.setObjectNotExists(vehicle.vehicle.vehicleId + '.remote.' + service, {
-                  type: 'state',
-                  common: {
-                    name: '',
-                    type: 'boolean',
-                    role: 'button',
-                    write: true,
-                    read: false,
-                  },
-                  native: {},
-                });
-              });
-            });
-            this.extractKeys(this, 'customer', customer, null, true);
-            resolve();
-          } catch (error) {
-            this.log.error(error);
-            this.log.error(error.stack);
-            reject();
-          }
-        },
-      );
-    });
-  }
-
-  getMethod(vin, url, accept, path) {
-    return new Promise((resolve, reject) => {
-      this.log.debug('Get ' + path);
-      this.baseHeader['X-Request-Id'] = uuidv4();
-      this.baseHeader['Accept'] = 'application/vnd.wirelesscar.com.voc.$format.v4+json; charset=utf-8'.replace('$format', accept);
-      url = url.replace('/$vin/', '/' + vin + '/');
-
-      request.get(
-        {
-          url: url,
-          headers: this.baseHeader,
-          followAllRedirects: true,
-        },
-        (err, resp, body) => {
-          if (err || resp.statusCode >= 400 || !body) {
-            this.log.error(err);
-            this.log.error(resp && resp.statusCode);
-            this.log.error(body);
-            reject();
-            return;
-          }
-          this.log.debug(body);
-
-          try {
-            const customer = JSON.parse(body);
-            if (path === 'trip') {
-              this.extractKeys(this, vin + '.' + path, customer, null, true);
-            } else {
-              this.extractKeys(this, vin + '.' + path, customer);
-            }
-            resolve();
-            return;
-          } catch (error) {
-            this.log.error(error);
-            this.log.error(error.stack);
-            reject();
-          }
-        },
-      );
-    });
-  }
-  async setMethod(vin, service, position) {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      this.baseHeader['X-Request-Id'] = uuidv4();
-      this.baseHeader['Accept'] = 'application/vnd.wirelesscar.com.voc.Service.v4+json; charset=utf-8';
-      this.baseHeader['Content-Type'] = 'application/json; charset=utf-8';
-      let body = '{}';
-      if (service === 'preclimatization/start') {
-        this.baseHeader['Content-Type'] = 'application/vnd.wirelesscar.com.voc.RemotePreClimatization.v4+json; charset=utf-8';
-      }
-      if (position) {
-        this.baseHeader['Content-Type'] = 'application/vnd.wirelesscar.com.voc.ClientPosition.v4+json; charset=utf-8';
-        const latState = await this.getStateAsync(vin + '.position.position.latitude');
-        const longState = await this.getStateAsync(vin + '.position.position.longitude');
-        if (latState && longState) {
-          body = '{"clientAccuracy":0,"clientLatitude":' + latState.val + ',"clientLongitude":' + longState.val + '}';
-        }
-      }
-      const url = 'https://vocapi.wirelesscar.net/customerapi/rest/vehicles/' + vin + '/' + service;
-
-      request.post(
-        {
-          url: url,
-          headers: this.baseHeader,
-          followAllRedirects: true,
-          body: body,
-          gzip: true,
-        },
-        (err, resp, body) => {
-          if (err || (resp && resp.statusCode >= 400)) {
-            this.log.error('Failed to setMethod ');
-            err && this.log.error(err);
-            resp && this.log.error(resp.statusCode);
-            body && this.log.error(JSON.stringify(body));
-            reject();
-            return;
-          }
-          this.log.debug(body);
-
-          try {
-            this.log.info(body);
-            resolve();
-          } catch (error) {
-            this.log.error(error);
-            this.log.error(error.stack);
-            reject();
-          }
-        },
-      );
-    });
-  }
   /**
    * Is called when adapter shuts down - callback has to be called under any circumstances!
    * @param {() => void} callback

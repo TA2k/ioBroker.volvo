@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.2.0",
+    "version": "0.2.2",
     "news": {
       "0.1.2": {
         "en": "added support for v2 api",
@@ -51,8 +51,13 @@
       "pl": "Adapter Volvo On Call",
       "zh-cn": "沃尔沃随车转接器"
     },
-    "authors": ["TA2k <tombox2020@gmail.com>"],
-    "keywords": ["volvo", "volvo on call"],
+    "authors": [
+      "TA2k <tombox2020@gmail.com>"
+    ],
+    "keywords": [
+      "volvo",
+      "volvo on call"
+    ],
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "main.js",
@@ -78,7 +83,6 @@
     "user": "",
     "vccapikey": "",
     "password": "",
-    "newApi": false,
     "interval": 5
   },
   "objects": [],
@@ -104,5 +108,43 @@
       },
       "native": {}
     }
-  ]
+  ],
+  "messages": [
+    {
+      "condition": {
+        "operand": "and",
+        "rules": [
+          "oldVersion<0.2.0",
+          "newVersion>=0.2.0"
+        ]
+      },
+      "title": {
+        "en": "Important: Complete rewrite of authentication",
+        "de": "Wichtig: Authentifizierung komplett neu geschrieben"
+      },
+      "text": {
+        "en": "This update replaces the old (dead) Volvo On Call API with the new Connected Vehicle API v2. After updating:\n\n1. Open the adapter settings\n2. Enter your VCC API Key (get one at developer.volvocars.com)\n3. Click \"Start Login\" and complete the OTP verification\n4. Recommended: Delete and recreate the adapter instance to remove stale data points from the old API",
+        "de": "Dieses Update ersetzt die alte (nicht mehr funktionsfähige) Volvo On Call API durch die neue Connected Vehicle API v2. Nach dem Update:\n\n1. Öffne die Adapter-Einstellungen\n2. Gib deinen VCC API-Schlüssel ein (erhältlich unter developer.volvocars.com)\n3. Klicke auf \"Login starten\" und schließe die OTP-Verifizierung ab\n4. Empfohlen: Lösche die Adapter-Instanz und erstelle sie neu, um veraltete Datenpunkte der alten API zu entfernen"
+      },
+      "level": "warn",
+      "buttons": [
+        "agree",
+        "cancel"
+      ]
+    }
+  ],
+  "news": {
+    "0.2.1": {
+      "en": "Fix refresh token persistence, remove dead VOC code, update dependencies",
+      "de": "Refresh-Token-Speicherung repariert, alten VOC-Code entfernt, Dependencies aktualisiert"
+    },
+    "0.2.0": {
+      "en": "Complete rewrite: OTP auth, Connected Vehicle API v2, Energy API v2, remote commands fixed, German localization",
+      "de": "Komplett-Umbau: OTP-Authentifizierung, Connected Vehicle API v2, Energy API v2, Fernbedienung repariert, deutsche Übersetzung"
+    },
+    "0.2.2": {
+      "en": "Fix ESLint, update devDependencies, clean AGENTS.md of credentials",
+      "de": "ESLint repariert, devDependencies aktualisiert, Zugangsdaten aus AGENTS.md entfernt"
+    }
+  }
 }
