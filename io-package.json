@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "news": {
+      "0.2.6": {
+        "en": "Repository cleanup: removed obsolete files, updated CI to Node 20+",
+        "de": "Repository aufgeräumt: veraltete Dateien entfernt, CI auf Node 20+ aktualisiert"
+      },
       "0.2.5": {
         "en": "Updated all dependencies to latest major versions",
         "de": "Alle Abhängigkeiten auf neueste Hauptversionen aktualisiert"

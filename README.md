@@ -87,6 +87,12 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 0.2.6
+
+- Removed obsolete files: `.create-adapter.json` (wrong adapter name), `lib/tools.js` (unused), `.prettierrc.js`/`.prettierignore` (Prettier not installed)
+- Updated `.npmignore` (removed references to deleted `.eslintrc.json`)
+- Updated CI workflow: dropped Node 18 (EOL), testing on Node 20 + 22
+
 ### 0.2.5
 
 - Updated all dependencies to latest major versions
