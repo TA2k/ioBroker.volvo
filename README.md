@@ -87,6 +87,25 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 1.0.0 🎉
+
+First stable release — complete rewrite of the Volvo ioBroker adapter.
+
+**New Features:**
+- **Vehicle Details**: Model, year, color and images fetched from API
+- **Retry Logic**: Automatic retry with exponential backoff on API errors (429/5xx)
+- **Command Status Tracking**: Polls async command results (up to 5x) and stores status in `lastCommandStatus`
+- **Auto-Refresh after Commands**: Doors auto-refresh after lock/unlock, engine-status after climatization
+- **Last Update Timestamp**: `lastUpdate` state per vehicle shows last successful data fetch
+- **Admin UI: jsonConfig Migration**: Modern React-based settings UI (Admin5) with i18n support
+- **Admin UI: Connection Test**: Test API connection directly from adapter settings
+- **Admin UI: Vehicle Info**: Display vehicle details from settings page
+
+**Versioning Policy (SemVer):**
+- MAJOR: Breaking changes (config changes, removed states, new minimum Node.js)
+- MINOR: New features (new data points, commands, UI features)
+- PATCH: Bug fixes, dependency updates, cleanup
+
 ### 0.2.7
 
 - Extracted inline JavaScript from `admin/index_m.html` into separate `admin/index_m.js`

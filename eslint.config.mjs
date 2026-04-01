@@ -42,6 +42,6 @@ export default [
     },
   },
   {
-    ignores: ['admin/words.js'],
+    ignores: ['admin/words.js', 'eslint.config.mjs'],
   },
 ];
