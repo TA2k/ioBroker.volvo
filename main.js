@@ -5,8 +5,6 @@
  */
 
 const utils = require('@iobroker/adapter-core');
-const { v4: uuidv4 } = require('uuid');
-const request = require('request');
 const axios = require('axios').default;
 const qs = require('qs');
 const Json2iob = require('json2iob');
@@ -25,7 +23,6 @@ const AUTH_SCOPES = [
   'conve:diagnostics_workshop',
   'conve:doors_status',
   'conve:engine_status',
-  'conve:environment',
   'conve:fuel_status',
   'conve:honk_flash',
   'conve:lock',
@@ -69,20 +66,6 @@ class Volvo extends utils.Adapter {
     this.extractKeys = extractKeys;
     this.updateInterval = null;
     this.vinArray = [];
-    this.baseHeader = {
-      Accept: 'application/vnd.wirelesscar.com.voc.AppUser.v4+json; charset=utf-8',
-      'X-Client-Version': '4.8.14.350668',
-      'X-App-Name': 'Volvo On Call',
-      'Accept-Language': 'de-de',
-      'Content-Type': 'application/json; charset=utf-8',
-      'User-Agent': 'Volvo%20On%20Call/4.8.14.350668 CFNetwork/1206 Darwin/20.1.0',
-      'X-Os-Type': 'iPhone OS',
-      'X-Device-Id': uuidv4(),
-      'X-Os-Version': '14.2',
-      'X-Originator-Type': 'app',
-      'X-Request-Id': '',
-      Authorization: '',
-    };
   }
 
   /**
@@ -96,10 +79,6 @@ class Volvo extends utils.Adapter {
       this.config.password = this.decrypt('Zgfr56gFe87jJOM', this.config.password);
     }
     this.setState('info.connection', false, true);
-    const buff = Buffer.from(this.config.user + ':' + this.config.password);
-    const base64data = buff.toString('base64');
-
-    this.baseHeader['Authorization'] = 'Basic ' + base64data;
     this.subscribeStates('*');
 
     // Always use new Connected Vehicle API (old VOC API is dead)
@@ -110,13 +89,13 @@ class Volvo extends utils.Adapter {
       this.updateInterval = setInterval(async () => {
         await this.updateDevice();
       }, this.config.interval * 60 * 1000);
-      // Refresh token 5 minutes before expiry
+      // Refresh token before it expires (5 min before expiry, min 60s)
       const refreshMs = Math.max(60, (this.session.expires_in || 1799) - 300) * 1000;
+      this.log.info('Token refresh scheduled every ' + Math.round(refreshMs / 1000) + 's');
       this.refreshTokenInterval = setInterval(() => {
         this.refreshToken();
       }, refreshMs);
     }
-    // in this template all states changes inside the adapters namespace are subscribed
   }
   /**
    * Extract Set-Cookie headers from an axios response and merge with stored cookies.
@@ -196,11 +175,15 @@ class Volvo extends utils.Adapter {
           }),
         });
         this.log.info('Login via stored refresh token successful');
+        // Preserve refresh_token if not returned in response
+        if (!res.data.refresh_token) {
+          res.data.refresh_token = storedTokenState.val;
+        }
         this.session = res.data;
         await this._persistTokens();
         this.setState('info.connection', true, true);
         return;
-      } catch (error) {
+      } catch (_err) {
         this.log.warn('Stored refresh token expired or invalid, need fresh OTP login');
       }
     }
@@ -314,6 +297,29 @@ class Volvo extends utils.Adapter {
   }
 
   /**
+   * Wrap requestClient with retry logic and exponential backoff.
+   * Retries up to 3 times on HTTP 429, 500, 502, 503, 504.
+   */
+  async apiRequest(config) {
+    const retryStatuses = [429, 500, 502, 503, 504];
+    const maxRetries = 3;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        return await this.requestClient(config);
+      } catch (error) {
+        const status = error.response && error.response.status;
+        if (attempt < maxRetries && status && retryStatuses.includes(status)) {
+          const delay = Math.pow(2, attempt + 1) * 1000; // 2s, 4s, 8s
+          this.log.warn(`API request to ${config.url} failed with ${status}, retrying in ${delay / 1000}s (attempt ${attempt + 1}/${maxRetries})`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  /**
    * Handle messages from admin UI (OTP login flow).
    */
   async onMessage(obj) {
@@ -322,6 +328,13 @@ class Volvo extends utils.Adapter {
     if (obj.command === 'startLogin') {
       // Phase 1: Start auth flow and submit credentials, trigger OTP email
       try {
+        const msg = obj.message || {};
+        const user = msg.user || this.config.user;
+        const password = msg.password || this.config.password;
+        if (!user || !password) {
+          this.sendTo(obj.from, obj.command, { error: 'Username and password are required. Please save settings first.' }, obj.callback);
+          return;
+        }
         this.authCookies = '';
         const initData = await this._authRequest('post', AUTH_URL, {
           client_id: 'h4Yf0b',
@@ -336,27 +349,27 @@ class Volvo extends utils.Adapter {
         if (initData.status === 'USERNAME_PASSWORD_REQUIRED') {
           const flowUrl = initData._links.checkUsernamePassword.href;
           const credData = await this._authRequest('post', flowUrl + '?action=checkUsernamePassword', {
-            username: obj.message.user,
-            password: obj.message.password,
+            username: user,
+            password: password,
           }, true);
 
           if (credData.status === 'OTP_REQUIRED') {
             const target = credData.devices && credData.devices[0] ? credData.devices[0].target : 'your email';
-            this.sendTo(obj.from, obj.command, { success: true, message: 'OTP sent to ' + target }, obj.callback);
+            this.sendTo(obj.from, obj.command, { result: 'OTP sent to ' + target }, obj.callback);
           } else {
-            this.sendTo(obj.from, obj.command, { success: false, message: 'Unexpected status: ' + credData.status }, obj.callback);
+            this.sendTo(obj.from, obj.command, { error: 'Unexpected status: ' + credData.status }, obj.callback);
           }
         } else {
-          this.sendTo(obj.from, obj.command, { success: false, message: 'Unexpected status: ' + initData.status }, obj.callback);
+          this.sendTo(obj.from, obj.command, { error: 'Unexpected status: ' + initData.status }, obj.callback);
         }
       } catch (error) {
-        this.sendTo(obj.from, obj.command, { success: false, message: error.message }, obj.callback);
+        this.sendTo(obj.from, obj.command, { error: error.message }, obj.callback);
       }
     } else if (obj.command === 'submitOtp') {
       // Phase 2: Submit OTP, get tokens
       try {
         if (!this.authFlowId) {
-          this.sendTo(obj.from, obj.command, { success: false, message: 'No active login flow. Start login first.' }, obj.callback);
+          this.sendTo(obj.from, obj.command, { error: 'No active login flow. Start login first.' }, obj.callback);
           return;
         }
 
@@ -364,11 +377,11 @@ class Volvo extends utils.Adapter {
 
         // Submit OTP
         const otpData = await this._authRequest('post', flowBase + '?action=checkOtp', {
-          otp: obj.message.otp,
+          otp: (obj.message || {}).otp || '',
         }, true);
 
         if (otpData.status !== 'OTP_VERIFIED') {
-          this.sendTo(obj.from, obj.command, { success: false, message: 'OTP invalid: ' + otpData.status }, obj.callback);
+          this.sendTo(obj.from, obj.command, { error: 'OTP invalid: ' + otpData.status }, obj.callback);
           return;
         }
 
@@ -376,7 +389,7 @@ class Volvo extends utils.Adapter {
         const contData = await this._authRequest('post', flowBase + '?action=continueAuthentication', null, false);
 
         if (contData.status !== 'COMPLETED') {
-          this.sendTo(obj.from, obj.command, { success: false, message: 'Auth not completed: ' + contData.status }, obj.callback);
+          this.sendTo(obj.from, obj.command, { error: 'Auth not completed: ' + contData.status }, obj.callback);
           return;
         }
 
@@ -416,15 +429,55 @@ class Volvo extends utils.Adapter {
           }, refreshMs);
         }
 
-        this.sendTo(obj.from, obj.command, { success: true, message: 'Login successful! Adapter is now connected.' }, obj.callback);
+        this.sendTo(obj.from, obj.command, { result: 'Login successful! Adapter is now connected.' }, obj.callback);
       } catch (error) {
-        this.sendTo(obj.from, obj.command, { success: false, message: error.message }, obj.callback);
+        this.sendTo(obj.from, obj.command, { error: error.message }, obj.callback);
+      }
+    } else if (obj.command === 'testConnection') {
+      try {
+        const msg = obj.message || {};
+        const apiKey = msg.vccapikey || this.config.vccapikey;
+        const res = await this.requestClient({
+          method: 'get',
+          url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles',
+          headers: {
+            accept: 'application/json',
+            'vcc-api-key': apiKey,
+            Authorization: 'Bearer ' + this.session.access_token,
+          },
+        });
+        const count = (res.data.data || []).length;
+        this.sendTo(obj.from, obj.command, { result: `Connection OK! Found ${count} vehicle(s).` }, obj.callback);
+      } catch (error) {
+        this.sendTo(obj.from, obj.command, { error: 'Connection failed: ' + error.message }, obj.callback);
+      }
+    } else if (obj.command === 'getVehicleInfo') {
+      try {
+        const lines = [];
+        for (const vin of this.vinArray) {
+          const res = await this.apiRequest({
+            method: 'get',
+            url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + vin,
+            headers: { accept: 'application/json', 'vcc-api-key': this.config.vccapikey, Authorization: 'Bearer ' + this.session.access_token },
+          });
+          const d = res.data.data || {};
+          lines.push(`VIN: ${vin}`);
+          if (d.descriptions) {
+            lines.push(`Model: ${d.descriptions.model || '?'} (${d.modelYear || '?'})`);
+            lines.push(`Color: ${d.descriptions.colour || '?'}`);
+          }
+          if (d.fuelType) lines.push(`Fuel: ${d.fuelType}`);
+          if (d.externalColour) lines.push(`Exterior: ${d.externalColour}`);
+        }
+        this.sendTo(obj.from, obj.command, { result: lines.join('\n') || 'No vehicles found' }, obj.callback);
+      } catch (error) {
+        this.sendTo(obj.from, obj.command, { error: error.message }, obj.callback);
       }
     }
   }
 
   async getDeviceList() {
-    await this.requestClient({
+    await this.apiRequest({
       method: 'get',
       url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles',
       headers: {
@@ -474,8 +527,20 @@ class Volvo extends utils.Adapter {
           });
           // end
 
+          await this.setObjectNotExistsAsync(id + '.lastUpdate', {
+            type: 'state',
+            common: { name: 'Last successful data update', type: 'string', role: 'date', write: false, read: true },
+            native: {},
+          });
+
+          await this.setObjectNotExistsAsync(id + '.remote.lastCommandStatus', {
+            type: 'state',
+            common: { name: 'Last command status', type: 'string', role: 'json', write: false, read: true },
+            native: {},
+          });
+
           const remoteArray = [{ command: 'refresh', name: 'Refresh all data' }];
-          await this.requestClient({
+          await this.apiRequest({
             method: 'get',
             url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + id + '/commands',
             headers: {
@@ -513,23 +578,24 @@ class Volvo extends utils.Adapter {
             });
           }
           this.json2iob.parse(id, device, { forceIndex: true });
-          // await this.requestClient({
-          //   method: 'get',
-          //   url: 'https://api.volvocars.com/extended-vehicle/v1/vehicles/' + id + '/resources',
-          //   headers: {
-          //     accept: 'application/json',
-          //     'vcc-api-key': this.config.vccapikey,
-          //     Authorization: 'Bearer ' + this.session.access_token,
-          //   },
-          // })
-          //   .then(async (res) => {
-          //     this.log.debug(JSON.stringify(res.data));
-          //   })
-          //   .catch((error) => {
-          //     this.log.error('get resources failed');
-          //     this.log.error(error);
-          //     error.response && this.log.error(JSON.stringify(error.response.data));
-          //   });
+
+          // Fetch vehicle details
+          await this.apiRequest({
+            method: 'get',
+            url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + id,
+            headers: {
+              accept: 'application/json',
+              'vcc-api-key': this.config.vccapikey,
+              Authorization: 'Bearer ' + this.session.access_token,
+            },
+          })
+            .then(async (res) => {
+              this.log.debug(JSON.stringify(res.data));
+              this.json2iob.parse(id + '.details', res.data.data, { forceIndex: true });
+            })
+            .catch((error) => {
+              this.log.warn('get vehicle details failed: ' + (error.response ? error.response.status : error.message));
+            });
         }
       })
       .catch((error) => {
@@ -538,10 +604,10 @@ class Volvo extends utils.Adapter {
         error.response && this.log.error(JSON.stringify(error.response.data));
       });
   }
-  async updateDevice() {
-    for (const vin of this.vinArray) {
+  async updateDevice(singleVin) {
+    const vins = singleVin ? [singleVin] : this.vinArray;
+    for (const vin of vins) {
       const endpoints = [
-        // 'environment',
         'engine',
         'windows',
         'diagnostics',
@@ -549,14 +615,13 @@ class Volvo extends utils.Adapter {
         'doors',
         'engine-status',
         'fuel',
-        // "battery-charge-level",
         'odometer',
         'statistics',
         'tyres',
         'warnings',
       ];
       for (const endpoint of endpoints) {
-        await this.requestClient({
+        await this.apiRequest({
           method: 'get',
           url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + vin + '/' + endpoint,
           headers: {
@@ -576,7 +641,7 @@ class Volvo extends utils.Adapter {
           });
       }
       // added for including location position
-      await this.requestClient({
+      await this.apiRequest({
         method: 'get',
         url: 'https://api.volvocars.com/location/v1/vehicles/' + vin + '/location',
         headers: {
@@ -596,7 +661,7 @@ class Volvo extends utils.Adapter {
         });
 
       // Energy API v2 - recharge/battery state
-      await this.requestClient({
+      await this.apiRequest({
         method: 'get',
         url: 'https://api.volvocars.com/energy/v2/vehicles/' + vin + '/state',
         headers: {
@@ -610,19 +675,28 @@ class Volvo extends utils.Adapter {
           this.json2iob.parse(vin + '.energy', res.data, { forceIndex: true });
         })
         .catch((error) => {
-          this.log.error("failed to get energy state");
+          this.log.error('failed to get energy state');
           this.log.error(error);
           error.response && this.log.error(JSON.stringify(error.response.data));
         });
+
+      await this.setStateAsync(vin + '.lastUpdate', new Date().toISOString(), true);
     }
   }
   async refreshToken() {
     if (!this.session.refresh_token) {
-      this.log.error('No refresh token available');
-      this.setState('info.connection', false, true);
-      return;
+      this.log.error('No refresh token available, trying stored token...');
+      const storedTokenState = await this.getStateAsync('auth.refreshToken');
+      if (storedTokenState && storedTokenState.val) {
+        this.session.refresh_token = storedTokenState.val;
+      } else {
+        this.log.error('No stored refresh token found. Please re-login via adapter settings.');
+        this.setState('info.connection', false, true);
+        return;
+      }
     }
-    await this.requestClient({
+    const currentRefreshToken = this.session.refresh_token;
+    await this.apiRequest({
       method: 'post',
       url: TOKEN_URL,
       headers: {
@@ -632,12 +706,16 @@ class Volvo extends utils.Adapter {
       },
       data: qs.stringify({
         grant_type: 'refresh_token',
-        refresh_token: this.session.refresh_token,
+        refresh_token: currentRefreshToken,
       }),
     })
       .then(async (res) => {
         this.log.debug(JSON.stringify(res.data));
         this.log.info('Token refresh successful');
+        // Preserve refresh_token if not returned in response
+        if (!res.data.refresh_token) {
+          res.data.refresh_token = currentRefreshToken;
+        }
         this.session = res.data;
         await this._persistTokens();
         this.setState('info.connection', true, true);
@@ -651,188 +729,69 @@ class Volvo extends utils.Adapter {
       });
   }
 
-  login() {
-    return new Promise((resolve, reject) => {
-      this.baseHeader['X-Request-Id'] = uuidv4();
-      request.get(
-        {
-          url: 'https://vocapi.wirelesscar.net/customerapi/rest/customeraccounts',
-          headers: this.baseHeader,
-          followAllRedirects: true,
-        },
-        (err, resp, body) => {
-          if (err || resp.statusCode >= 400 || !body) {
-            this.log.error(err);
-            reject();
-            return;
-          }
-          this.log.debug(body);
-
-          try {
-            const customer = JSON.parse(body);
-            if (!customer.accountVehicleRelations) {
-              this.log.error('No vehicles found');
-              this.log.error(body);
-              reject();
-              return;
-            }
-            customer.accountVehicleRelations.forEach((vehicle) => {
-              this.vinArray.push(vehicle.vehicle.vehicleId);
-              this.setObjectNotExists(vehicle.vehicle.vehicleId, {
-                type: 'device',
-                common: {
-                  name: vehicle.vehicle.registrationNumber,
-                  role: 'indicator',
-                  type: 'mixed',
-                  write: false,
-                  read: true,
-                },
-                native: {},
-              });
-              this.extendObjectAsync(vehicle.vehicle.vehicleId + '.remote', {
-                type: 'channel',
-                common: {
-                  name: 'Remote controls',
-                },
-                native: {},
-              });
-
-              const remotes = [
-                'lock',
-                'unlock',
-                'heater/start',
-                'heater/stop',
-                'preclimatization/start',
-                'preclimatization/stop',
-                'parkingclimate/start',
-                'parkingclimate/stop',
-                'precleaning/start',
-                'precleaning/stop',
-                'engine/start',
-                'engine/stop',
-                'honk_and_flash',
-                'honk_blink/both',
-                'honk_blink/horn',
-                'honk_blink/lights',
-              ];
-              remotes.forEach((service) => {
-                this.setObjectNotExists(vehicle.vehicle.vehicleId + '.remote.' + service, {
-                  type: 'state',
-                  common: {
-                    name: '',
-                    type: 'boolean',
-                    role: 'button',
-                    write: true,
-                    read: false,
-                  },
-                  native: {},
-                });
-              });
-            });
-            this.extractKeys(this, 'customer', customer, null, true);
-            resolve();
-          } catch (error) {
-            this.log.error(error);
-            this.log.error(error.stack);
-            reject();
-          }
-        },
-      );
-    });
-  }
-
-  getMethod(vin, url, accept, path) {
-    return new Promise((resolve, reject) => {
-      this.log.debug('Get ' + path);
-      this.baseHeader['X-Request-Id'] = uuidv4();
-      this.baseHeader['Accept'] = 'application/vnd.wirelesscar.com.voc.$format.v4+json; charset=utf-8'.replace('$format', accept);
-      url = url.replace('/$vin/', '/' + vin + '/');
-
-      request.get(
-        {
-          url: url,
-          headers: this.baseHeader,
-          followAllRedirects: true,
-        },
-        (err, resp, body) => {
-          if (err || resp.statusCode >= 400 || !body) {
-            this.log.error(err);
-            this.log.error(resp && resp.statusCode);
-            this.log.error(body);
-            reject();
-            return;
-          }
-          this.log.debug(body);
-
-          try {
-            const customer = JSON.parse(body);
-            if (path === 'trip') {
-              this.extractKeys(this, vin + '.' + path, customer, null, true);
-            } else {
-              this.extractKeys(this, vin + '.' + path, customer);
-            }
-            resolve();
-            return;
-          } catch (error) {
-            this.log.error(error);
-            this.log.error(error.stack);
-            reject();
-          }
-        },
-      );
-    });
-  }
-  async setMethod(vin, service, position) {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      this.baseHeader['X-Request-Id'] = uuidv4();
-      this.baseHeader['Accept'] = 'application/vnd.wirelesscar.com.voc.Service.v4+json; charset=utf-8';
-      this.baseHeader['Content-Type'] = 'application/json; charset=utf-8';
-      let body = '{}';
-      if (service === 'preclimatization/start') {
-        this.baseHeader['Content-Type'] = 'application/vnd.wirelesscar.com.voc.RemotePreClimatization.v4+json; charset=utf-8';
-      }
-      if (position) {
-        this.baseHeader['Content-Type'] = 'application/vnd.wirelesscar.com.voc.ClientPosition.v4+json; charset=utf-8';
-        const latState = await this.getStateAsync(vin + '.position.position.latitude');
-        const longState = await this.getStateAsync(vin + '.position.position.longitude');
-        if (latState && longState) {
-          body = '{"clientAccuracy":0,"clientLatitude":' + latState.val + ',"clientLongitude":' + longState.val + '}';
+  /**
+   * Poll command status with retries and auto-refresh relevant data on completion.
+   */
+  async pollCommandStatus(vin, command, asyncHref) {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      try {
+        const res = await this.apiRequest({
+          method: 'get',
+          url: asyncHref,
+          headers: {
+            'content-type': 'application/json',
+            'vcc-api-key': this.config.vccapikey,
+            Authorization: 'Bearer ' + this.session.access_token,
+          },
+        });
+        const status = res.data?.invokeStatus || res.data?.status || 'UNKNOWN';
+        this.log.info(`Command ${command} status (attempt ${attempt + 1}): ${status}`);
+        await this.setStateAsync(vin + '.remote.lastCommandStatus', JSON.stringify({ command, status, time: new Date().toISOString() }), true);
+        if (status === 'COMPLETED' || status === 'RUNNING') {
+          await this.autoRefreshAfterCommand(vin, command);
+          return;
         }
+      } catch (error) {
+        this.log.warn(`Command ${command} status poll failed: ${error.message}`);
       }
-      const url = 'https://vocapi.wirelesscar.net/customerapi/rest/vehicles/' + vin + '/' + service;
-
-      request.post(
-        {
-          url: url,
-          headers: this.baseHeader,
-          followAllRedirects: true,
-          body: body,
-          gzip: true,
-        },
-        (err, resp, body) => {
-          if (err || (resp && resp.statusCode >= 400)) {
-            this.log.error('Failed to setMethod ');
-            err && this.log.error(err);
-            resp && this.log.error(resp.statusCode);
-            body && this.log.error(JSON.stringify(body));
-            reject();
-            return;
-          }
-          this.log.debug(body);
-
-          try {
-            this.log.info(body);
-            resolve();
-          } catch (error) {
-            this.log.error(error);
-            this.log.error(error.stack);
-            reject();
-          }
-        },
-      );
-    });
+    }
   }
+
+  /**
+   * After a command completes, refresh the relevant data endpoints.
+   */
+  async autoRefreshAfterCommand(vin, command) {
+    const endpointMap = {
+      'lock': ['doors'],
+      'unlock': ['doors'],
+      'climatization-start': ['engine-status'],
+      'climatization-stop': ['engine-status'],
+    };
+    const endpoints = endpointMap[command] || [];
+    for (const endpoint of endpoints) {
+      await this.apiRequest({
+        method: 'get',
+        url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + vin + '/' + endpoint,
+        headers: {
+          accept: 'application/json, */*',
+          'vcc-api-key': this.config.vccapikey,
+          Authorization: 'Bearer ' + this.session.access_token,
+        },
+      })
+        .then(async (res) => {
+          this.log.debug(JSON.stringify(res.data));
+          this.json2iob.parse(vin + '.status.' + endpoint, res.data.data, { forceIndex: true });
+        })
+        .catch((error) => {
+          this.log.error('Auto-refresh ' + endpoint + ' failed');
+          this.log.error(error);
+          error.response && this.log.error(JSON.stringify(error.response.data));
+        });
+    }
+    await this.setStateAsync(vin + '.lastUpdate', new Date().toISOString(), true);
+  }
+
   /**
    * Is called when adapter shuts down - callback has to be called under any circumstances!
    * @param {() => void} callback
@@ -844,7 +803,7 @@ class Volvo extends utils.Adapter {
       this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
       this.responseTimeout && clearTimeout(this.responseTimeout);
       callback();
-    } catch (e) {
+    } catch (_e) {
       callback();
     }
   }
@@ -875,7 +834,7 @@ class Volvo extends utils.Adapter {
         }
 
         this.log.info('Executing remote command: ' + command + ' for VIN ' + vin);
-        const response = await this.requestClient({
+        const response = await this.apiRequest({
           method: 'post',
           url: 'https://api.volvocars.com/connected-vehicle/v2/vehicles/' + vin + '/commands/' + command,
           headers: {
@@ -898,24 +857,7 @@ class Volvo extends utils.Adapter {
 
         const asyncData = response && (response.async || (response.data && response.data.async));
         if (asyncData && asyncData.href) {
-          this.responseTimeout = setTimeout(async () => {
-            await this.requestClient({
-              method: 'get',
-              url: asyncData.href,
-              headers: {
-                'content-type': 'application/json',
-                'vcc-api-key': this.config.vccapikey,
-                Authorization: 'Bearer ' + this.session.access_token,
-              },
-            })
-              .then(async (res) => {
-                this.log.info('Command ' + command + ' async result: ' + JSON.stringify(res.data));
-              })
-              .catch((error) => {
-                this.log.error('Command ' + command + ' async check failed: ' + error);
-                error.response && this.log.error(JSON.stringify(error.response.data));
-              });
-          }, 10000);
+          this.pollCommandStatus(vin, command, asyncData.href);
         }
       }
     }

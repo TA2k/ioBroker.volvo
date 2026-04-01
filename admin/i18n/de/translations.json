@@ -1,0 +1,14 @@
+{
+  "accountSettings": "Kontoeinstellungen",
+  "volvoIdEmail": "Volvo ID E-Mail",
+  "volvoIdPassword": "Volvo ID Passwort",
+  "vccApiKey": "VCC API-Schlüssel",
+  "vccApiKeyHelp": "API-Schlüssel unter developer.volvocars.com beziehen",
+  "updateInterval": "Aktualisierungsintervall (Minuten)",
+  "otpLogin": "Anmeldung mit Einmalpasswort",
+  "otpDescription": "Einstellungen zuerst speichern, dann 'Login starten' klicken um ein Einmalpasswort per E-Mail zu erhalten. Code eingeben und 'OTP bestätigen' klicken.",
+  "startLoginButton": "Login starten (OTP senden)",
+  "otpCode": "Einmalpasswort",
+  "submitOtpButton": "OTP bestätigen",
+  "testConnectionButton": "Verbindung testen"
+}

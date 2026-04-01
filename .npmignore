@@ -1,11 +1,11 @@
 .git
 .idea
+.playwright-mcp
 node_modules/
 nbproject/
 .vs*/
 *.code-workspace
 Thumbs.db
-gulpfile.js
 
 test/
 travis/
@@ -14,16 +14,17 @@ appveyor.yml
 .travis.yaml
 appveyor.yaml
 
-.eslintrc.json
-.eslintrc.js
+eslint.config.mjs
+AGENTS.md
 
 # npm package files
 iobroker.*.tgz
 package-lock.json
 
-# i18n intermediate files
-admin/i18n
+
 
 # maintenance scripts
 maintenance/**
 tsconfig.json
+admin/tsconfig.json
+test/tsconfig.json

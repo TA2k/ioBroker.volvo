@@ -1,0 +1,93 @@
+{
+  "i18n": true,
+  "type": "panel",
+  "items": {
+    "_settingsHeader": {
+      "type": "header",
+      "text": "accountSettings",
+      "size": 4
+    },
+    "user": {
+      "type": "text",
+      "label": "volvoIdEmail",
+      "sm": 12,
+      "md": 6
+    },
+    "password": {
+      "type": "password",
+      "label": "volvoIdPassword",
+      "sm": 12,
+      "md": 6
+    },
+    "vccapikey": {
+      "type": "text",
+      "label": "vccApiKey",
+      "help": "vccApiKeyHelp",
+      "sm": 12,
+      "md": 6
+    },
+    "interval": {
+      "type": "number",
+      "label": "updateInterval",
+      "min": 1,
+      "max": 1440,
+      "sm": 12,
+      "md": 6
+    },
+    "_divider1": {
+      "type": "divider"
+    },
+    "_otpHeader": {
+      "type": "header",
+      "text": "otpLogin",
+      "size": 4
+    },
+    "_otpDescription": {
+      "type": "staticText",
+      "text": "otpDescription",
+      "style": {
+        "marginBottom": 16
+      }
+    },
+    "_startLogin": {
+      "type": "sendTo",
+      "label": "startLoginButton",
+      "command": "startLogin",
+      "jsonData": "{\"user\": \"${data.user}\", \"password\": \"${data.password}\"}",
+      "variant": "contained",
+      "color": "primary",
+      "sm": 12,
+      "md": 4
+    },
+    "otp": {
+      "type": "text",
+      "label": "otpCode",
+      "doNotSave": true,
+      "noTranslation": true,
+      "sm": 12,
+      "md": 4
+    },
+    "_submitOtp": {
+      "type": "sendTo",
+      "label": "submitOtpButton",
+      "command": "submitOtp",
+      "jsonData": "{\"otp\": \"${data.otp}\"}",
+      "variant": "contained",
+      "color": "secondary",
+      "sm": 12,
+      "md": 4
+    },
+    "_divider2": {
+      "type": "divider"
+    },
+    "_testConnection": {
+      "type": "sendTo",
+      "label": "testConnectionButton",
+      "command": "testConnection",
+      "jsonData": "{\"vccapikey\": \"${data.vccapikey}\"}",
+      "variant": "outlined",
+      "sm": 12,
+      "md": 4
+    }
+  }
+}

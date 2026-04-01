@@ -87,6 +87,65 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 1.0.0 🎉
+
+First stable release — complete rewrite of the Volvo ioBroker adapter.
+
+**New Features:**
+- **Vehicle Details**: Model, year, color and images fetched from API
+- **Retry Logic**: Automatic retry with exponential backoff on API errors (429/5xx)
+- **Command Status Tracking**: Polls async command results (up to 5x) and stores status in `lastCommandStatus`
+- **Auto-Refresh after Commands**: Doors auto-refresh after lock/unlock, engine-status after climatization
+- **Last Update Timestamp**: `lastUpdate` state per vehicle shows last successful data fetch
+- **Admin UI: jsonConfig Migration**: Modern React-based settings UI (Admin5) with i18n support
+- **Admin UI: Connection Test**: Test API connection directly from adapter settings
+- **Admin UI: Vehicle Info**: Display vehicle details from settings page
+
+**Versioning Policy (SemVer):**
+- MAJOR: Breaking changes (config changes, removed states, new minimum Node.js)
+- MINOR: New features (new data points, commands, UI features)
+- PATCH: Bug fixes, dependency updates, cleanup
+
+### 0.2.7
+
+- Extracted inline JavaScript from `admin/index_m.html` into separate `admin/index_m.js`
+- Added ESLint config for admin browser JS (jQuery/browser globals)
+
+### 0.2.6
+
+- Removed obsolete files: `.create-adapter.json` (wrong adapter name), `lib/tools.js` (unused), `.prettierrc.js`/`.prettierignore` (Prettier not installed)
+- Updated `.npmignore` (removed references to deleted `.eslintrc.json`)
+- Updated CI workflow: dropped Node 18 (EOL), testing on Node 20 + 22
+
+### 0.2.5
+
+- Updated all dependencies to latest major versions
+- @alcalzone/release-script 3.7 → 5.1, eslint 9 → 10, @iobroker/testing 5.0 → 5.2
+
+### 0.2.4
+
+- Migrated from ESLint 8 to ESLint 9 (flat config) — fixes CVE-2025-50537
+- Removed deprecated `.eslintrc.json` and `.eslintignore`
+
+### 0.2.3
+
+- Fixed all npm audit vulnerabilities (0 remaining)
+- Added npm overrides for serialize-javascript, diff, esbuild
+
+### 0.2.2
+
+- Fixed ESLint lint error (single quotes)
+- Removed credentials and IPs from AGENTS.md, added discovery instructions
+- Updated devDependencies: @iobroker/testing 5.2, @types/node 25.5, eslint 8.57
+
+### 0.2.1
+
+- Fixed refresh token not being preserved across token refreshes (caused 401 errors after ~25 minutes)
+- Removed dead legacy code: old VOC API (`vocapi.wirelesscar.net`), `request` module, `uuid`, `json-bigint`
+- Updated dependencies: axios 1.14, qs 6.15, json2iob 2.6.22, @iobroker/adapter-core 3.3
+- Added update migration notice for users upgrading from pre-0.2.0 versions
+- Removed unused `newApi` config option from io-package.json
+
 ### 0.2.0
 
 - **Complete rewrite of authentication**: Replaced dead `grant_type: password` OAuth flow with new multi-step OTP (one-time password) login via PingFederate

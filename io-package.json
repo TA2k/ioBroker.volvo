@@ -1,8 +1,32 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "news": {
+      "1.0.0": {
+        "en": "First stable release! Vehicle details, retry logic, command status tracking, auto-refresh, jsonConfig Admin5 UI, connection test, vehicle info display",
+        "de": "Erstes stabiles Release! Fahrzeugdetails, Retry-Logik, Befehlsstatus-Tracking, Auto-Refresh, jsonConfig Admin5-UI, Verbindungstest, Fahrzeug-Info-Anzeige"
+      },
+      "0.2.7": {
+        "en": "Extracted inline JS from admin HTML into separate admin/index_m.js",
+        "de": "Inline-JS aus Admin-HTML in separate admin/index_m.js ausgelagert"
+      },
+      "0.2.6": {
+        "en": "Repository cleanup: removed obsolete files, updated CI to Node 20+",
+        "de": "Repository aufgeräumt: veraltete Dateien entfernt, CI auf Node 20+ aktualisiert"
+      },
+      "0.2.5": {
+        "en": "Updated all dependencies to latest major versions",
+        "de": "Alle Abhängigkeiten auf neueste Hauptversionen aktualisiert"
+      },
+      "0.2.4": {
+        "en": "Migrated to ESLint 9 (flat config), fixes CVE-2025-50537",
+        "de": "Migration auf ESLint 9 (Flat Config), behebt CVE-2025-50537"
+      },
+      "0.2.3": {
+        "en": "Fix all npm audit vulnerabilities via overrides",
+        "de": "Alle npm-Audit-Schwachstellen über Overrides behoben"
+      },
       "0.1.2": {
         "en": "added support for v2 api",
         "de": "Unterstützung für v2 api hinzugefügt",
@@ -26,33 +50,38 @@
         "en": "fix trip objects naming"
       }
     },
-    "title": "Volvo On Call",
+    "title": "Volvo Cars",
     "titleLang": {
-      "en": "Volvo On Call",
-      "de": "Volvo On Call",
-      "ru": "Volvo On Call",
-      "pt": "Volvo On Call",
-      "nl": "Volvo On Call",
-      "fr": "Volvo On Call",
-      "it": "Volvo On Call",
-      "es": "Volvo On Call",
-      "pl": "Volvo On Call",
-      "zh-cn": "沃尔沃待命"
+      "en": "Volvo Cars",
+      "de": "Volvo Cars",
+      "ru": "Volvo Cars",
+      "pt": "Volvo Cars",
+      "nl": "Volvo Cars",
+      "fr": "Volvo Cars",
+      "it": "Volvo Cars",
+      "es": "Volvo Cars",
+      "pl": "Volvo Cars",
+      "zh-cn": "沃尔沃汽车"
     },
     "desc": {
-      "en": "Volvo On Call Adapter",
-      "de": "Volvo On Call Adapter",
-      "ru": "Volvo On Call Адаптер",
-      "pt": "Adaptador Volvo On Call",
-      "nl": "Volvo On Call adapter",
-      "fr": "Adaptateur Volvo On Call",
-      "it": "Adattatore Volvo On Call",
-      "es": "Adaptador Volvo On Call",
-      "pl": "Adapter Volvo On Call",
-      "zh-cn": "沃尔沃随车转接器"
+      "en": "Volvo Cars Adapter (Connected Vehicle API v2)",
+      "de": "Volvo Cars Adapter (Connected Vehicle API v2)",
+      "ru": "Volvo Cars Адаптер (Connected Vehicle API v2)",
+      "pt": "Adaptador Volvo Cars (Connected Vehicle API v2)",
+      "nl": "Volvo Cars adapter (Connected Vehicle API v2)",
+      "fr": "Adaptateur Volvo Cars (Connected Vehicle API v2)",
+      "it": "Adattatore Volvo Cars (Connected Vehicle API v2)",
+      "es": "Adaptador Volvo Cars (Connected Vehicle API v2)",
+      "pl": "Adapter Volvo Cars (Connected Vehicle API v2)",
+      "zh-cn": "沃尔沃汽车适配器 (Connected Vehicle API v2)"
     },
-    "authors": ["TA2k <tombox2020@gmail.com>"],
-    "keywords": ["volvo", "volvo on call"],
+    "authors": [
+      "TA2k <tombox2020@gmail.com>"
+    ],
+    "keywords": [
+      "volvo",
+      "volvo cars"
+    ],
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "main.js",
@@ -72,13 +101,15 @@
       {
         "js-controller": ">=1.4.2"
       }
-    ]
+    ],
+    "adminUI": {
+      "config": "json"
+    }
   },
   "native": {
     "user": "",
     "vccapikey": "",
     "password": "",
-    "newApi": false,
     "interval": 5
   },
   "objects": [],
@@ -104,5 +135,43 @@
       },
       "native": {}
     }
-  ]
+  ],
+  "messages": [
+    {
+      "condition": {
+        "operand": "and",
+        "rules": [
+          "oldVersion<0.2.0",
+          "newVersion>=0.2.0"
+        ]
+      },
+      "title": {
+        "en": "Important: Complete rewrite of authentication",
+        "de": "Wichtig: Authentifizierung komplett neu geschrieben"
+      },
+      "text": {
+        "en": "This update replaces the old Volvo On Call API with the new Volvo Cars Connected Vehicle API v2. After updating:\n\n1. Open the adapter settings\n2. Enter your VCC API Key (get one at developer.volvocars.com)\n3. Click \"Start Login\" and complete the OTP verification\n4. Recommended: Delete and recreate the adapter instance to remove stale data points from the old API",
+        "de": "Dieses Update ersetzt die alte Volvo On Call API durch die neue Volvo Cars Connected Vehicle API v2. Nach dem Update:\n\n1. Öffne die Adapter-Einstellungen\n2. Gib deinen VCC API-Schlüssel ein (erhältlich unter developer.volvocars.com)\n3. Klicke auf \"Login starten\" und schließe die OTP-Verifizierung ab\n4. Empfohlen: Lösche die Adapter-Instanz und erstelle sie neu, um veraltete Datenpunkte der alten API zu entfernen"
+      },
+      "level": "warn",
+      "buttons": [
+        "agree",
+        "cancel"
+      ]
+    }
+  ],
+  "news": {
+    "0.2.1": {
+      "en": "Fix refresh token persistence, remove dead VOC code, update dependencies",
+      "de": "Refresh-Token-Speicherung repariert, alten VOC-Code entfernt, Dependencies aktualisiert"
+    },
+    "0.2.0": {
+      "en": "Complete rewrite: OTP auth, Connected Vehicle API v2, Energy API v2, remote commands fixed, German localization",
+      "de": "Komplett-Umbau: OTP-Authentifizierung, Connected Vehicle API v2, Energy API v2, Fernbedienung repariert, deutsche Übersetzung"
+    },
+    "0.2.2": {
+      "en": "Fix ESLint, update devDependencies, clean AGENTS.md of credentials",
+      "de": "ESLint repariert, devDependencies aktualisiert, Zugangsdaten aus AGENTS.md entfernt"
+    }
+  }
 }
