@@ -87,6 +87,11 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 0.2.3
+
+- Fixed all npm audit vulnerabilities (0 remaining)
+- Added npm overrides for serialize-javascript, diff, esbuild
+
 ### 0.2.2
 
 - Fixed ESLint lint error (single quotes)
