@@ -87,6 +87,11 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 0.2.4
+
+- Migrated from ESLint 8 to ESLint 9 (flat config) — fixes CVE-2025-50537
+- Removed deprecated `.eslintrc.json` and `.eslintignore`
+
 ### 0.2.3
 
 - Fixed all npm audit vulnerabilities (0 remaining)

@@ -185,7 +185,7 @@ class Volvo extends utils.Adapter {
         await this._persistTokens();
         this.setState('info.connection', true, true);
         return;
-      } catch (error) {
+      } catch (_err) {
         this.log.warn('Stored refresh token expired or invalid, need fresh OTP login');
       }
     }
@@ -659,7 +659,7 @@ class Volvo extends utils.Adapter {
       this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
       this.responseTimeout && clearTimeout(this.responseTimeout);
       callback();
-    } catch (e) {
+    } catch (_e) {
       callback();
     }
   }

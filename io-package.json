@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "volvo",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "news": {
+      "0.2.4": {
+        "en": "Migrated to ESLint 9 (flat config), fixes CVE-2025-50537",
+        "de": "Migration auf ESLint 9 (Flat Config), behebt CVE-2025-50537"
+      },
       "0.2.3": {
         "en": "Fix all npm audit vulnerabilities via overrides",
         "de": "Alle npm-Audit-Schwachstellen über Overrides behoben"
