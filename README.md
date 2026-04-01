@@ -87,6 +87,11 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 0.2.5
+
+- Updated all dependencies to latest major versions
+- @alcalzone/release-script 3.7 → 5.1, eslint 9 → 10, @iobroker/testing 5.0 → 5.2
+
 ### 0.2.4
 
 - Migrated from ESLint 8 to ESLint 9 (flat config) — fixes CVE-2025-50537
