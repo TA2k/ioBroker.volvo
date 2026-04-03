@@ -94,7 +94,8 @@
       "it": "Volvo Cars",
       "es": "Volvo Cars",
       "pl": "Volvo Cars",
-      "zh-cn": "沃尔沃汽车"
+      "zh-cn": "沃尔沃汽车",
+      "uk": "Volvo Cars"
     },
     "desc": {
       "en": "Volvo Cars Adapter (Connected Vehicle API v2)",
@@ -106,7 +107,8 @@
       "it": "Adattatore Volvo Cars (Connected Vehicle API v2)",
       "es": "Adaptador Volvo Cars (Connected Vehicle API v2)",
       "pl": "Adapter Volvo Cars (Connected Vehicle API v2)",
-      "zh-cn": "沃尔沃汽车适配器 (Connected Vehicle API v2)"
+      "zh-cn": "沃尔沃汽车适配器 (Connected Vehicle API v2)",
+      "uk": "Адаптер Volvo Cars (Connected Vehicle API v2)"
     },
     "authors": [
       "TA2k <tombox2020@gmail.com>",
@@ -147,6 +149,13 @@
       "config": "json"
     }
   },
+  "protectedNative": [
+    "vccapikey",
+    "password"
+  ],
+  "encryptedNative": [
+    "password"
+  ],
   "native": {
     "user": "",
     "vccapikey": "",

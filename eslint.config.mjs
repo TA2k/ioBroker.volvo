@@ -1,5 +1,7 @@
 import js from '@eslint/js';
 import globals from 'globals';
+// @iobroker/eslint-config is installed but not used directly here since this is a plain JS adapter.
+// TypeScript-heavy peer deps would be needed to use it directly.
 
 export default [
   js.configs.recommended,
