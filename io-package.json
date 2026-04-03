@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "news": {
+      "1.0.1": {
+        "en": "Fix: multi-language support, jsonConfig layout, admin checker warnings, CI improvements",
+        "de": "Fix: Mehrsprachigkeit, jsonConfig-Layout, Admin-Checker-Warnungen, CI-Verbesserungen",
+        "ru": "Исправления: многоязычность, макет jsonConfig, предупреждения Admin-Checker, улучшения CI",
+        "pt": "Correção: suporte multilíngue, layout jsonConfig, avisos do verificador de admin, melhorias de CI",
+        "nl": "Fix: meertalige ondersteuning, jsonConfig-indeling, admin checker-waarschuwingen, CI-verbeteringen",
+        "fr": "Correction : support multilingue, mise en page jsonConfig, avertissements du vérificateur admin, améliorations CI",
+        "it": "Correzione: supporto multilingue, layout jsonConfig, avvisi del verificatore admin, miglioramenti CI",
+        "es": "Corrección: soporte multilingüe, diseño jsonConfig, advertencias del verificador de admin, mejoras de CI",
+        "pl": "Poprawki: obsługa wielojęzyczna, układ jsonConfig, ostrzeżenia sprawdzania administratora, ulepszenia CI",
+        "uk": "Виправлення: багатомовна підтримка, макет jsonConfig, попередження перевірки адміністратора, покращення CI",
+        "zh-cn": "修复：多语言支持、jsonConfig 布局、管理员检查器警告、CI 改进"
+      },
       "1.0.0": {
         "en": "First stable release! Vehicle details, retry logic, command status tracking, auto-refresh, jsonConfig Admin5 UI, connection test, vehicle info display",
         "de": "Erstes stabiles Release! Fahrzeugdetails, Retry-Logik, Befehlsstatus-Tracking, Auto-Refresh, jsonConfig Admin5-UI, Verbindungstest, Fahrzeug-Info-Anzeige",
@@ -135,7 +148,14 @@
     ],
     "adminUI": {
       "config": "json"
-    }
+    },
+    "protectedNative": [
+      "vccapikey",
+      "password"
+    ],
+    "encryptedNative": [
+      "password"
+    ]
   },
   "protectedNative": [
     "vccapikey",

@@ -87,6 +87,15 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 1.0.1
+- Fix: multi-language support (ru, pt, nl, fr, it, es, pl, uk, zh-cn)
+- Fix: jsonConfig admin UI size attributes for all breakpoints
+- Fix: `protectedNative` / `encryptedNative` for sensitive fields
+- Fix: OTP/sendTo message handlers null-safe
+- Chore: added dependabot, `@iobroker/adapter-dev`, `@iobroker/eslint-config`
+- Chore: CI `adapter-tests` now runs after linting
+- Chore: migrated `.npmignore` to `package.json` `files`
+
 ### 1.0.0 🎉
 
 First stable release — complete rewrite of the Volvo ioBroker adapter.
