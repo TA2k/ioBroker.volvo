@@ -31,13 +31,10 @@
     "@alcalzone/release-script-plugin-iobroker": "^5.1.2",
     "@alcalzone/release-script-plugin-license": "^5.1.1",
     "@alcalzone/release-script-plugin-manual-review": "^5.1.1",
-    "@eslint/js": "^9.39.0",
     "@iobroker/adapter-dev": "^1.5.0",
     "@iobroker/eslint-config": "^2.2.0",
     "@iobroker/testing": "^5.2.2",
-    "@types/node": "^25.5.0",
-    "eslint": "^9.39.0",
-    "globals": "^16.3.0"
+    "@types/node": "^25.5.0"
   },
   "main": "main.js",
   "scripts": {
