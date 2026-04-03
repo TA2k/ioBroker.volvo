@@ -7,26 +7,6 @@
         "en": "First stable release! Vehicle details, retry logic, command status tracking, auto-refresh, jsonConfig Admin5 UI, connection test, vehicle info display",
         "de": "Erstes stabiles Release! Fahrzeugdetails, Retry-Logik, Befehlsstatus-Tracking, Auto-Refresh, jsonConfig Admin5-UI, Verbindungstest, Fahrzeug-Info-Anzeige"
       },
-      "0.2.7": {
-        "en": "Extracted inline JS from admin HTML into separate admin/index_m.js",
-        "de": "Inline-JS aus Admin-HTML in separate admin/index_m.js ausgelagert"
-      },
-      "0.2.6": {
-        "en": "Repository cleanup: removed obsolete files, updated CI to Node 20+",
-        "de": "Repository aufgeräumt: veraltete Dateien entfernt, CI auf Node 20+ aktualisiert"
-      },
-      "0.2.5": {
-        "en": "Updated all dependencies to latest major versions",
-        "de": "Alle Abhängigkeiten auf neueste Hauptversionen aktualisiert"
-      },
-      "0.2.4": {
-        "en": "Migrated to ESLint 9 (flat config), fixes CVE-2025-50537",
-        "de": "Migration auf ESLint 9 (Flat Config), behebt CVE-2025-50537"
-      },
-      "0.2.3": {
-        "en": "Fix all npm audit vulnerabilities via overrides",
-        "de": "Alle npm-Audit-Schwachstellen über Overrides behoben"
-      },
       "0.1.2": {
         "en": "added support for v2 api",
         "de": "Unterstützung für v2 api hinzugefügt",
@@ -41,13 +21,16 @@
         "zh-cn": "为 v2 api 添加支持"
       },
       "0.1.1": {
-        "en": "add location API for electric cars"
+        "en": "add location API for electric cars",
+        "de": "Standort-API für Elektroautos hinzugefügt"
       },
       "0.1.0": {
-        "en": "add new API for electric cars"
+        "en": "add new API for electric cars",
+        "de": "neue API für Elektroautos hinzugefügt"
       },
       "0.0.6": {
-        "en": "fix trip objects naming"
+        "en": "fix trip objects naming",
+        "de": "Namensgebung der Trip-Objekte repariert"
       }
     },
     "title": "Volvo Cars",
@@ -76,7 +59,8 @@
       "zh-cn": "沃尔沃汽车适配器 (Connected Vehicle API v2)"
     },
     "authors": [
-      "TA2k <tombox2020@gmail.com>"
+      "TA2k <tombox2020@gmail.com>",
+      "Vinnedinho <vinnedinho@gmail.com>"
     ],
     "keywords": [
       "volvo",
@@ -84,7 +68,6 @@
     ],
     "license": "MIT",
     "platform": "Javascript/Node.js",
-    "main": "main.js",
     "icon": "volvo.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/TA2k/ioBroker.volvo/master/admin/volvo.png",
@@ -100,11 +83,20 @@
     "materialize": true,
     "dependencies": [
       {
-        "js-controller": ">=1.4.2"
+        "js-controller": ">=6.0.11"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=7.6.20"
       }
     ],
     "adminUI": {
       "config": "json"
+    },
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
     }
   },
   "native": {
@@ -160,19 +152,5 @@
         "cancel"
       ]
     }
-  ],
-  "news": {
-    "0.2.1": {
-      "en": "Fix refresh token persistence, remove dead VOC code, update dependencies",
-      "de": "Refresh-Token-Speicherung repariert, alten VOC-Code entfernt, Dependencies aktualisiert"
-    },
-    "0.2.0": {
-      "en": "Complete rewrite: OTP auth, Connected Vehicle API v2, Energy API v2, remote commands fixed, German localization",
-      "de": "Komplett-Umbau: OTP-Authentifizierung, Connected Vehicle API v2, Energy API v2, Fernbedienung repariert, deutsche Übersetzung"
-    },
-    "0.2.2": {
-      "en": "Fix ESLint, update devDependencies, clean AGENTS.md of credentials",
-      "de": "ESLint repariert, devDependencies aktualisiert, Zugangsdaten aus AGENTS.md entfernt"
-    }
-  }
+  ]
 }
