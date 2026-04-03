@@ -87,6 +87,11 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 1.0.2
+- Fix: adapter stays alive waiting for OTP login when no token stored
+- Fix: better startup log messages explaining next steps
+- Fix: CI deploy job upgraded to Node 24 (resolves `promise-retry` error)
+
 ### 1.0.1
 - Fix: multi-language support (ru, pt, nl, fr, it, es, pl, uk, zh-cn)
 - Fix: jsonConfig admin UI size attributes for all breakpoints

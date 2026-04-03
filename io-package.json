@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "news": {
+      "1.0.2": {
+        "en": "Fix: adapter stays alive waiting for OTP login when no token stored; better startup logging; CI deploy on Node 24",
+        "de": "Fix: Adapter bleibt aktiv und wartet auf OTP-Login wenn kein Token gespeichert; bessere Startmeldungen; CI Deploy auf Node 24",
+        "ru": "Исправление: адаптер остаётся активным в ожидании OTP-входа; улучшенное журналирование запуска; CI на Node 24",
+        "pt": "Fix: adaptador permanece ativo aguardando login OTP; melhor log de inicialização; CI deploy no Node 24",
+        "nl": "Fix: adapter blijft actief en wacht op OTP-login; betere opstartlogboeken; CI deploy op Node 24",
+        "fr": "Fix: l'adaptateur reste actif en attendant la connexion OTP; meilleure journalisation au démarrage; CI sur Node 24",
+        "it": "Fix: l'adattatore rimane attivo in attesa del login OTP; migliore logging all'avvio; CI deploy su Node 24",
+        "es": "Fix: el adaptador permanece activo esperando el login OTP; mejor registro de inicio; CI deploy en Node 24",
+        "pl": "Fix: adapter pozostaje aktywny oczekując na logowanie OTP; lepsze logowanie startowe; CI na Node 24",
+        "uk": "Виправлення: адаптер залишається активним в очікуванні OTP-входу; покращене журналювання запуску; CI на Node 24",
+        "zh-cn": "修复：适配器保持运行等待 OTP 登录；改善启动日志；CI 部署到 Node 24"
+      },
       "1.0.1": {
         "en": "Fix: multi-language support, jsonConfig layout, admin checker warnings, CI improvements",
         "de": "Fix: Mehrsprachigkeit, jsonConfig-Layout, Admin-Checker-Warnungen, CI-Verbesserungen",
