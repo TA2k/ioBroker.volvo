@@ -148,14 +148,7 @@
     ],
     "adminUI": {
       "config": "json"
-    },
-    "protectedNative": [
-      "vccapikey",
-      "password"
-    ],
-    "encryptedNative": [
-      "password"
-    ]
+    }
   },
   "protectedNative": [
     "vccapikey",
