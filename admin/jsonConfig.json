@@ -57,6 +57,11 @@
     "_otpDescription": {
       "type": "staticText",
       "text": "otpDescription",
+      "xs": 12,
+      "sm": 12,
+      "md": 12,
+      "lg": 12,
+      "xl": 12,
       "style": {
         "marginBottom": 16
       }
@@ -68,16 +73,22 @@
       "jsonData": "{\"user\": \"${data.user}\", \"password\": \"${data.password}\"}",
       "variant": "contained",
       "color": "primary",
+      "xs": 12,
       "sm": 12,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 4
     },
     "otp": {
       "type": "text",
       "label": "otpCode",
       "doNotSave": true,
       "noTranslation": true,
+      "xs": 12,
       "sm": 12,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 4
     },
     "_submitOtp": {
       "type": "sendTo",
@@ -86,8 +97,11 @@
       "jsonData": "{\"otp\": \"${data.otp}\"}",
       "variant": "contained",
       "color": "secondary",
+      "xs": 12,
       "sm": 12,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 4
     },
     "_divider2": {
       "type": "divider"
@@ -98,8 +112,11 @@
       "command": "testConnection",
       "jsonData": "{\"vccapikey\": \"${data.vccapikey}\"}",
       "variant": "outlined",
+      "xs": 12,
       "sm": 12,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 4
     }
   }
 }
