@@ -142,7 +142,6 @@
     "password"
   ],
   "encryptedNative": [
-    "vccapikey",
     "password"
   ],
   "native": {
