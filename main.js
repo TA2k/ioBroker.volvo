@@ -95,6 +95,13 @@ class Volvo extends utils.Adapter {
       this.refreshTokenInterval = setInterval(() => {
         this.refreshToken();
       }, refreshMs);
+    } else {
+      // No valid session yet — stay alive and wait for OTP login via admin UI
+      this.log.info('No active session. Adapter is running and waiting for login via admin UI (Settings → Start Login → Submit OTP).');
+      // Keep-alive interval so ioBroker doesn't terminate idle daemon
+      this.keepAliveInterval = setInterval(() => {
+        this.log.debug('Waiting for login...');
+      }, 60000);
     }
   }
   /**
@@ -190,7 +197,8 @@ class Volvo extends utils.Adapter {
 
     // Full OTP login flow
     if (!this.config.otp) {
-      this.log.warn('No OTP code provided. Please use the adapter admin UI to start login and enter the OTP code sent to your email.');
+      this.log.warn('No stored refresh token and no OTP code. Please use the adapter admin UI to start login and enter the OTP code sent to your email.');
+      this.log.info('The adapter will stay running and wait for login via the admin settings page.');
       return;
     }
 
@@ -413,6 +421,12 @@ class Volvo extends utils.Adapter {
         await this._persistTokens();
         this.setState('info.connection', true, true);
         this.authFlowId = null;
+
+        // Clear keep-alive if it was running
+        if (this.keepAliveInterval) {
+          clearInterval(this.keepAliveInterval);
+          this.keepAliveInterval = null;
+        }
 
         // Start data fetching
         await this.getDeviceList();
@@ -801,6 +815,7 @@ class Volvo extends utils.Adapter {
       this.log.info('cleaned everything up...');
       this.updateInterval && clearInterval(this.updateInterval);
       this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
+      this.keepAliveInterval && clearInterval(this.keepAliveInterval);
       this.responseTimeout && clearTimeout(this.responseTimeout);
       callback();
     } catch (_e) {
