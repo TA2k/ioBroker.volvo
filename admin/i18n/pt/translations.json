@@ -1,0 +1,14 @@
+{
+  "accountSettings": "Configurações da conta",
+  "volvoIdEmail": "E-mail do Volvo ID",
+  "volvoIdPassword": "Senha do Volvo ID",
+  "vccApiKey": "Chave de API VCC",
+  "vccApiKeyHelp": "Obtenha sua chave de API em developer.volvocars.com",
+  "updateInterval": "Intervalo de atualização (minutos)",
+  "otpLogin": "Login com senha única",
+  "otpDescription": "Salve as configurações primeiro e clique em 'Iniciar Login' para receber uma senha única por e-mail. Digite o código e clique em 'Enviar OTP' para concluir a autenticação.",
+  "startLoginButton": "Iniciar Login (Enviar OTP)",
+  "otpCode": "Código OTP",
+  "submitOtpButton": "Enviar OTP",
+  "testConnectionButton": "Testar Conexão"
+}

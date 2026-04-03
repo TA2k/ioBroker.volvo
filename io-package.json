@@ -5,7 +5,16 @@
     "news": {
       "1.0.0": {
         "en": "First stable release! Vehicle details, retry logic, command status tracking, auto-refresh, jsonConfig Admin5 UI, connection test, vehicle info display",
-        "de": "Erstes stabiles Release! Fahrzeugdetails, Retry-Logik, Befehlsstatus-Tracking, Auto-Refresh, jsonConfig Admin5-UI, Verbindungstest, Fahrzeug-Info-Anzeige"
+        "de": "Erstes stabiles Release! Fahrzeugdetails, Retry-Logik, Befehlsstatus-Tracking, Auto-Refresh, jsonConfig Admin5-UI, Verbindungstest, Fahrzeug-Info-Anzeige",
+        "ru": "Первый стабильный выпуск! Подробности автомобиля, логика повтора, отслеживание статуса команды, автообновление, интерфейс Admin5 jsonConfig, проверка подключения, отображение информации об автомобиле",
+        "pt": "Primeiro lançamento estável! Detalhes do veículo, lógica de repetição, rastreamento de status de comando, atualização automática, interface Admin5 jsonConfig, teste de conexão, exibição de informações do veículo",
+        "nl": "Eerste stabiele release! Voertuiggegevens, retry logica, command statustracking, auto-refresh, jsonConfig Admin5 UI, verbindingstest, voertuiginfo weergave",
+        "fr": "Première version stable ! Détails du véhicule, logique de retry, suivi de l'état des commandes, actualisation automatique, interface Admin5 jsonConfig, test de connexion, affichage des informations du véhicule",
+        "it": "Primo rilascio stabile! Dettagli del veicolo, logica di ripetizione, tracciamento dello stato del comando, aggiornamento automatico, interfaccia Admin5 jsonConfig, test di connessione, visualizzazione informazioni veicolo",
+        "es": "¡Primer lanzamiento estable! Detalles del vehículo, lógica de reintento, seguimiento del estado del comando, actualización automática, interfaz Admin5 jsonConfig, prueba de conexión, visualización de información del vehículo",
+        "pl": "Pierwsza stabilna wersja! Szczegóły pojazdu, logika ponawiania, śledzenie stanu polecenia, automatyczne odświeżanie, interfejs Admin5 jsonConfig, test połączenia, wyświetlanie informacji pojazdu",
+        "uk": "Перший стабільний випуск! Деталі автомобіля, логіка повтору, відстеження статусу команди, автооновлення, інтерфейс Admin5 jsonConfig, перевірка з'єднання, відображення інформації про автомобіль",
+        "zh-cn": "首个稳定版本!车辆详情、重试逻辑、命令状态跟踪、自动刷新、jsonConfig Admin5 UI、连接测试、车辆信息显示"
       },
       "0.1.2": {
         "en": "added support for v2 api",
@@ -33,6 +42,48 @@
         "de": "Namensgebung der Trip-Objekte repariert"
       }
     },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<0.2.0",
+            "newVersion>=0.2.0"
+          ]
+        },
+        "title": {
+          "en": "Important: Complete rewrite of authentication",
+          "de": "Wichtig: Authentifizierung komplett neu geschrieben",
+          "ru": "Важно: Полное переписание аутентификации",
+          "pt": "Importante: reescrita completa da autenticação",
+          "nl": "Belangrijk: volledig herschrijven van authenticatie",
+          "fr": "Important : réécriture complète de l'authentification",
+          "it": "Importante: riscrittura completa dell'autenticazione",
+          "es": "Importante: reescritura completa de la autenticación",
+          "pl": "Ważne: Całkowite przepisanie uwierzytelniania",
+          "uk": "Важливо: Повне переписування аутентифікації",
+          "zh-cn": "重要：完全重新编写身份验证"
+        },
+        "text": {
+          "en": "This update replaces the old Volvo On Call API with the new Volvo Cars Connected Vehicle API v2. After updating:\n\n1. Open the adapter settings\n2. Enter your VCC API Key (get one at developer.volvocars.com)\n3. Click \"Start Login\" and complete the OTP verification\n4. Recommended: Delete and recreate the adapter instance to remove stale data points from the old API",
+          "de": "Dieses Update ersetzt die alte Volvo On Call API durch die neue Volvo Cars Connected Vehicle API v2. Nach dem Update:\n\n1. Öffne die Adapter-Einstellungen\n2. Gib deinen VCC API-Schlüssel ein (erhältlich unter developer.volvocars.com)\n3. Klicke auf \"Login starten\" und schließe die OTP-Verifizierung ab\n4. Empfohlen: Lösche die Adapter-Instanz und erstelle sie neu, um veraltete Datenpunkte der alten API zu entfernen",
+          "ru": "Это обновление заменяет старый API Volvo On Call на новый API Volvo Cars Connected Vehicle v2. После обновления:\n\n1. Откройте параметры адаптера\n2. Введите свой ключ API VCC (получите на developer.volvocars.com)\n3. Нажмите \"Начать вход\" и завершите проверку OTP\n4. Рекомендуется: удалите и пересоздайте экземпляр адаптера, чтобы удалить устаревшие точки данных со старого API",
+          "pt": "Esta atualização substitui a antiga API Volvo On Call pela nova API Volvo Cars Connected Vehicle v2. Após atualizar:\n\n1. Abra as configurações do adaptador\n2. Digite sua Chave de API VCC (obtenha uma em developer.volvocars.com)\n3. Clique em \"Iniciar Login\" e complete a verificação OTP\n4. Recomendado: Delete e recrie a instância do adaptador para remover pontos de dados obsoletos da API antiga",
+          "nl": "Deze update vervangt de oude Volvo On Call API door de nieuwe Volvo Cars Connected Vehicle API v2. Na het updaten:\n\n1. Open de adapterinstellingen\n2. Voer uw VCC API-sleutel in (verkrijg er een op developer.volvocars.com)\n3. Klik op \"Login starten\" en voltooi de OTP-verificatie\n4. Aanbevolen: Verwijder en recreeer de adapterinstantie om verouderde gegevenspunten van de oude API te verwijderen",
+          "fr": "Cette mise à jour remplace l'ancienne API Volvo On Call par la nouvelle API Volvo Cars Connected Vehicle v2. Après mise à jour:\n\n1. Ouvrez les paramètres de l'adaptateur\n2. Entrez votre clé API VCC (obtenez-en une sur developer.volvocars.com)\n3. Cliquez sur \"Démarrer la connexion\" et complétez la vérification OTP\n4. Recommandé: Supprimez et recréez l'instance d'adaptateur pour supprimer les points de données obsolètes de l'ancienne API",
+          "it": "Questo aggiornamento sostituisce la vecchia API Volvo On Call con la nuova API Volvo Cars Connected Vehicle v2. Dopo l'aggiornamento:\n\n1. Apri le impostazioni dell'adattatore\n2. Inserisci la tua chiave API VCC (ottenine una su developer.volvocars.com)\n3. Fai clic su \"Avvia accesso\" e completa la verifica OTP\n4. Consigliato: Elimina e ricrea l'istanza dell'adattatore per rimuovere i punti dati obsoleti dall'API precedente",
+          "es": "Esta actualización reemplaza la antigua API Volvo On Call con la nueva API Volvo Cars Connected Vehicle v2. Después de actualizar:\n\n1. Abra la configuración del adaptador\n2. Ingrese su clave API VCC (obtenga una en developer.volvocars.com)\n3. Haga clic en \"Iniciar sesión\" y complete la verificación OTP\n4. Recomendado: Elimine y recree la instancia del adaptador para eliminar puntos de datos obsoletos de la API anterior",
+          "pl": "Ta aktualizacja zastępuje stary interfejs API Volvo On Call nowym interfejsem API Volvo Cars Connected Vehicle v2. Po aktualizacji:\n\n1. Otwórz ustawienia adaptera\n2. Wprowadź swój klucz API VCC (uzyskaj jeden na developer.volvocars.com)\n3. Kliknij \"Rozpocznij logowanie\" i ukończ weryfikację OTP\n4. Zalecane: Usuń i utwórz ponownie instancję adaptera, aby usunąć przestarzałe punkty danych ze starego interfejsu API",
+          "uk": "Це оновлення замінює старий API Volvo On Call на новий API Volvo Cars Connected Vehicle v2. Після оновлення:\n\n1. Відкрийте параметри адаптера\n2. Введіть свій ключ API VCC (отримайте його на developer.volvocars.com)\n3. Натисніть \"Почати вхід\" і завершіть перевірку OTP\n4. Рекомендується: видаліть та пересоздайте екземпляр адаптера, щоб видалити застарілі точки даних зі старого API",
+          "zh-cn": "此更新用新的 Volvo Cars Connected Vehicle API v2 替换旧的 Volvo On Call API。更新后:\n\n1. 打开适配器设置\n2. 输入你的 VCC API 密钥（在 developer.volvocars.com 获取）\n3. 点击"开始登录"并完成 OTP 验证\n4. 建议：删除并重新创建适配器实例，以删除旧 API 中的过期数据点"
+        },
+        "level": "warn",
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      }
+    ],
     "titleLang": {
       "en": "Volvo Cars",
       "de": "Volvo Cars",
@@ -126,29 +177,7 @@
       },
       "native": {}
     }
-  ],
-  "messages": [
-    {
-      "condition": {
-        "operand": "and",
-        "rules": [
-          "oldVersion<0.2.0",
-          "newVersion>=0.2.0"
-        ]
-      },
-      "title": {
-        "en": "Important: Complete rewrite of authentication",
-        "de": "Wichtig: Authentifizierung komplett neu geschrieben"
-      },
-      "text": {
-        "en": "This update replaces the old Volvo On Call API with the new Volvo Cars Connected Vehicle API v2. After updating:\n\n1. Open the adapter settings\n2. Enter your VCC API Key (get one at developer.volvocars.com)\n3. Click \"Start Login\" and complete the OTP verification\n4. Recommended: Delete and recreate the adapter instance to remove stale data points from the old API",
-        "de": "Dieses Update ersetzt die alte Volvo On Call API durch die neue Volvo Cars Connected Vehicle API v2. Nach dem Update:\n\n1. Öffne die Adapter-Einstellungen\n2. Gib deinen VCC API-Schlüssel ein (erhältlich unter developer.volvocars.com)\n3. Klicke auf \"Login starten\" und schließe die OTP-Verifizierung ab\n4. Empfohlen: Lösche die Adapter-Instanz und erstelle sie neu, um veraltete Datenpunkte der alten API zu entfernen"
-      },
-      "level": "warn",
-      "buttons": [
-        "agree",
-        "cancel"
-      ]
-    }
   ]
+}
+]
 }

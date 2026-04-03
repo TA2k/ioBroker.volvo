@@ -1,0 +1,14 @@
+{
+  "accountSettings": "Impostazioni dell'account",
+  "volvoIdEmail": "E-mail Volvo ID",
+  "volvoIdPassword": "Password Volvo ID",
+  "vccApiKey": "Chiave API VCC",
+  "vccApiKeyHelp": "Ottieni la tua chiave API su developer.volvocars.com",
+  "updateInterval": "Intervallo di aggiornamento (minuti)",
+  "otpLogin": "Accesso con password monouso",
+  "otpDescription": "Salva prima le impostazioni, quindi fai clic su 'Avvia accesso' per ricevere una password monouso via email. Inserisci il codice e fai clic su 'Invia OTP' per completare l'autenticazione.",
+  "startLoginButton": "Avvia accesso (Invia OTP)",
+  "otpCode": "Codice OTP",
+  "submitOtpButton": "Invia OTP",
+  "testConnectionButton": "Test connessione"
+}
