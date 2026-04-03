@@ -28,18 +28,6 @@
         "pl": "dodane wsparcie dla api v2",
         "uk": "додано підтримку v2 api",
         "zh-cn": "为 v2 api 添加支持"
-      },
-      "0.1.1": {
-        "en": "add location API for electric cars",
-        "de": "Standort-API für Elektroautos hinzugefügt"
-      },
-      "0.1.0": {
-        "en": "add new API for electric cars",
-        "de": "neue API für Elektroautos hinzugefügt"
-      },
-      "0.0.6": {
-        "en": "fix trip objects naming",
-        "de": "Namensgebung der Trip-Objekte repariert"
       }
     },
     "messages": [
@@ -154,6 +142,7 @@
     "password"
   ],
   "encryptedNative": [
+    "vccapikey",
     "password"
   ],
   "native": {

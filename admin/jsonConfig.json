@@ -10,29 +10,41 @@
     "user": {
       "type": "text",
       "label": "volvoIdEmail",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "password": {
       "type": "password",
       "label": "volvoIdPassword",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "vccapikey": {
       "type": "text",
       "label": "vccApiKey",
       "help": "vccApiKeyHelp",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "interval": {
       "type": "number",
       "label": "updateInterval",
       "min": 1,
       "max": 1440,
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "_divider1": {
       "type": "divider"
