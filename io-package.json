@@ -33,7 +33,6 @@
         "de": "Namensgebung der Trip-Objekte repariert"
       }
     },
-    "title": "Volvo Cars",
     "titleLang": {
       "en": "Volvo Cars",
       "de": "Volvo Cars",
@@ -66,7 +65,10 @@
       "volvo",
       "volvo cars"
     ],
-    "license": "MIT",
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
+    },
     "platform": "Javascript/Node.js",
     "icon": "volvo.png",
     "enabled": true,
@@ -93,10 +95,6 @@
     ],
     "adminUI": {
       "config": "json"
-    },
-    "licenseInformation": {
-      "license": "MIT",
-      "type": "free"
     }
   },
   "native": {
