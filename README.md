@@ -196,7 +196,7 @@ First stable release — complete rewrite of the Volvo ioBroker adapter.
 
 MIT License
 
-Copyright (c) 2020-2030 TA2k <tombox2020@gmail.com>
+Copyright © 2020-2026 TA2k <tombox2020@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

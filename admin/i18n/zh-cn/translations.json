@@ -6,7 +6,7 @@
   "vccApiKeyHelp": "在 developer.volvocars.com 获取您的 API 密钥",
   "updateInterval": "更新间隔（分钟）",
   "otpLogin": "使用一次性密码登录",
-  "otpDescription": "首先保存设置，然后单击"开始登录"以通过电子邮件接收一次性密码。输入代码并单击"发送 OTP"以完成身份验证。",
+  "otpDescription": "首先保存设置，然后单击\"开始登录\"以通过电子邮件接收一次性密码。输入代码并单击\"发送 OTP\"以完成身份验证。",
   "startLoginButton": "开始登录（发送 OTP）",
   "otpCode": "OTP 代码",
   "submitOtpButton": "发送 OTP",
