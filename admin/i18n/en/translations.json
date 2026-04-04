@@ -6,7 +6,7 @@
   "vccApiKeyHelp": "Get your API key at developer.volvocars.com",
   "updateInterval": "Update interval (minutes)",
   "otpLogin": "Login with OTP",
-  "otpDescription": "Save settings first, then click 'Start Login' to receive a one-time password via email. Enter the code and click 'Submit OTP' to complete authentication.",
+  "otpDescription": "Save settings first, then click 'Start Login' to receive a one-time password via email. Enter the code and click 'Submit OTP'. If the adapter terminates before you can submit, simply enter the OTP code, save settings, and restart the adapter - it will auto-login.",
   "startLoginButton": "Start Login (Send OTP)",
   "otpCode": "OTP Code",
   "submitOtpButton": "Submit OTP",

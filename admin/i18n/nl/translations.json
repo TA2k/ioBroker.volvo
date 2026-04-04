@@ -6,7 +6,7 @@
   "vccApiKeyHelp": "Haal uw API-sleutel op bij developer.volvocars.com",
   "updateInterval": "Update-interval (minuten)",
   "otpLogin": "Inloggen met eenmalig wachtwoord",
-  "otpDescription": "Sla instellingen eerst op en klik op 'Login starten' om een eenmalig wachtwoord per e-mail te ontvangen. Voer de code in en klik op 'OTP verzenden' om de verificatie te voltooien.",
+  "otpDescription": "Sla de instellingen eerst op en klik op \"Login starten\" om een eenmalig wachtwoord per e-mail te ontvangen. Voer de code in en klik op \"OTP bevestigen\". Als de adapter eerder stopt, voer dan de OTP-code in, sla de instellingen op en herstart de adapter - deze logt automatisch in.",
   "startLoginButton": "Login starten (OTP verzenden)",
   "otpCode": "OTP-code",
   "submitOtpButton": "OTP verzenden",

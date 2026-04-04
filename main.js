@@ -94,8 +94,9 @@ class Volvo extends utils.Adapter {
           this.refreshToken();
         }, refreshMs);
       } else {
-        // No valid session yet — stay alive and wait for OTP login via admin UI
-        this.log.info('No active session. Adapter is running and waiting for login via admin UI (Settings → Start Login → Submit OTP).');
+        // No valid session yet — adapter will either wait for sendTo or be restarted with OTP in config
+        this.log.info('No active session. Enter OTP in adapter settings and save to complete login.');
+        this.log.info('If the adapter terminates, it will auto-login on next start after you save the OTP.');
         // Keep-alive interval so ioBroker doesn't terminate idle daemon
         this.keepAliveInterval = setInterval(() => {
           this.log.debug('Waiting for login...');
@@ -166,8 +167,11 @@ class Volvo extends utils.Adapter {
 
   /**
    * New API login using multi-step OTP flow.
-   * If OTP is stored in config (from admin UI sendTo), use it.
-   * Otherwise try stored refresh_token first.
+   * Designed to be resilient to adapter restarts:
+   * - With refresh token: use it
+   * - With OTP in config + persisted flow state: resume OTP submission
+   * - With OTP in config but no flow state: full fresh flow (init + credentials + OTP)
+   * - No token, no OTP: init flow + credentials to trigger OTP email, persist state, wait
    */
   async newLogin() {
     // Try refresh token from stored state first
@@ -202,16 +206,169 @@ class Volvo extends utils.Adapter {
       }
     }
 
-    // Full OTP login flow
-    if (!this.config.otp) {
-      this.log.warn('No stored refresh token and no OTP code. Please use the adapter admin UI to start login and enter the OTP code sent to your email.');
-      this.log.info('The adapter will stay running and wait for login via the admin settings page.');
+    // If OTP is available in config, attempt login
+    if (this.config.otp) {
+      // Try to resume a persisted auth flow first
+      const resumed = await this._tryResumeAuthFlow();
+      if (resumed) return;
+
+      // No persisted flow or it expired — do full fresh flow (init + credentials + OTP)
+      this.log.info('No persisted auth flow found. Starting complete fresh login with OTP...');
+      const success = await this._fullOtpLogin(this.config.otp);
+      if (success) return;
+
+      // If fresh flow also failed, clear OTP and wait
+      this.log.warn('OTP login failed. Please request a new OTP via the admin UI.');
       return;
     }
 
+    // No refresh token and no OTP — trigger OTP email and wait
+    if (!this.config.user || !this.config.password) {
+      this.log.warn('No credentials configured. Please enter your Volvo ID email and password in the adapter settings.');
+      return;
+    }
+
+    this.log.info('No refresh token and no OTP. Triggering OTP email...');
     try {
-      // Step 1: Init auth flow
-      this.log.info('Starting OTP auth flow...');
+      await this._initAuthAndSendCredentials();
+      this.log.info('*** OTP has been sent to your email. Enter it in the adapter settings (OTP field) and save/restart. ***');
+    } catch (error) {
+      this.log.error('Failed to trigger OTP email: ' + error.message);
+      if (error.response) {
+        this.log.error(JSON.stringify(error.response.data));
+      }
+      this.log.warn('Please check your credentials and try again.');
+    }
+  }
+
+  /**
+   * Init auth flow, submit credentials, and persist the flow state.
+   * This triggers the OTP email from Volvo.
+   */
+  async _initAuthAndSendCredentials() {
+    this.authCookies = '';
+    const initData = await this._authRequest('post', AUTH_URL, {
+      client_id: 'h4Yf0b',
+      response_type: 'code',
+      response_mode: 'pi.flow',
+      acr_values: 'urn:volvoid:aal:bronze:2sv',
+      scope: AUTH_SCOPES,
+    }, false);
+
+    this.authFlowId = initData.id;
+    this.log.debug('Auth flow started: ' + initData.id + ' status: ' + initData.status);
+
+    if (initData.status !== 'USERNAME_PASSWORD_REQUIRED') {
+      throw new Error('Unexpected auth status: ' + initData.status);
+    }
+
+    const flowUrl = initData._links.checkUsernamePassword.href;
+    const credData = await this._authRequest('post', flowUrl + '?action=checkUsernamePassword', {
+      username: this.config.user,
+      password: this.config.password,
+    }, true);
+    this.log.debug('Credentials submitted, status: ' + credData.status);
+
+    if (credData.status !== 'OTP_REQUIRED') {
+      throw new Error('Unexpected status after credentials: ' + credData.status);
+    }
+
+    // Persist flow state so OTP submission can survive adapter restart
+    await this._persistAuthFlowState();
+    return credData;
+  }
+
+  /**
+   * Persist the auth flow state (flow ID + cookies) to survive adapter restarts.
+   */
+  async _persistAuthFlowState() {
+    await this.setObjectNotExistsAsync('auth.flowId', {
+      type: 'state',
+      common: { name: 'Auth Flow ID', type: 'string', role: 'text', read: true, write: false },
+      native: {},
+    });
+    await this.setObjectNotExistsAsync('auth.flowCookies', {
+      type: 'state',
+      common: { name: 'Auth Flow Cookies', type: 'string', role: 'text', read: true, write: false },
+      native: {},
+    });
+    await this.setObjectNotExistsAsync('auth.flowTimestamp', {
+      type: 'state',
+      common: { name: 'Auth Flow Timestamp', type: 'number', role: 'date', read: true, write: false },
+      native: {},
+    });
+    await this.setStateAsync('auth.flowId', this.authFlowId || '', true);
+    await this.setStateAsync('auth.flowCookies', this.authCookies || '', true);
+    await this.setStateAsync('auth.flowTimestamp', Date.now(), true);
+  }
+
+  /**
+   * Try to resume an auth flow from persisted state with the OTP from config.
+   * Returns true if login was successful.
+   */
+  async _tryResumeAuthFlow() {
+    try {
+      const flowIdState = await this.getStateAsync('auth.flowId');
+      const cookiesState = await this.getStateAsync('auth.flowCookies');
+      const tsState = await this.getStateAsync('auth.flowTimestamp');
+
+      if (!flowIdState?.val || !tsState?.val) {
+        return false;
+      }
+
+      // Auth flows expire after ~10 minutes, allow 8 min max
+      const ageMs = Date.now() - Number(tsState.val);
+      if (ageMs > 8 * 60 * 1000) {
+        this.log.info('Persisted auth flow expired (' + Math.round(ageMs / 1000) + 's old). Starting fresh flow.');
+        await this._clearAuthFlowState();
+        return false;
+      }
+
+      this.log.info('Resuming persisted auth flow (age: ' + Math.round(ageMs / 1000) + 's)...');
+      this.authFlowId = String(flowIdState.val);
+      this.authCookies = String(cookiesState?.val || '');
+
+      const flowBase = 'https://volvoid.eu.volvocars.com/pf-ws/authn/flows/' + this.authFlowId;
+
+      // Submit OTP
+      const otpData = await this._authRequest('post', flowBase + '?action=checkOtp', {
+        otp: this.config.otp,
+      }, true);
+      this.log.debug('OTP submitted (resumed flow), status: ' + otpData.status);
+
+      if (otpData.status !== 'OTP_VERIFIED') {
+        this.log.warn('Resumed flow OTP failed: ' + otpData.status + '. Will try fresh flow.');
+        await this._clearAuthFlowState();
+        return false;
+      }
+
+      // Continue authentication
+      const contData = await this._authRequest('post', flowBase + '?action=continueAuthentication', null, false);
+      if (contData.status !== 'COMPLETED') {
+        this.log.warn('Resumed flow auth not completed: ' + contData.status);
+        await this._clearAuthFlowState();
+        return false;
+      }
+
+      // Exchange code for tokens
+      await this._exchangeCodeForTokens(contData.authorizeResponse.code);
+      await this._clearAuthFlowState();
+      return true;
+    } catch (error) {
+      this.log.warn('Resume auth flow failed: ' + error.message + '. Will try fresh flow.');
+      await this._clearAuthFlowState();
+      return false;
+    }
+  }
+
+  /**
+   * Full OTP login: init flow + credentials + OTP in one go.
+   * Used as fallback when no persisted flow state is available.
+   * Returns true if login was successful.
+   */
+  async _fullOtpLogin(otp) {
+    try {
+      this.log.info('Starting complete OTP auth flow...');
       this.authCookies = '';
       const initData = await this._authRequest('post', AUTH_URL, {
         client_id: 'h4Yf0b',
@@ -224,71 +381,102 @@ class Volvo extends utils.Adapter {
       this.authFlowId = initData.id;
       this.log.debug('Auth flow started: ' + initData.id + ' status: ' + initData.status);
 
-      // Step 2: Submit credentials
-      if (initData.status === 'USERNAME_PASSWORD_REQUIRED') {
-        const flowUrl = initData._links.checkUsernamePassword.href;
-        const credData = await this._authRequest('post', flowUrl + '?action=checkUsernamePassword', {
-          username: this.config.user,
-          password: this.config.password,
-        }, true);
-        this.log.debug('Credentials submitted, status: ' + credData.status);
-
-        if (credData.status !== 'OTP_REQUIRED') {
-          this.log.error('Unexpected status after credentials: ' + credData.status);
-          return;
-        }
-
-        // Step 3: Submit OTP
-        const otpUrl = credData._links.checkOtp.href;
-        const otpData = await this._authRequest('post', otpUrl + '?action=checkOtp', {
-          otp: this.config.otp,
-        }, true);
-        this.log.debug('OTP submitted, status: ' + otpData.status);
-
-        if (otpData.status !== 'OTP_VERIFIED') {
-          this.log.error('OTP verification failed: ' + otpData.status);
-          return;
-        }
-
-        // Step 4: Continue authentication
-        const contUrl = otpData._links.continueAuthentication.href;
-        const contData = await this._authRequest('post', contUrl + '?action=continueAuthentication', null, false);
-        this.log.debug('Auth continued, status: ' + contData.status);
-
-        if (contData.status !== 'COMPLETED') {
-          this.log.error('Auth not completed: ' + contData.status);
-          return;
-        }
-
-        // Step 5: Exchange code for tokens
-        const authCode = contData.authorizeResponse.code;
-        const tokenRes = await this.requestClient({
-          method: 'post',
-          url: TOKEN_URL,
-          headers: {
-            Authorization: AUTH_BASIC,
-            'X-XSRF-Header': 'PingFederate',
-            'content-type': 'application/x-www-form-urlencoded',
-          },
-          data: qs.stringify({
-            code: authCode,
-            grant_type: 'authorization_code',
-          }),
-        });
-
-        this.log.info('Login successful');
-        this.session = tokenRes.data;
-        await this._persistTokens();
-        this.setState('info.connection', true, true);
-
-        // Clear OTP from config after successful login
-        this.config.otp = '';
+      if (initData.status !== 'USERNAME_PASSWORD_REQUIRED') {
+        this.log.error('Unexpected auth status: ' + initData.status);
+        return false;
       }
+
+      // Submit credentials (this triggers a new OTP email, but we'll try the provided OTP)
+      const flowUrl = initData._links.checkUsernamePassword.href;
+      const credData = await this._authRequest('post', flowUrl + '?action=checkUsernamePassword', {
+        username: this.config.user,
+        password: this.config.password,
+      }, true);
+      this.log.debug('Credentials submitted, status: ' + credData.status);
+
+      if (credData.status !== 'OTP_REQUIRED') {
+        this.log.error('Unexpected status after credentials: ' + credData.status);
+        return false;
+      }
+
+      // Submit OTP
+      const otpUrl = credData._links.checkOtp.href;
+      const otpData = await this._authRequest('post', otpUrl + '?action=checkOtp', {
+        otp: otp,
+      }, true);
+      this.log.debug('OTP submitted, status: ' + otpData.status);
+
+      if (otpData.status !== 'OTP_VERIFIED') {
+        this.log.error('OTP verification failed: ' + otpData.status);
+        return false;
+      }
+
+      // Continue authentication
+      const contUrl = otpData._links.continueAuthentication.href;
+      const contData = await this._authRequest('post', contUrl + '?action=continueAuthentication', null, false);
+      this.log.debug('Auth continued, status: ' + contData.status);
+
+      if (contData.status !== 'COMPLETED') {
+        this.log.error('Auth not completed: ' + contData.status);
+        return false;
+      }
+
+      // Exchange code for tokens
+      await this._exchangeCodeForTokens(contData.authorizeResponse.code);
+      return true;
     } catch (error) {
       this.log.error('Login failed: ' + error.message);
       if (error.response) {
         this.log.error(JSON.stringify(error.response.data));
       }
+      return false;
+    }
+  }
+
+  /**
+   * Exchange an authorization code for tokens and store the session.
+   */
+  async _exchangeCodeForTokens(authCode) {
+    const tokenRes = await this.requestClient({
+      method: 'post',
+      url: TOKEN_URL,
+      headers: {
+        Authorization: AUTH_BASIC,
+        'X-XSRF-Header': 'PingFederate',
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+      data: qs.stringify({
+        code: authCode,
+        grant_type: 'authorization_code',
+      }),
+    });
+
+    this.log.info('Login successful');
+    this.session = tokenRes.data;
+    await this._persistTokens();
+    this.setState('info.connection', true, true);
+
+    // Clear OTP from config after successful login so it's not reused on restart
+    this.config.otp = '';
+    try {
+      await this.extendForeignObjectAsync('system.adapter.' + this.namespace, {
+        native: { otp: '' },
+      });
+    } catch (_e) {
+      this.log.debug('Could not clear OTP from config: ' + _e.message);
+    }
+  }
+
+  /**
+   * Clear persisted auth flow state after use or expiry.
+   */
+  async _clearAuthFlowState() {
+    try {
+      await this.setStateAsync('auth.flowId', '', true);
+      await this.setStateAsync('auth.flowCookies', '', true);
+      await this.setStateAsync('auth.flowTimestamp', 0, true);
+    } catch (_e) {
+      // ignore - states might not exist yet
     }
   }
 
@@ -369,6 +557,8 @@ class Volvo extends utils.Adapter {
           }, true);
 
           if (credData.status === 'OTP_REQUIRED') {
+            // Persist flow state so OTP can be submitted after restart
+            await this._persistAuthFlowState();
             const target = credData.devices && credData.devices[0] ? credData.devices[0].target : 'your email';
             this.sendTo(obj.from, obj.command, { result: 'OTP sent to ' + target }, obj.callback);
           } else {
@@ -384,8 +574,16 @@ class Volvo extends utils.Adapter {
       // Phase 2: Submit OTP, get tokens
       try {
         if (!this.authFlowId) {
-          this.sendTo(obj.from, obj.command, { error: 'No active login flow. Start login first.' }, obj.callback);
-          return;
+          // Try to restore from persisted state
+          const flowIdState = await this.getStateAsync('auth.flowId');
+          const cookiesState = await this.getStateAsync('auth.flowCookies');
+          if (flowIdState?.val) {
+            this.authFlowId = String(flowIdState.val);
+            this.authCookies = String(cookiesState?.val || '');
+          } else {
+            this.sendTo(obj.from, obj.command, { error: 'No active login flow. Start login first.' }, obj.callback);
+            return;
+          }
         }
 
         const flowBase = 'https://volvoid.eu.volvocars.com/pf-ws/authn/flows/' + this.authFlowId;
@@ -409,25 +607,9 @@ class Volvo extends utils.Adapter {
         }
 
         // Exchange code for tokens
-        const authCode = contData.authorizeResponse.code;
-        const tokenRes = await this.requestClient({
-          method: 'post',
-          url: TOKEN_URL,
-          headers: {
-            Authorization: AUTH_BASIC,
-            'X-XSRF-Header': 'PingFederate',
-            'content-type': 'application/x-www-form-urlencoded',
-          },
-          data: qs.stringify({
-            code: authCode,
-            grant_type: 'authorization_code',
-          }),
-        });
-
-        this.session = tokenRes.data;
-        await this._persistTokens();
-        this.setState('info.connection', true, true);
+        await this._exchangeCodeForTokens(contData.authorizeResponse.code);
         this.authFlowId = null;
+        await this._clearAuthFlowState();
 
         // Clear keep-alive if it was running
         if (this.keepAliveInterval) {

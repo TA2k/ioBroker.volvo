@@ -6,7 +6,7 @@
   "vccApiKeyHelp": "Obtenga su clave de API en developer.volvocars.com",
   "updateInterval": "Intervalo de actualización (minutos)",
   "otpLogin": "Iniciar sesión con contraseña única",
-  "otpDescription": "Guarde la configuración primero y luego haga clic en 'Iniciar sesión' para recibir una contraseña única por correo electrónico. Ingrese el código y haga clic en 'Enviar OTP' para completar la autenticación.",
+  "otpDescription": "Guarde la configuración primero, luego haga clic en \"Iniciar sesión\" para recibir una contraseña de un solo uso por correo electrónico. Ingrese el código y haga clic en \"Enviar OTP\". Si el adaptador se detiene antes, simplemente ingrese el código OTP, guarde la configuración y reinicie el adaptador - se conectará automáticamente.",
   "startLoginButton": "Iniciar sesión (Enviar OTP)",
   "otpCode": "Código OTP",
   "submitOtpButton": "Enviar OTP",

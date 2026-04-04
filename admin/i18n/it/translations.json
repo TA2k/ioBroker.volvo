@@ -6,7 +6,7 @@
   "vccApiKeyHelp": "Ottieni la tua chiave API su developer.volvocars.com",
   "updateInterval": "Intervallo di aggiornamento (minuti)",
   "otpLogin": "Accesso con password monouso",
-  "otpDescription": "Salva prima le impostazioni, quindi fai clic su 'Avvia accesso' per ricevere una password monouso via email. Inserisci il codice e fai clic su 'Invia OTP' per completare l'autenticazione.",
+  "otpDescription": "Salvare prima le impostazioni, poi fare clic su \"Avvia Login\" per ricevere una password monouso via email. Inserire il codice e fare clic su \"Invia OTP\". Se l'adattatore si chiude prima, inserire il codice OTP, salvare le impostazioni e riavviare l'adattatore - si collegherà automaticamente.",
   "startLoginButton": "Avvia accesso (Invia OTP)",
   "otpCode": "Codice OTP",
   "submitOtpButton": "Invia OTP",

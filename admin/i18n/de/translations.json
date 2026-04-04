@@ -6,7 +6,7 @@
   "vccApiKeyHelp": "API-Schlüssel unter developer.volvocars.com beziehen",
   "updateInterval": "Aktualisierungsintervall (Minuten)",
   "otpLogin": "Anmeldung mit Einmalpasswort",
-  "otpDescription": "Einstellungen zuerst speichern, dann 'Login starten' klicken um ein Einmalpasswort per E-Mail zu erhalten. Code eingeben und 'OTP bestätigen' klicken.",
+  "otpDescription": "Einstellungen zuerst speichern, dann 'Login starten' klicken um ein Einmalpasswort per E-Mail zu erhalten. Code eingeben und 'OTP bestätigen' klicken. Falls der Adapter sich vorher beendet, einfach den OTP-Code eingeben, Einstellungen speichern und den Adapter neu starten - er loggt sich automatisch ein.",
   "startLoginButton": "Login starten (OTP senden)",
   "otpCode": "Einmalpasswort",
   "submitOtpButton": "OTP bestätigen",

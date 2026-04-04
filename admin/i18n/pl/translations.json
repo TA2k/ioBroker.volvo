@@ -6,7 +6,7 @@
   "vccApiKeyHelp": "Uzyskaj klucz API na developer.volvocars.com",
   "updateInterval": "Interwał aktualizacji (minuty)",
   "otpLogin": "Logowanie za pomocą jednorazowego hasła",
-  "otpDescription": "Najpierw zapisz ustawienia, a następnie kliknij 'Rozpocznij logowanie', aby otrzymać jednorazowe hasło na e-mail. Wpisz kod i kliknij 'Wyślij OTP', aby ukończyć uwierzytelnianie.",
+  "otpDescription": "Najpierw zapisz ustawienia, następnie kliknij \"Rozpocznij logowanie\", aby otrzymać jednorazowe hasło e-mailem. Wprowadź kod i kliknij \"Zatwierdź OTP\". Jeśli adapter zakończy się wcześniej, po prostu wprowadź kod OTP, zapisz ustawienia i uruchom ponownie adapter - zaloguje się automatycznie.",
   "startLoginButton": "Rozpocznij logowanie (Wyślij OTP)",
   "otpCode": "Kod OTP",
   "submitOtpButton": "Wyślij OTP",

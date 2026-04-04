@@ -82,7 +82,6 @@
     "otp": {
       "type": "text",
       "label": "otpCode",
-      "doNotSave": true,
       "noTranslation": true,
       "xs": 12,
       "sm": 12,
