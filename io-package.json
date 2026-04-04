@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "news": {
+      "1.0.5": {
+        "en": "Fix: restart-resilient OTP login flow; VCC API key check before data fetch; suppress non-fatal errors after login",
+        "de": "Fix: neustart-resistenter OTP-Login; VCC API Key wird vor Datenabruf geprüft; nicht-fatale Fehler nach Login werden unterdrückt",
+        "ru": "Исправление: устойчивый к перезапуску OTP-логин; проверка VCC API ключа перед загрузкой данных",
+        "pt": "Fix: fluxo OTP resiliente a reinicializações; verificação da chave API VCC antes da busca de dados",
+        "nl": "Fix: herstart-robuuste OTP-login; VCC API-sleutel wordt gecontroleerd voor gegevens ophalen",
+        "fr": "Fix: flux OTP résistant aux redémarrages; vérification de la clé API VCC avant la récupération des données",
+        "it": "Fix: flusso OTP resistente ai riavvii; controllo chiave API VCC prima del recupero dati",
+        "es": "Fix: flujo OTP resistente a reinicios; verificación de clave API VCC antes de obtener datos",
+        "pl": "Fix: odporny na restarty przepływ OTP; sprawdzanie klucza API VCC przed pobieraniem danych",
+        "uk": "Виправлення: стійкий до перезапуску OTP-логін; перевірка VCC API ключа перед завантаженням даних",
+        "zh-cn": "修复：重启后OTP登录流程恢复；数据获取前检查VCC API密钥"
+      },
       "1.0.4": {
         "en": "Fix: graceful 404 handling for location/energy/endpoints (GPS off, non-EV)",
         "de": "Fix: 404-Fehler bei Location/Energy/Endpoints werden leise behandelt (GPS aus, Nicht-EV)",

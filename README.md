@@ -87,6 +87,9 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 1.0.5
+- Fix: restart-resilient OTP login flow — auth state persists across adapter restarts
+
 ### 1.0.4
 - Fix: 404 errors for location/energy/vehicle endpoints handled gracefully (GPS off, non-EV vehicles)
 

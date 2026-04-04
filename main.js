@@ -66,6 +66,7 @@ class Volvo extends utils.Adapter {
     this.extractKeys = extractKeys;
     this.updateInterval = null;
     this.vinArray = [];
+    this.isStopping = false;
   }
 
   /**
@@ -82,8 +83,12 @@ class Volvo extends utils.Adapter {
       // Always use new Connected Vehicle API (old VOC API is dead)
       await this.newLogin();
       if (this.session.access_token) {
-        await this.getDeviceList();
-        await this.updateDevice();
+        if (this.config.vccapikey) {
+          await this.getDeviceList();
+          await this.updateDevice();
+        } else {
+          this.log.warn('No VCC API key configured. Please enter your API key in the adapter settings.');
+        }
         this.updateInterval = setInterval(async () => {
           await this.updateDevice();
         }, this.config.interval * 60 * 1000);
@@ -93,6 +98,11 @@ class Volvo extends utils.Adapter {
         this.refreshTokenInterval = setInterval(() => {
           this.refreshToken();
         }, refreshMs);
+
+        // Clear OTP from config AFTER everything is set up.
+        // This triggers a config change → js-controller restarts the adapter.
+        // On restart, the refresh token will be used for login.
+        await this._clearOtpFromConfig();
       } else {
         // No valid session yet — adapter will either wait for sendTo or be restarted with OTP in config
         this.log.info('No active session. Enter OTP in adapter settings and save to complete login.');
@@ -455,10 +465,21 @@ class Volvo extends utils.Adapter {
     this.session = tokenRes.data;
     await this._persistTokens();
     this.setState('info.connection', true, true);
+  }
 
-    // Clear OTP from config after successful login so it's not reused on restart
+  /**
+   * Clear OTP from adapter config after successful login.
+   * This modifies the instance object which triggers a restart by js-controller.
+   * Only call this after everything (device list, intervals) is fully set up.
+   * Waits briefly to let pending DB writes from updateDevice() finish.
+   */
+  async _clearOtpFromConfig() {
+    if (!this.config.otp) return; // nothing to clear
     this.config.otp = '';
+    // Wait for pending async DB writes (json2iob.parse, extractKeys) to finish
+    await new Promise(resolve => setTimeout(resolve, 3000));
     try {
+      this.log.info('Clearing OTP from config (this may trigger an adapter restart)...');
       await this.extendForeignObjectAsync('system.adapter.' + this.namespace, {
         native: { otp: '' },
       });
@@ -617,9 +638,17 @@ class Volvo extends utils.Adapter {
           this.keepAliveInterval = null;
         }
 
-        // Start data fetching
-        await this.getDeviceList();
-        await this.updateDevice();
+        // Start data fetching (errors here are non-fatal, data will be fetched on next cycle)
+        if (this.config.vccapikey) {
+          try {
+            await this.getDeviceList();
+            await this.updateDevice();
+          } catch (fetchErr) {
+            this.log.warn('Initial data fetch after login failed: ' + fetchErr.message);
+          }
+        } else {
+          this.log.warn('No VCC API key configured. Please enter your API key in the adapter settings.');
+        }
         if (!this.updateInterval) {
           this.updateInterval = setInterval(async () => {
             await this.updateDevice();
@@ -633,6 +662,9 @@ class Volvo extends utils.Adapter {
         }
 
         this.sendTo(obj.from, obj.command, { result: 'Login successful! Adapter is now connected.' }, obj.callback);
+
+        // Clear OTP after everything is set up (may trigger restart)
+        await this._clearOtpFromConfig();
       } catch (error) {
         this.sendTo(obj.from, obj.command, { error: error.message }, obj.callback);
       }
@@ -1013,6 +1045,7 @@ class Volvo extends utils.Adapter {
    */
   onUnload(callback) {
     try {
+      this.isStopping = true;
       this.log.info('cleaned everything up...');
       this.updateInterval && clearInterval(this.updateInterval);
       this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
