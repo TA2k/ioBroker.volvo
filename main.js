@@ -72,35 +72,42 @@ class Volvo extends utils.Adapter {
    * Is called when databases are connected and adapter received configuration.
    */
   async onReady() {
-    const obj = await this.getForeignObjectAsync('system.config');
-    if (obj && obj.native && obj.native.secret) {
-      this.config.password = this.decrypt(obj.native.secret, this.config.password);
-    } else {
-      this.config.password = this.decrypt('Zgfr56gFe87jJOM', this.config.password);
-    }
-    this.setState('info.connection', false, true);
-    this.subscribeStates('*');
+    try {
+      // Note: password is automatically decrypted by adapter-core (encryptedNative in io-package.json)
+      // No manual decrypt needed.
+      this.log.debug('Adapter starting up...');
+      this.setState('info.connection', false, true);
+      this.subscribeStates('*');
 
-    // Always use new Connected Vehicle API (old VOC API is dead)
-    await this.newLogin();
-    if (this.session.access_token) {
-      await this.getDeviceList();
-      await this.updateDevice();
-      this.updateInterval = setInterval(async () => {
+      // Always use new Connected Vehicle API (old VOC API is dead)
+      await this.newLogin();
+      if (this.session.access_token) {
+        await this.getDeviceList();
         await this.updateDevice();
-      }, this.config.interval * 60 * 1000);
-      // Refresh token before it expires (5 min before expiry, min 60s)
-      const refreshMs = Math.max(60, (this.session.expires_in || 1799) - 300) * 1000;
-      this.log.info('Token refresh scheduled every ' + Math.round(refreshMs / 1000) + 's');
-      this.refreshTokenInterval = setInterval(() => {
-        this.refreshToken();
-      }, refreshMs);
-    } else {
-      // No valid session yet — stay alive and wait for OTP login via admin UI
-      this.log.info('No active session. Adapter is running and waiting for login via admin UI (Settings → Start Login → Submit OTP).');
-      // Keep-alive interval so ioBroker doesn't terminate idle daemon
+        this.updateInterval = setInterval(async () => {
+          await this.updateDevice();
+        }, this.config.interval * 60 * 1000);
+        // Refresh token before it expires (5 min before expiry, min 60s)
+        const refreshMs = Math.max(60, (this.session.expires_in || 1799) - 300) * 1000;
+        this.log.info(`Token refresh scheduled every ${Math.round(refreshMs / 1000)}s`);
+        this.refreshTokenInterval = setInterval(() => {
+          this.refreshToken();
+        }, refreshMs);
+      } else {
+        // No valid session yet — stay alive and wait for OTP login via admin UI
+        this.log.info('No active session. Adapter is running and waiting for login via admin UI (Settings → Start Login → Submit OTP).');
+        // Keep-alive interval so ioBroker doesn't terminate idle daemon
+        this.keepAliveInterval = setInterval(() => {
+          this.log.debug('Waiting for login...');
+        }, 60000);
+      }
+    } catch (error) {
+      this.log.error(`Startup error: ${error.message}`);
+      this.log.error(error.stack);
+      // Stay alive even after errors — user can fix config and re-login via admin
+      this.log.info('Adapter staying alive despite startup error. Please check adapter settings.');
       this.keepAliveInterval = setInterval(() => {
-        this.log.debug('Waiting for login...');
+        this.log.debug('Waiting for login after error...');
       }, 60000);
     }
   }

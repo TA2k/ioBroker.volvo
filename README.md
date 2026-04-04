@@ -87,6 +87,11 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 1.0.3
+- Fix: adapter no longer terminates on first start without stored token
+- Fix: removed manual password decrypt (now handled by `encryptedNative`)
+- Fix: full try-catch in `onReady()` prevents crashes on startup errors
+
 ### 1.0.2
 - Fix: adapter stays alive waiting for OTP login when no token stored
 - Fix: better startup log messages explaining next steps

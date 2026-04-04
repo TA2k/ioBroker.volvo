@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "news": {
+      "1.0.3": {
+        "en": "Fix: adapter no longer terminates on first start without stored token; removed double password decrypt",
+        "de": "Fix: Adapter beendet sich nicht mehr beim ersten Start ohne gespeichertes Token; doppelte Passwort-Entschlüsselung entfernt",
+        "ru": "Исправление: адаптер больше не завершается при первом запуске без сохранённого токена",
+        "pt": "Fix: adaptador não se encerra mais no primeiro início sem token armazenado",
+        "nl": "Fix: adapter stopt niet meer bij eerste start zonder opgeslagen token",
+        "fr": "Fix: l'adaptateur ne se ferme plus au premier démarrage sans jeton stocké",
+        "it": "Fix: l'adattatore non si chiude più al primo avvio senza token memorizzato",
+        "es": "Fix: el adaptador ya no se cierra en el primer inicio sin token almacenado",
+        "pl": "Fix: adapter nie kończy się już przy pierwszym uruchomieniu bez zapisanego tokena",
+        "uk": "Виправлення: адаптер більше не завершується при першому запуску без збереженого токена",
+        "zh-cn": "修复：适配器在没有存储令牌的首次启动时不再终止"
+      },
       "1.0.2": {
         "en": "Fix: adapter stays alive waiting for OTP login when no token stored; better startup logging; CI deploy on Node 24",
         "de": "Fix: Adapter bleibt aktiv und wartet auf OTP-Login wenn kein Token gespeichert; bessere Startmeldungen; CI Deploy auf Node 24",
