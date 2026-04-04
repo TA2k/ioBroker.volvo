@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "news": {
+      "1.0.4": {
+        "en": "Fix: graceful 404 handling for location/energy/endpoints (GPS off, non-EV)",
+        "de": "Fix: 404-Fehler bei Location/Energy/Endpoints werden leise behandelt (GPS aus, Nicht-EV)",
+        "ru": "Исправление: корректная обработка 404 для местоположения/энергии (GPS выключен, не-EV)",
+        "pt": "Fix: tratamento gracioso de 404 para localização/energia (GPS desligado, não-EV)",
+        "nl": "Fix: 404-fouten voor locatie/energie worden netjes afgehandeld (GPS uit, niet-EV)",
+        "fr": "Fix: gestion gracieuse des 404 pour localisation/énergie (GPS éteint, non-EV)",
+        "it": "Fix: gestione corretta dei 404 per posizione/energia (GPS spento, non-EV)",
+        "es": "Fix: manejo elegante de 404 para ubicación/energía (GPS apagado, no-EV)",
+        "pl": "Fix: poprawna obsługa 404 dla lokalizacji/energii (GPS wyłączony, nie-EV)",
+        "uk": "Виправлення: коректна обробка 404 для місцезнаходження/енергії (GPS вимкнено, не-EV)",
+        "zh-cn": "修复：优雅处理定位/能源 404 错误（GPS 关闭、非电动车）"
+      },
       "1.0.3": {
         "en": "Fix: adapter no longer terminates on first start without stored token; removed double password decrypt",
         "de": "Fix: Adapter beendet sich nicht mehr beim ersten Start ohne gespeichertes Token; doppelte Passwort-Entschlüsselung entfernt",

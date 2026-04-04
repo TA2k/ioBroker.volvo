@@ -87,6 +87,9 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 1.0.4
+- Fix: 404 errors for location/energy/vehicle endpoints handled gracefully (GPS off, non-EV vehicles)
+
 ### 1.0.3
 - Fix: adapter no longer terminates on first start without stored token
 - Fix: removed manual password decrypt (now handled by `encryptedNative`)

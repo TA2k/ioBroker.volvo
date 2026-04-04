@@ -656,9 +656,13 @@ class Volvo extends utils.Adapter {
             this.json2iob.parse(vin + '.status.' + endpoint, res.data.data, { forceIndex: true });
           })
           .catch((error) => {
-            this.log.error('Error: ' + endpoint + ' failed');
-            this.log.error(error);
-            error.response && this.log.error(JSON.stringify(error.response.data));
+            if (error.response && error.response.status === 404) {
+              this.log.debug(`Endpoint ${endpoint} not available for this vehicle`);
+            } else {
+              this.log.error(`Error: ${endpoint} failed`);
+              this.log.error(error);
+              error.response && this.log.error(JSON.stringify(error.response.data));
+            }
           });
       }
       // added for including location position
@@ -676,9 +680,13 @@ class Volvo extends utils.Adapter {
           this.json2iob.parse(vin + '.location', res.data.data, { forceIndex: true });
         })
         .catch((error) => {
-          this.log.error('failed to get location');
-          this.log.error(error);
-          error.response && this.log.error(JSON.stringify(error.response.data));
+          if (error.response && error.response.status === 404) {
+            this.log.debug('Location not available (GPS may be off or no location data yet)');
+          } else {
+            this.log.error('failed to get location');
+            this.log.error(error);
+            error.response && this.log.error(JSON.stringify(error.response.data));
+          }
         });
 
       // Energy API v2 - recharge/battery state
@@ -696,9 +704,13 @@ class Volvo extends utils.Adapter {
           this.json2iob.parse(vin + '.energy', res.data, { forceIndex: true });
         })
         .catch((error) => {
-          this.log.error('failed to get energy state');
-          this.log.error(error);
-          error.response && this.log.error(JSON.stringify(error.response.data));
+          if (error.response && error.response.status === 404) {
+            this.log.debug('Energy data not available (vehicle may not support energy API)');
+          } else {
+            this.log.error('failed to get energy state');
+            this.log.error(error);
+            error.response && this.log.error(JSON.stringify(error.response.data));
+          }
         });
 
       await this.setStateAsync(vin + '.lastUpdate', new Date().toISOString(), true);
