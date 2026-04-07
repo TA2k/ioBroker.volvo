@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "1.0.5",
+    "version": "2.0.0",
     "news": {
+      "2.0.0": {
+        "en": "Breaking Change: API Key now stored encrypted",
+        "de": "Breaking Change: API Key wird jetzt verschlüsselt gespeichert",
+        "ru": "Breaking Change: ключ API теперь хранится в зашифрованном виде",
+        "pt": "Breaking Change: Chave de API agora armazenada criptografada",
+        "nl": "Breaking Change: API-sleutel nu versleuteld opgeslagen",
+        "fr": "Breaking Change : clé API désormais stockée de manière cryptée",
+        "it": "Breaking Change: Chiave API ora salvata in modo criptato",
+        "es": "Breaking Change: clave API ahora se guarda cifrada",
+        "pl": "Breaking Change: klucz API teraz przechowywany w formie zaszyfrowanej",
+        "uk": "Breaking Change: ключ API теперь хранится в зашифрованном виде",
+        "zh-cn": "Breaking Change: API 密钥现在以加密形式存储"
+      },
       "1.0.5": {
         "en": "Fix: restart-resilient OTP login flow; VCC API key check before data fetch; suppress non-fatal errors after login",
         "de": "Fix: neustart-resistenter OTP-Login; VCC API Key wird vor Datenabruf geprüft; nicht-fatale Fehler nach Login werden unterdrückt",
@@ -83,6 +96,46 @@
       }
     },
     "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<2.0.0",
+            "newVersion>=1.0.0"
+          ]
+        },
+        "title": {
+          "en": "Important: API Key stored encrypted",
+          "de": "Wichtig: API Key Verschlüsselt gespeichert",
+          "ru": "Важно: ключ API теперь хранится в зашифрованном виде",
+          "pt": "Importante: Chave de API salva criptografada",
+          "nl": "Belangrijk: API-sleutel nu versleuteld opgeslagen",
+          "fr": "Important : clé API désormais stockée de manière cryptée",
+          "it": "Importante: Chiave API ora salvata in modo criptato",
+          "es": "Importante: clave API ahora se guarda cifrada",
+          "pl": "Ważne: klucz API teraz przechowywany w formie zaszyfrowanej",
+          "uk": "Важливо: ключ API теперь хранится в зашифрованном виде",
+          "zh-cn": "重要：API 密钥现在以加密形式保存"
+        },
+        "text": {
+          "en": "This update stores the API key encrypted. After updating, it will be necessary to re-enter your API key in the adapter configuration to ensure it is stored securely.",
+          "de": "Dieses Update speichert den API-Schlüssel verschlüsselt. Nach dem Update ist es notwendig, Ihren API-Schlüssel erneut in der Adapterkonfiguration einzugeben, um sicherzustellen, dass er sicher gespeichert wird.",
+          "ru": "Это обновление сохраняет ключ API в зашифрованном виде. После обновления необходимо будет повторно ввести ваш ключ API в конфигурации адаптера, чтобы обеспечить его безопасное хранение.",
+          "pt": "Esta atualização armazena a chave API criptografada. Após a atualização, será necessário reintroduzir sua chave API na configuração do adaptador para garantir que ela seja armazenada com segurança.",
+          "nl": "Deze update slaat de API-sleutel versleuteld op. Na het updaten is het nodig om uw API-sleutel opnieuw in te voeren in de adapterconfiguratie om ervoor te zorgen dat deze veilig wordt opgeslagen.",
+          "fr": "Cette mise à jour stocke la clé API de manière cryptée. Après la mise à jour, il sera nécessaire de ressaisir votre clé API dans la configuration de l'adaptateur pour garantir qu'elle est stockée en toute sécurité.",
+          "it": "Questo aggiornamento memorizza la chiave API in modo criptato. Dopo l'aggiornamento, sarà necessario reinserire la chiave API nella configurazione dell'adattatore per garantire che venga memorizzata in modo sicuro.",
+          "es": "Esta actualización almacena la clave API cifrada. Después de actualizar, será necesario volver a ingresar su clave API en la configuración del adaptador para garantizar que se almacene de forma segura.",
+          "pl": "Ta aktualizacja przechowuje klucz API w formie zaszyfrowanej. Po aktualizacji konieczne będzie ponowne wprowadzenie klucza API w konfiguracji adaptera, aby zapewnić jego bezpieczne przechowywanie.",
+          "uk": "Це обновление сохраняет ключ API в зашифрованном виде. После обновления необходимо будет повторно ввести ваш ключ API в конфигурации адаптера, чтобы обеспечить его безопасное хранение.",
+          "zh-cn": "此更新将 API 密钥以加密形式存储。更新后，您需要在适配器配置中重新输入您的 API 密钥，以确保它被安全地存储。"
+        },
+        "level": "warn",
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      },
       {
         "condition": {
           "operand": "and",
@@ -194,6 +247,7 @@
     "password"
   ],
   "encryptedNative": [
+    "vccapikey",
     "password"
   ],
   "native": {

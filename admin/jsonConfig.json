@@ -26,7 +26,7 @@
       "xl": 6
     },
     "vccapikey": {
-      "type": "text",
+      "type": "password",
       "label": "vccApiKey",
       "help": "vccApiKeyHelp",
       "xs": 12,

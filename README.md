@@ -87,6 +87,9 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 2.0.0
+- BREAKING CHANGE: API key now stored encrypted, reenter of API key **required**
+
 ### 1.0.5
 - Fix: restart-resilient OTP login flow — auth state persists across adapter restarts
 

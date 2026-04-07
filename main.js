@@ -61,10 +61,10 @@ class Volvo extends utils.Adapter {
     this.session = {};
     this.authFlowId = null;
     this.authCookies = '';
-    this.responseTimeout;
     this.requestClient = axios.create();
     this.extractKeys = extractKeys;
     this.updateInterval = null;
+    this.timeout = null;
     this.vinArray = [];
     this.isStopping = false;
   }
@@ -477,7 +477,7 @@ class Volvo extends utils.Adapter {
     if (!this.config.otp) return; // nothing to clear
     this.config.otp = '';
     // Wait for pending async DB writes (json2iob.parse, extractKeys) to finish
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => this.timeout = setTimeout(resolve, 3000));
     try {
       this.log.info('Clearing OTP from config (this may trigger an adapter restart)...');
       await this.extendForeignObjectAsync('system.adapter.' + this.namespace, {
@@ -535,7 +535,7 @@ class Volvo extends utils.Adapter {
         if (attempt < maxRetries && status && retryStatuses.includes(status)) {
           const delay = Math.pow(2, attempt + 1) * 1000; // 2s, 4s, 8s
           this.log.warn(`API request to ${config.url} failed with ${status}, retrying in ${delay / 1000}s (attempt ${attempt + 1}/${maxRetries})`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise(resolve => this.timeout = setTimeout(resolve, delay));
         } else {
           throw error;
         }
@@ -836,7 +836,12 @@ class Volvo extends utils.Adapter {
       .catch((error) => {
         this.log.error(error);
         this.log.error('get device list failed');
-        error.response && this.log.error(JSON.stringify(error.response.data));
+        if(error.message.includes('Invalid character') && error.message.includes('vcc-api-key')) {
+          this.log.error('This likely means your API key is invalid. Please reenter your API key.');
+        }
+        if(error.response) {
+          this.log.error(JSON.stringify(error.response.data));
+        }
       });
   }
   async updateDevice(singleVin) {
@@ -866,8 +871,10 @@ class Volvo extends utils.Adapter {
           },
         })
           .then(async (res) => {
-            this.log.debug(JSON.stringify(res.data));
-            this.json2iob.parse(vin + '.status.' + endpoint, res.data.data, { forceIndex: true });
+            if( res){
+              this.log.debug(JSON.stringify(res.data));
+              this.json2iob.parse(vin + '.status.' + endpoint, res.data.data, { forceIndex: true });
+            }
           })
           .catch((error) => {
             if (error.response && error.response.status === 404) {
@@ -890,8 +897,10 @@ class Volvo extends utils.Adapter {
         },
       })
         .then(async (res) => {
-          this.log.debug(JSON.stringify(res.data));
-          this.json2iob.parse(vin + '.location', res.data.data, { forceIndex: true });
+          if(res){
+            this.log.debug(JSON.stringify(res.data));
+            this.json2iob.parse(vin + '.location', res.data.data, { forceIndex: true });
+          }
         })
         .catch((error) => {
           if (error.response && error.response.status === 404) {
@@ -914,8 +923,10 @@ class Volvo extends utils.Adapter {
         },
       })
         .then(async (res) => {
-          this.log.debug(JSON.stringify(res.data));
-          this.json2iob.parse(vin + '.energy', res.data, { forceIndex: true });
+          if(res){
+            this.log.debug(JSON.stringify(res.data));
+            this.json2iob.parse(vin + '.energy', res.data, { forceIndex: true });
+          }
         })
         .catch((error) => {
           if (error.response && error.response.status === 404) {
@@ -981,7 +992,7 @@ class Volvo extends utils.Adapter {
    */
   async pollCommandStatus(vin, command, asyncHref) {
     for (let attempt = 0; attempt < 5; attempt++) {
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise(resolve => this.timeout = setTimeout(resolve, 3000));
       try {
         const res = await this.apiRequest({
           method: 'get',
@@ -1050,18 +1061,11 @@ class Volvo extends utils.Adapter {
       this.updateInterval && clearInterval(this.updateInterval);
       this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
       this.keepAliveInterval && clearInterval(this.keepAliveInterval);
-      this.responseTimeout && clearTimeout(this.responseTimeout);
+      this.timeout && clearTimeout(this.timeout);
       callback();
     } catch (_e) {
       callback();
     }
-  }
-  decrypt(key, value) {
-    let result = '';
-    for (let i = 0; i < value.length; ++i) {
-      result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-    }
-    return result;
   }
   /**
    * Is called if a subscribed state changes
