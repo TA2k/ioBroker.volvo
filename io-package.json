@@ -29,58 +29,6 @@
         "uk": "Breaking Change: ключ API теперь хранится в зашифрованном виде",
         "zh-cn": "Breaking Change: API 密钥现在以加密形式存储"
       },
-      "1.0.5": {
-        "en": "Fix: restart-resilient OTP login flow; VCC API key check before data fetch; suppress non-fatal errors after login",
-        "de": "Fix: neustart-resistenter OTP-Login; VCC API Key wird vor Datenabruf geprüft; nicht-fatale Fehler nach Login werden unterdrückt",
-        "ru": "Исправление: устойчивый к перезапуску OTP-логин; проверка VCC API ключа перед загрузкой данных",
-        "pt": "Fix: fluxo OTP resiliente a reinicializações; verificação da chave API VCC antes da busca de dados",
-        "nl": "Fix: herstart-robuuste OTP-login; VCC API-sleutel wordt gecontroleerd voor gegevens ophalen",
-        "fr": "Fix: flux OTP résistant aux redémarrages; vérification de la clé API VCC avant la récupération des données",
-        "it": "Fix: flusso OTP resistente ai riavvii; controllo chiave API VCC prima del recupero dati",
-        "es": "Fix: flujo OTP resistente a reinicios; verificación de clave API VCC antes de obtener datos",
-        "pl": "Fix: odporny na restarty przepływ OTP; sprawdzanie klucza API VCC przed pobieraniem danych",
-        "uk": "Виправлення: стійкий до перезапуску OTP-логін; перевірка VCC API ключа перед завантаженням даних",
-        "zh-cn": "修复：重启后OTP登录流程恢复；数据获取前检查VCC API密钥"
-      },
-      "1.0.4": {
-        "en": "Fix: graceful 404 handling for location/energy/endpoints (GPS off, non-EV)",
-        "de": "Fix: 404-Fehler bei Location/Energy/Endpoints werden leise behandelt (GPS aus, Nicht-EV)",
-        "ru": "Исправление: корректная обработка 404 для местоположения/энергии (GPS выключен, не-EV)",
-        "pt": "Fix: tratamento gracioso de 404 para localização/energia (GPS desligado, não-EV)",
-        "nl": "Fix: 404-fouten voor locatie/energie worden netjes afgehandeld (GPS uit, niet-EV)",
-        "fr": "Fix: gestion gracieuse des 404 pour localisation/énergie (GPS éteint, non-EV)",
-        "it": "Fix: gestione corretta dei 404 per posizione/energia (GPS spento, non-EV)",
-        "es": "Fix: manejo elegante de 404 para ubicación/energía (GPS apagado, no-EV)",
-        "pl": "Fix: poprawna obsługa 404 dla lokalizacji/energii (GPS wyłączony, nie-EV)",
-        "uk": "Виправлення: коректна обробка 404 для місцезнаходження/енергії (GPS вимкнено, не-EV)",
-        "zh-cn": "修复：优雅处理定位/能源 404 错误（GPS 关闭、非电动车）"
-      },
-      "1.0.3": {
-        "en": "Fix: adapter no longer terminates on first start without stored token; removed double password decrypt",
-        "de": "Fix: Adapter beendet sich nicht mehr beim ersten Start ohne gespeichertes Token; doppelte Passwort-Entschlüsselung entfernt",
-        "ru": "Исправление: адаптер больше не завершается при первом запуске без сохранённого токена",
-        "pt": "Fix: adaptador não se encerra mais no primeiro início sem token armazenado",
-        "nl": "Fix: adapter stopt niet meer bij eerste start zonder opgeslagen token",
-        "fr": "Fix: l'adaptateur ne se ferme plus au premier démarrage sans jeton stocké",
-        "it": "Fix: l'adattatore non si chiude più al primo avvio senza token memorizzato",
-        "es": "Fix: el adaptador ya no se cierra en el primer inicio sin token almacenado",
-        "pl": "Fix: adapter nie kończy się już przy pierwszym uruchomieniu bez zapisanego tokena",
-        "uk": "Виправлення: адаптер більше не завершується при першому запуску без збереженого токена",
-        "zh-cn": "修复：适配器在没有存储令牌的首次启动时不再终止"
-      },
-      "1.0.2": {
-        "en": "Fix: adapter stays alive waiting for OTP login when no token stored; better startup logging; CI deploy on Node 24",
-        "de": "Fix: Adapter bleibt aktiv und wartet auf OTP-Login wenn kein Token gespeichert; bessere Startmeldungen; CI Deploy auf Node 24",
-        "ru": "Исправление: адаптер остаётся активным в ожидании OTP-входа; улучшенное журналирование запуска; CI на Node 24",
-        "pt": "Fix: adaptador permanece ativo aguardando login OTP; melhor log de inicialização; CI deploy no Node 24",
-        "nl": "Fix: adapter blijft actief en wacht op OTP-login; betere opstartlogboeken; CI deploy op Node 24",
-        "fr": "Fix: l'adaptateur reste actif en attendant la connexion OTP; meilleure journalisation au démarrage; CI sur Node 24",
-        "it": "Fix: l'adattatore rimane attivo in attesa del login OTP; migliore logging all'avvio; CI deploy su Node 24",
-        "es": "Fix: el adaptador permanece activo esperando el login OTP; mejor registro de inicio; CI deploy en Node 24",
-        "pl": "Fix: adapter pozostaje aktywny oczekując na logowanie OTP; lepsze logowanie startowe; CI na Node 24",
-        "uk": "Виправлення: адаптер залишається активним в очікуванні OTP-входу; покращене журналювання запуску; CI на Node 24",
-        "zh-cn": "修复：适配器保持运行等待 OTP 登录；改善启动日志；CI 部署到 Node 24"
-      },
       "1.0.0": {
         "en": "First stable release! Vehicle details, retry logic, command status tracking, auto-refresh, jsonConfig Admin5 UI, connection test, vehicle info display",
         "de": "Erstes stabiles Release! Fahrzeugdetails, Retry-Logik, Befehlsstatus-Tracking, Auto-Refresh, jsonConfig Admin5-UI, Verbindungstest, Fahrzeug-Info-Anzeige",
@@ -93,19 +41,6 @@
         "pl": "Pierwsza stabilna wersja! Szczegóły pojazdu, logika ponawiania, śledzenie stanu polecenia, automatyczne odświeżanie, interfejs Admin5 jsonConfig, test połączenia, wyświetlanie informacji pojazdu",
         "uk": "Перший стабільний випуск! Деталі автомобіля, логіка повтору, відстеження статусу команди, автооновлення, інтерфейс Admin5 jsonConfig, перевірка з'єднання, відображення інформації про автомобіль",
         "zh-cn": "首个稳定版本!车辆详情、重试逻辑、命令状态跟踪、自动刷新、jsonConfig Admin5 UI、连接测试、车辆信息显示"
-      },
-      "0.1.2": {
-        "en": "added support for v2 api",
-        "de": "Unterstützung für v2 api hinzugefügt",
-        "ru": "дополнительная поддержка v2 api",
-        "pt": "suporte adicionado para v2 api",
-        "nl": "toegevoegde ondersteuning voor v2 api",
-        "fr": "soutien supplémentaire pour v2 api",
-        "it": "supporto aggiunto per v2 api",
-        "es": "soporte añadido para v2 api",
-        "pl": "dodane wsparcie dla api v2",
-        "uk": "додано підтримку v2 api",
-        "zh-cn": "为 v2 api 添加支持"
       }
     },
     "messages": [
