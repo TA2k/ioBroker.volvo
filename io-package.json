@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "news": {
+      "2.0.1": {
+        "en": "Update dependencies",
+        "de": "Abhängigkeiten aktualisieren",
+        "ru": "Обновление зависимостей",
+        "pt": "Atualizar dependências",
+        "nl": "Afhankelijkheden bijwerken",
+        "fr": "Mettre à jour les dépendances",
+        "it": "Aggiorna dipendenze",
+        "es": "Actualizar dependencias",
+        "pl": "Aktualizuj zależności",
+        "uk": "Оновление зависимостей",
+        "zh-cn": "更新依赖项"
+      },
       "2.0.0": {
         "en": "Breaking Change: API Key now stored encrypted",
         "de": "Breaking Change: API Key wird jetzt verschlüsselt gespeichert",

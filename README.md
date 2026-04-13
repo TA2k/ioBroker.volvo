@@ -87,6 +87,9 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 2.0.1
+- Update dependencies
+
 ### 2.0.0
 - BREAKING CHANGE: API key now stored encrypted, reenter of API key **required**
 
