@@ -18,7 +18,7 @@
     "url": "https://github.com/TA2k/ioBroker.volvo"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.3.2",
