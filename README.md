@@ -87,6 +87,9 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 3.0.0
+- Adapter now requires node.js >= 22
+
 ### 2.0.1
 - Update dependencies
 

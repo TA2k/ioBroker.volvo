@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "2.0.1",
+    "version": "3.0.0",
     "news": {
+      "3.0.0": {
+        "en": "Adapter now requires node.js >= 22",
+        "de": "Adapter benötigt jetzt node.js >= 22",
+        "ru": "Адаптер теперь требует node.js >= 22",
+        "pt": "O adaptador agora requer node.js >= 22",
+        "nl": "Adapter vereist nu node.js >= 22",
+        "fr": "L'adaptateur nécessite désormais node.js >= 22",
+        "it": "L'adattatore ora richiede node.js >= 22",
+        "es": "El adaptador ahora requiere node.js >= 22",
+        "pl": "Adapter teraz wymaga node.js >= 22",
+        "uk": "Адаптер теперь требует node.js >= 22",
+        "zh-cn": "适配器现在需要 node.js >= 22"
+      },
       "2.0.1": {
         "en": "Update dependencies",
         "de": "Abhängigkeiten aktualisieren",

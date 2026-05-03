@@ -1,6 +1,6 @@
 {
   "name": "iobroker.volvo",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Volvo Cars Adapter",
   "author": {
     "name": "TA2k",
@@ -18,11 +18,11 @@
     "url": "https://github.com/TA2k/ioBroker.volvo"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.3.2",
-    "axios": "^1.15.2",
+    "axios": "^1.16.0",
     "json2iob": "^2.6.22",
     "qs": "^6.15.0"
   },
