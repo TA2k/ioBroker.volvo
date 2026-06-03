@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "news": {
+      "3.0.1": {
+        "en": "Fix: address ioBroker repo checker findings (eslint config, prettier, license, this.setInterval/setTimeout, i18n short format)",
+        "de": "Fix: ioBroker Repo-Checker-Hinweise behoben (eslint-Konfig, prettier, Lizenz, this.setInterval/setTimeout, i18n Kurzformat)",
+        "ru": "Исправление: устранены замечания проверки репозитория ioBroker",
+        "pt": "Fix: corrigidos os avisos do verificador do repositório ioBroker",
+        "nl": "Fix: ioBroker repo checker meldingen verholpen",
+        "fr": "Fix: corrections des avertissements du vérificateur de dépôt ioBroker",
+        "it": "Fix: risolti gli avvisi del controllo repository ioBroker",
+        "es": "Fix: corregidas las advertencias del verificador del repositorio ioBroker",
+        "pl": "Fix: naprawiono ostrzeżenia weryfikatora repozytorium ioBroker",
+        "uk": "Виправлення: усунено зауваження перевірки репозиторію ioBroker",
+        "zh-cn": "修复：解决 ioBroker 仓库检查器报告的问题"
+      },
       "3.0.0": {
         "en": "Adapter now requires node.js >= 22",
         "de": "Adapter benötigt jetzt node.js >= 22",

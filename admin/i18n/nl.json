@@ -1,0 +1,14 @@
+{
+    "accountSettings": "Accountinstellingen",
+    "otpCode": "OTP-code",
+    "otpDescription": "Sla de instellingen eerst op en klik op \"Login starten\" om een eenmalig wachtwoord per e-mail te ontvangen. Voer de code in en klik op \"OTP bevestigen\". Als de adapter eerder stopt, voer dan de OTP-code in, sla de instellingen op en herstart de adapter - deze logt automatisch in.",
+    "otpLogin": "Inloggen met eenmalig wachtwoord",
+    "startLoginButton": "Login starten (OTP verzenden)",
+    "submitOtpButton": "OTP verzenden",
+    "testConnectionButton": "Verbinding testen",
+    "updateInterval": "Update-interval (minuten)",
+    "vccApiKey": "VCC API-sleutel",
+    "vccApiKeyHelp": "Haal uw API-sleutel op bij developer.volvocars.com",
+    "volvoIdEmail": "Volvo ID e-mail",
+    "volvoIdPassword": "Volvo ID wachtwoord"
+}

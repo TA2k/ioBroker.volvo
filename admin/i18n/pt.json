@@ -1,0 +1,14 @@
+{
+    "accountSettings": "Configurações da conta",
+    "otpCode": "Código OTP",
+    "otpDescription": "Salve as configurações primeiro, depois clique em \"Iniciar Login\" para receber uma senha descartável por e-mail. Insira o código e clique em \"Enviar OTP\". Se o adaptador terminar antes, basta inserir o código OTP, salvar as configurações e reiniciar o adaptador - ele fará login automaticamente.",
+    "otpLogin": "Login com senha única",
+    "startLoginButton": "Iniciar Login (Enviar OTP)",
+    "submitOtpButton": "Enviar OTP",
+    "testConnectionButton": "Testar Conexão",
+    "updateInterval": "Intervalo de atualização (minutos)",
+    "vccApiKey": "Chave de API VCC",
+    "vccApiKeyHelp": "Obtenha sua chave de API em developer.volvocars.com",
+    "volvoIdEmail": "E-mail do Volvo ID",
+    "volvoIdPassword": "Senha do Volvo ID"
+}

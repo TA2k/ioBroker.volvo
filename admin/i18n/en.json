@@ -1,0 +1,14 @@
+{
+    "accountSettings": "Account Settings",
+    "otpCode": "OTP Code",
+    "otpDescription": "Save settings first, then click 'Start Login' to receive a one-time password via email. Enter the code and click 'Submit OTP'. If the adapter terminates before you can submit, simply enter the OTP code, save settings, and restart the adapter - it will auto-login.",
+    "otpLogin": "Login with OTP",
+    "startLoginButton": "Start Login (Send OTP)",
+    "submitOtpButton": "Submit OTP",
+    "testConnectionButton": "Test Connection",
+    "updateInterval": "Update interval (minutes)",
+    "vccApiKey": "VCC API Key",
+    "vccApiKeyHelp": "Get your API key at developer.volvocars.com",
+    "volvoIdEmail": "Volvo ID Email",
+    "volvoIdPassword": "Volvo ID Password"
+}

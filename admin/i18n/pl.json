@@ -1,0 +1,14 @@
+{
+    "accountSettings": "Ustawienia konta",
+    "otpCode": "Kod OTP",
+    "otpDescription": "Najpierw zapisz ustawienia, następnie kliknij \"Rozpocznij logowanie\", aby otrzymać jednorazowe hasło e-mailem. Wprowadź kod i kliknij \"Zatwierdź OTP\". Jeśli adapter zakończy się wcześniej, po prostu wprowadź kod OTP, zapisz ustawienia i uruchom ponownie adapter - zaloguje się automatycznie.",
+    "otpLogin": "Logowanie za pomocą jednorazowego hasła",
+    "startLoginButton": "Rozpocznij logowanie (Wyślij OTP)",
+    "submitOtpButton": "Wyślij OTP",
+    "testConnectionButton": "Testuj połączenie",
+    "updateInterval": "Interwał aktualizacji (minuty)",
+    "vccApiKey": "Klucz API VCC",
+    "vccApiKeyHelp": "Uzyskaj klucz API na developer.volvocars.com",
+    "volvoIdEmail": "E-mail ID Volvo",
+    "volvoIdPassword": "Hasło ID Volvo"
+}

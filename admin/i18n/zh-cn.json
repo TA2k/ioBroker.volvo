@@ -1,0 +1,14 @@
+{
+    "accountSettings": "帐户设置",
+    "otpCode": "OTP 代码",
+    "otpDescription": "先保存设置，然后点击\"开始登录\"通过电子邮件接收一次性密码。输入代码并点击\"提交OTP\"。如果适配器提前终止，只需输入OTP代码，保存设置并重启适配器 - 它将自动登录。",
+    "otpLogin": "使用一次性密码登录",
+    "startLoginButton": "开始登录（发送 OTP）",
+    "submitOtpButton": "发送 OTP",
+    "testConnectionButton": "测试连接",
+    "updateInterval": "更新间隔（分钟）",
+    "vccApiKey": "VCC API 密钥",
+    "vccApiKeyHelp": "在 developer.volvocars.com 获取您的 API 密钥",
+    "volvoIdEmail": "沃尔沃 ID 电子邮件",
+    "volvoIdPassword": "沃尔沃 ID 密码"
+}

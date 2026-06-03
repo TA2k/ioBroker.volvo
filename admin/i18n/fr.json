@@ -1,0 +1,14 @@
+{
+    "accountSettings": "Paramètres du compte",
+    "otpCode": "Code OTP",
+    "otpDescription": "Enregistrez d'abord les paramètres, puis cliquez sur «Démarrer la connexion» pour recevoir un mot de passe à usage unique par e-mail. Entrez le code et cliquez sur «Soumettre OTP». Si l'adaptateur se termine avant, entrez simplement le code OTP, enregistrez et redémarrez l'adaptateur - il se connectera automatiquement.",
+    "otpLogin": "Connexion avec mot de passe unique",
+    "startLoginButton": "Démarrer la connexion (Envoyer OTP)",
+    "submitOtpButton": "Envoyer OTP",
+    "testConnectionButton": "Tester la connexion",
+    "updateInterval": "Intervalle de mise à jour (minutes)",
+    "vccApiKey": "Clé API VCC",
+    "vccApiKeyHelp": "Obtenez votre clé API sur developer.volvocars.com",
+    "volvoIdEmail": "E-mail Volvo ID",
+    "volvoIdPassword": "Mot de passe Volvo ID"
+}

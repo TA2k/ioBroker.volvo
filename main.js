@@ -89,13 +89,13 @@ class Volvo extends utils.Adapter {
         } else {
           this.log.warn('No VCC API key configured. Please enter your API key in the adapter settings.');
         }
-        this.updateInterval = setInterval(async () => {
+        this.updateInterval = this.setInterval(async () => {
           await this.updateDevice();
         }, this.config.interval * 60 * 1000);
         // Refresh token before it expires (5 min before expiry, min 60s)
         const refreshMs = Math.max(60, (this.session.expires_in || 1799) - 300) * 1000;
         this.log.info(`Token refresh scheduled every ${Math.round(refreshMs / 1000)}s`);
-        this.refreshTokenInterval = setInterval(() => {
+        this.refreshTokenInterval = this.setInterval(() => {
           this.refreshToken();
         }, refreshMs);
 
@@ -108,7 +108,7 @@ class Volvo extends utils.Adapter {
         this.log.info('No active session. Enter OTP in adapter settings and save to complete login.');
         this.log.info('If the adapter terminates, it will auto-login on next start after you save the OTP.');
         // Keep-alive interval so ioBroker doesn't terminate idle daemon
-        this.keepAliveInterval = setInterval(() => {
+        this.keepAliveInterval = this.setInterval(() => {
           this.log.debug('Waiting for login...');
         }, 60000);
       }
@@ -117,7 +117,7 @@ class Volvo extends utils.Adapter {
       this.log.error(error.stack);
       // Stay alive even after errors — user can fix config and re-login via admin
       this.log.info('Adapter staying alive despite startup error. Please check adapter settings.');
-      this.keepAliveInterval = setInterval(() => {
+      this.keepAliveInterval = this.setInterval(() => {
         this.log.debug('Waiting for login after error...');
       }, 60000);
     }
@@ -477,7 +477,7 @@ class Volvo extends utils.Adapter {
     if (!this.config.otp) return; // nothing to clear
     this.config.otp = '';
     // Wait for pending async DB writes (json2iob.parse, extractKeys) to finish
-    await new Promise(resolve => this.timeout = setTimeout(resolve, 3000));
+    await new Promise(resolve => this.setTimeout(resolve, 3000));
     try {
       this.log.info('Clearing OTP from config (this may trigger an adapter restart)...');
       await this.extendForeignObjectAsync('system.adapter.' + this.namespace, {
@@ -535,7 +535,7 @@ class Volvo extends utils.Adapter {
         if (attempt < maxRetries && status && retryStatuses.includes(status)) {
           const delay = Math.pow(2, attempt + 1) * 1000; // 2s, 4s, 8s
           this.log.warn(`API request to ${config.url} failed with ${status}, retrying in ${delay / 1000}s (attempt ${attempt + 1}/${maxRetries})`);
-          await new Promise(resolve => this.timeout = setTimeout(resolve, delay));
+          await new Promise(resolve => this.setTimeout(resolve, delay));
         } else {
           throw error;
         }
@@ -650,13 +650,13 @@ class Volvo extends utils.Adapter {
           this.log.warn('No VCC API key configured. Please enter your API key in the adapter settings.');
         }
         if (!this.updateInterval) {
-          this.updateInterval = setInterval(async () => {
+          this.updateInterval = this.setInterval(async () => {
             await this.updateDevice();
           }, this.config.interval * 60 * 1000);
         }
         if (!this.refreshTokenInterval) {
           const refreshMs = Math.max(60, (this.session.expires_in || 1799) - 300) * 1000;
-          this.refreshTokenInterval = setInterval(() => {
+          this.refreshTokenInterval = this.setInterval(() => {
             this.refreshToken();
           }, refreshMs);
         }
@@ -992,7 +992,7 @@ class Volvo extends utils.Adapter {
    */
   async pollCommandStatus(vin, command, asyncHref) {
     for (let attempt = 0; attempt < 5; attempt++) {
-      await new Promise(resolve => this.timeout = setTimeout(resolve, 3000));
+      await new Promise(resolve => this.setTimeout(resolve, 3000));
       try {
         const res = await this.apiRequest({
           method: 'get',

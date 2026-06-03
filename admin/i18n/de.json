@@ -1,0 +1,14 @@
+{
+    "accountSettings": "Kontoeinstellungen",
+    "otpCode": "Einmalpasswort",
+    "otpDescription": "Einstellungen zuerst speichern, dann 'Login starten' klicken um ein Einmalpasswort per E-Mail zu erhalten. Code eingeben und 'OTP bestätigen' klicken. Falls der Adapter sich vorher beendet, einfach den OTP-Code eingeben, Einstellungen speichern und den Adapter neu starten - er loggt sich automatisch ein.",
+    "otpLogin": "Anmeldung mit Einmalpasswort",
+    "startLoginButton": "Login starten (OTP senden)",
+    "submitOtpButton": "OTP bestätigen",
+    "testConnectionButton": "Verbindung testen",
+    "updateInterval": "Aktualisierungsintervall (Minuten)",
+    "vccApiKey": "VCC API-Schlüssel",
+    "vccApiKeyHelp": "API-Schlüssel unter developer.volvocars.com beziehen",
+    "volvoIdEmail": "Volvo ID E-Mail",
+    "volvoIdPassword": "Volvo ID Passwort"
+}
