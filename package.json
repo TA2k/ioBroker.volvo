@@ -21,7 +21,7 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^3.3.2",
+    "@iobroker/adapter-core": "^3.4.1",
     "axios": "^1.17.0",
     "json2iob": "^2.6.24",
     "qs": "^6.15.2"
