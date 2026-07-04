@@ -23,7 +23,7 @@
   "dependencies": {
     "@iobroker/adapter-core": "^3.4.1",
     "axios": "^1.17.0",
-    "json2iob": "^2.6.24",
+    "json2iob": "^2.6.25",
     "qs": "^6.15.2"
   },
   "devDependencies": {
