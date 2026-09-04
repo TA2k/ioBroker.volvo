@@ -17,7 +17,7 @@
 - **ioBroker address**: Ask the user or check their environment
 - **SSH credentials**: Ask the user
 - **Admin credentials**: Ask the user
-- **VIN**: Read from adapter states: `iobroker state getPlainValue volvo.0.info.connection` or list objects `iobroker object list volvo.0.*`
+- **VIN**: Read from adapter states: `iobroker state getValue volvo.0.info.connection` or list objects `iobroker object list volvo.0.*`
 - **API key**: Stored in adapter config (encrypted via `encryptedNative`), read via adapter settings UI
 - **Local dev IP**: Use `hostname -I` or similar
 
@@ -111,7 +111,8 @@ The auth flow persists state across adapter restarts so OTP submission survives:
 ### Useful ioBroker Commands
 ```bash
 iobroker state set volvo.0.xxx.xxx value --allow-root    # Set state
-iobroker state get volvo.0.xxx.xxx --allow-root          # Get state
+iobroker state get volvo.0.xxx.xxx --allow-root          # Get full state object (JSON)
+iobroker state getValue volvo.0.xxx.xxx --allow-root     # Get only the value
 iobroker object del volvo.0.xxx.xxx --allow-root         # Delete object
 iobroker list states volvo.0.* --allow-root              # List states
 iobroker upload volvo --allow-root                       # Upload admin files
