@@ -35,13 +35,16 @@
     "@iobroker/eslint-config": "^2.3.4",
     "@iobroker/testing": "^5.3.0",
     "@tsconfig/node22": "^22.0.6",
-    "@types/node": "^22.20.1"
+    "@types/node": "^22.20.1",
+    "chai": "^4.5.0",
+    "chai-as-promised": "^7.1.2",
+    "sinon": "^22.1.0",
+    "sinon-chai": "^3.7.0"
   },
   "main": "main.js",
   "scripts": {
     "test:js": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
     "test:package": "mocha test/package --exit",
-    "test:unit": "mocha test/unit --exit",
     "test:integration": "mocha test/integration --exit",
     "test": "npm run test:js && npm run test:package",
     "lint": "eslint .",
@@ -50,7 +53,7 @@
   "overrides": {
     "serialize-javascript": ">=7.0.5",
     "diff": ">=8.0.3",
-    "esbuild": ">=0.25.0"
+    "esbuild": ">=0.28.1"
   },
   "bugs": {
     "url": "https://github.com/TA2k/ioBroker.volvo/issues"
