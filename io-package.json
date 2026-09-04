@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "news": {
+      "3.0.2": {
+        "en": "Chore: dependency updates (axios, qs, @iobroker/adapter-core, json2iob and dev dependencies)",
+        "de": "Chore: Abhängigkeiten aktualisiert (axios, qs, @iobroker/adapter-core, json2iob und Dev-Abhängigkeiten)",
+        "ru": "Обновление зависимостей (axios, qs, @iobroker/adapter-core, json2iob и dev-зависимости)",
+        "pt": "Chore: atualização das dependências (axios, qs, @iobroker/adapter-core, json2iob e dependências de desenvolvimento)",
+        "nl": "Chore: afhankelijkheden bijgewerkt (axios, qs, @iobroker/adapter-core, json2iob en dev-afhankelijkheden)",
+        "fr": "Chore : mise à jour des dépendances (axios, qs, @iobroker/adapter-core, json2iob et dépendances de développement)",
+        "it": "Chore: aggiornamento delle dipendenze (axios, qs, @iobroker/adapter-core, json2iob e dipendenze di sviluppo)",
+        "es": "Chore: actualización de dependencias (axios, qs, @iobroker/adapter-core, json2iob y dependencias de desarrollo)",
+        "pl": "Chore: aktualizacja zależności (axios, qs, @iobroker/adapter-core, json2iob i zależności dev)",
+        "uk": "Оновлення залежностей (axios, qs, @iobroker/adapter-core, json2iob та dev-залежності)",
+        "zh-cn": "维护：更新依赖项（axios、qs、@iobroker/adapter-core、json2iob 及开发依赖）"
+      },
       "3.0.1": {
         "en": "Fix: address ioBroker repo checker findings (eslint config, prettier, license, this.setInterval/setTimeout, i18n short format)",
         "de": "Fix: ioBroker Repo-Checker-Hinweise behoben (eslint-Konfig, prettier, Lizenz, this.setInterval/setTimeout, i18n Kurzformat)",

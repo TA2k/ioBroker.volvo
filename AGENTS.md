@@ -8,7 +8,7 @@
 - **Admin UI**: Admin5 / jsonConfig (`admin/jsonConfig.json`) — no Materialize, no jQuery, no `index_m.html`
 - **Localization**: Via `admin/i18n/{lang}/translations.json` (11 languages: de, en, es, fr, it, nl, pl, pt, ru, uk, zh-cn)
 - **Primary Language**: JavaScript (Node.js)
-- **Current Version**: 2.0.0
+- **Current Version**: 3.0.2
 
 ## Discovering Runtime Information
 
