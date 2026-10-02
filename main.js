@@ -13,6 +13,11 @@ const { extractKeys } = require('./lib/extractKeys');
 const AUTH_URL = 'https://volvoid.eu.volvocars.com/as/authorization.oauth2';
 const TOKEN_URL = 'https://volvoid.eu.volvocars.com/as/token.oauth2';
 const AUTH_BASIC = 'Basic aDRZZjBiOlU4WWtTYlZsNnh3c2c1WVFxWmZyZ1ZtSWFEcGhPc3kxUENhVXNpY1F0bzNUUjVrd2FKc2U0QVpkZ2ZJZmNMeXc=';
+// Refresh token does not rotate and dies a fixed time after the OTP login.
+// 180 days is observed (not documented by Volvo), see AGENTS.md.
+const REFRESH_TOKEN_MAX_AGE_DAYS = 180;
+const REFRESH_TOKEN_WARN_DAYS = 7;
+const DAY_MS = 24 * 60 * 60 * 1000;
 const AUTH_SCOPES = [
   'openid',
   'conve:brake_status',
@@ -210,6 +215,7 @@ class Volvo extends utils.Adapter {
         this.session = res.data;
         await this._persistTokens();
         this.setState('info.connection', true, true);
+        await this._checkRefreshTokenAge();
         return;
       } catch (_err) {
         this.log.warn('Stored refresh token expired or invalid, need fresh OTP login');
@@ -464,7 +470,39 @@ class Volvo extends utils.Adapter {
     this.log.info('Login successful');
     this.session = tokenRes.data;
     await this._persistTokens();
+    await this.setStateAsync('auth.loginTimestamp', Date.now(), true);
     this.setState('info.connection', true, true);
+  }
+
+  /**
+   * Warn (once a day) when the refresh token is about to reach its maximum lifetime.
+   */
+  async _checkRefreshTokenAge() {
+    const loginTs = await this._getLoginTimestamp();
+    if (!loginTs) return;
+    const expiresAt = loginTs + REFRESH_TOKEN_MAX_AGE_DAYS * DAY_MS;
+    const daysLeft = (expiresAt - Date.now()) / DAY_MS;
+    if (daysLeft > REFRESH_TOKEN_WARN_DAYS) return;
+    if (this.lastExpiryWarning && Date.now() - this.lastExpiryWarning < DAY_MS) return;
+    this.lastExpiryWarning = Date.now();
+    this.log.warn(
+      `Volvo login will expire in about ${Math.max(0, Math.ceil(daysLeft))} day(s) (around ${new Date(expiresAt).toLocaleString()}). ` +
+        'Please log in again in the adapter settings ("Start login" and enter the OTP from the email) to avoid an interruption.',
+    );
+  }
+
+  /**
+   * Time of the last OTP login in ms, or 0 if unknown.
+   */
+  async _getLoginTimestamp() {
+    const loginState = await this.getStateAsync('auth.loginTimestamp');
+    if (loginState && loginState.val) return Number(loginState.val);
+    // Older versions did not store it. The refresh token never rotates,
+    // so the last value change (lc) of its state is the login time.
+    const tokenState = await this.getStateAsync('auth.refreshToken');
+    if (!tokenState || !tokenState.val || !tokenState.lc) return 0;
+    await this.setStateAsync('auth.loginTimestamp', tokenState.lc, true);
+    return tokenState.lc;
   }
 
   /**
@@ -513,6 +551,11 @@ class Volvo extends utils.Adapter {
     await this.setObjectNotExistsAsync('auth.refreshToken', {
       type: 'state',
       common: { name: 'Refresh Token', type: 'string', role: 'text', read: true, write: false },
+      native: {},
+    });
+    await this.setObjectNotExistsAsync('auth.loginTimestamp', {
+      type: 'state',
+      common: { name: 'Last OTP login', type: 'number', role: 'date', read: true, write: false },
       native: {},
     });
     if (this.session.refresh_token) {
@@ -845,7 +888,13 @@ class Volvo extends utils.Adapter {
       });
   }
   async updateDevice(singleVin) {
+    if (!this.session.access_token) {
+      this.log.warn('Not logged in to Volvo ID, skipping data update. Please log in via the adapter settings.');
+      return;
+    }
     const vins = singleVin ? [singleVin] : this.vinArray;
+    let unauthorized = false;
+    const isUnauthorized = (error) => error.response && error.response.status === 401;
     for (const vin of vins) {
       const endpoints = [
         'engine',
@@ -877,7 +926,9 @@ class Volvo extends utils.Adapter {
             }
           })
           .catch((error) => {
-            if (error.response && error.response.status === 404) {
+            if (isUnauthorized(error)) {
+              unauthorized = true;
+            } else if (error.response && error.response.status === 404) {
               this.log.debug(`Endpoint ${endpoint} not available for this vehicle`);
             } else {
               this.log.error(`Error: ${endpoint} failed`);
@@ -885,7 +936,9 @@ class Volvo extends utils.Adapter {
               error.response && this.log.error(JSON.stringify(error.response.data));
             }
           });
+        if (unauthorized) break;
       }
+      if (unauthorized) break;
       // added for including location position
       await this.apiRequest({
         method: 'get',
@@ -903,7 +956,9 @@ class Volvo extends utils.Adapter {
           }
         })
         .catch((error) => {
-          if (error.response && error.response.status === 404) {
+          if (isUnauthorized(error)) {
+            unauthorized = true;
+          } else if (error.response && error.response.status === 404) {
             this.log.debug('Location not available (GPS may be off or no location data yet)');
           } else {
             this.log.error('failed to get location');
@@ -929,7 +984,9 @@ class Volvo extends utils.Adapter {
           }
         })
         .catch((error) => {
-          if (error.response && error.response.status === 404) {
+          if (isUnauthorized(error)) {
+            unauthorized = true;
+          } else if (error.response && error.response.status === 404) {
             this.log.debug('Energy data not available (vehicle may not support energy API)');
           } else {
             this.log.error('failed to get energy state');
@@ -937,8 +994,12 @@ class Volvo extends utils.Adapter {
             error.response && this.log.error(JSON.stringify(error.response.data));
           }
         });
+      if (unauthorized) break;
 
       await this.setStateAsync(vin + '.lastUpdate', new Date().toISOString(), true);
+    }
+    if (unauthorized) {
+      await this._handleUnauthorized();
     }
   }
   async refreshToken() {
@@ -969,7 +1030,7 @@ class Volvo extends utils.Adapter {
     })
       .then(async (res) => {
         this.log.debug(JSON.stringify(res.data));
-        this.log.info('Token refresh successful');
+        this.log.debug('Token refresh successful');
         // Preserve refresh_token if not returned in response
         if (!res.data.refresh_token) {
           res.data.refresh_token = currentRefreshToken;
@@ -977,14 +1038,55 @@ class Volvo extends utils.Adapter {
         this.session = res.data;
         await this._persistTokens();
         this.setState('info.connection', true, true);
+        await this._checkRefreshTokenAge();
       })
-      .catch((error) => {
+      .catch(async (error) => {
+        // invalid_grant = refresh token is dead for good (e.g. max lifetime reached) — retrying won't help
+        if (error.response && error.response.data && error.response.data.error === 'invalid_grant') {
+          await this._handleSessionExpired();
+          return;
+        }
         this.log.error('Token refresh failed: ' + (error.message || error));
         if (error.response) {
           this.log.error(JSON.stringify(error.response.data));
         }
         this.setState('info.connection', false, true);
       });
+  }
+
+  /**
+   * Refresh token was rejected permanently. Stop polling and wait for a new OTP login
+   * instead of logging the same 401 errors on every update cycle.
+   */
+  async _handleSessionExpired() {
+    const loginTs = await this._getLoginTimestamp();
+    const age = loginTs ? ` Last OTP login was ${((Date.now() - loginTs) / DAY_MS).toFixed(1)} days ago.` : '';
+    this.log.error(
+      'Volvo session expired: the refresh token is no longer valid (maximum lifetime reached or revoked).' + age + ' ' +
+        'Data updates are paused. Please log in again in the adapter settings ("Start login" and enter the OTP from the email).',
+    );
+    this.updateInterval && this.clearInterval(this.updateInterval);
+    this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
+    this.updateInterval = null;
+    this.refreshTokenInterval = null;
+    this.session = {};
+    this.setState('info.connection', false, true);
+    // Drop the dead token so a restart goes straight to the OTP flow
+    await this.setStateAsync('auth.refreshToken', '', true);
+    await this.setStateAsync('auth.loginTimestamp', 0, true);
+    if (!this.keepAliveInterval) {
+      this.keepAliveInterval = this.setInterval(() => {
+        this.log.debug('Waiting for login...');
+      }, 60000);
+    }
+  }
+
+  /**
+   * Access token was rejected (401). Skip the current cycle and try to get a new one right away.
+   */
+  async _handleUnauthorized() {
+    this.log.warn('Volvo API rejected the access token (401). Skipping this update and refreshing the token.');
+    await this.refreshToken();
   }
 
   /**

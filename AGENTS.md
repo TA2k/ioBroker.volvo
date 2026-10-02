@@ -39,6 +39,13 @@ PingFederate multi-step OTP authentication for Volvo ID:
 - **Client credentials**: Defined as constants in `main.js` (`AUTH_BASIC`, `AUTH_SCOPES`)
 - **Token Refresh**: Volvo doesn't always return a new `refresh_token` — **MUST preserve the old token** if new one is missing in the response
 - **Token Storage**: Persisted in `volvo.0.auth.refreshToken` ioBroker state
+- **Token Lifetimes** (measured, not documented for this client):
+  - Access token: 30 min (`expires_in: 1799`, JWT) — refreshed every 1499s
+  - Refresh token: opaque, **never rotated** (refresh response has no `refresh_token`), hard limit of **~180 days after the OTP login** (observed: login 2026-04-03 ~21:43 → `invalid_grant` 2026-09-30 21:43). Refreshing does not extend it.
+  - The "7 days + rotation" in the Volvo developer docs only applies to developer-portal OAuth apps, not to the app client (`h4Yf0b`) used here
+- **Login Timestamp**: `auth.loginTimestamp` (ms) set on every OTP login; for older installs it is seeded once from the `lc` of `auth.refreshToken` (valid because the token never rotates). Used for a daily `warn` from 7 days before expiry (`REFRESH_TOKEN_MAX_AGE_DAYS` / `REFRESH_TOKEN_WARN_DAYS` in `main.js`)
+- **Session Expired**: `invalid_grant` on refresh → `_handleSessionExpired()`: one error log, polling + refresh intervals stopped, refresh token and login timestamp cleared, keep-alive until the next OTP login (`submitOtp` restarts the intervals because they are `null`)
+- **401 on data endpoints**: `updateDevice()` aborts the cycle on the first 401, logs one warning and triggers `refreshToken()` immediately
 - **Encrypted config**: `password` and `vccapikey` are in `encryptedNative` / `protectedNative` — ioBroker decrypts them automatically before passing to `this.config`
 
 ### Restart-Resilient Auth Flow
@@ -152,6 +159,10 @@ Note: `--allow-root` is required on systems running ioBroker as root.
 | `getDeviceList()` | Fetch vehicle list + all status endpoints |
 | `updateDevice()` | Refresh all vehicle data |
 | `refreshToken()` | Exchange refresh token for new access token |
+| `_handleSessionExpired()` | Refresh token dead (`invalid_grant`): stop polling, wait for OTP login |
+| `_handleUnauthorized()` | 401 during update: warn once, refresh token immediately |
+| `_checkRefreshTokenAge()` | Daily warning before the ~180-day refresh token limit |
+| `_getLoginTimestamp()` | Last OTP login (seeds `auth.loginTimestamp` from token `lc` if missing) |
 
 ### Key Libraries
 - **json2iob**: Parses API responses into ioBroker state trees
