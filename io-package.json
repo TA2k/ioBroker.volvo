@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "news": {
+      "3.0.3": {
+        "en": "Fix: no more log spam after the Volvo login expired, warning 7 days before expiry; dependency updates",
+        "de": "Fix: kein Log-Spam mehr nach Ablauf des Volvo-Logins, Warnung 7 Tage vor Ablauf; Abhängigkeiten aktualisiert",
+        "ru": "Исправление: больше нет спама в журнале после истечения входа Volvo, предупреждение за 7 дней до истечения; обновление зависимостей",
+        "pt": "Fix: sem spam no log após a expiração do login Volvo, aviso 7 dias antes da expiração; dependências atualizadas",
+        "nl": "Fix: geen logspam meer na het verlopen van de Volvo-login, waarschuwing 7 dagen voor het verlopen; afhankelijkheden bijgewerkt",
+        "fr": "Fix: plus de spam dans le journal après l'expiration de la connexion Volvo, avertissement 7 jours avant l'expiration ; dépendances mises à jour",
+        "it": "Fix: niente più spam nel log dopo la scadenza del login Volvo, avviso 7 giorni prima della scadenza; dipendenze aggiornate",
+        "es": "Fix: sin spam en el registro tras caducar el inicio de sesión de Volvo, aviso 7 días antes de la caducidad; dependencias actualizadas",
+        "pl": "Fix: koniec ze spamem w logu po wygaśnięciu logowania Volvo, ostrzeżenie 7 dni przed wygaśnięciem; zaktualizowane zależności",
+        "uk": "Виправлення: більше немає спаму в журналі після закінчення входу Volvo, попередження за 7 днів до закінчення; оновлення залежностей",
+        "zh-cn": "修复：Volvo 登录过期后不再刷屏日志，过期前 7 天发出警告；更新依赖项"
+      },
       "3.0.2": {
         "en": "Chore: dependency updates (axios, qs, @iobroker/adapter-core, json2iob and dev dependencies)",
         "de": "Chore: Abhängigkeiten aktualisiert (axios, qs, @iobroker/adapter-core, json2iob und Dev-Abhängigkeiten)",
