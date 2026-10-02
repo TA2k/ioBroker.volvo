@@ -210,7 +210,7 @@ Note: `--allow-root` is required on systems running ioBroker as root.
 - Browser hard-refresh may also be needed
 
 ### Commit Convention
-- Always include `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>` trailer
-- Use conventional commits: `fix:`, `feat:`, `chore:`, `docs:`
-- Git author: `Vinnedinho`
+- Use conventional commits: `fix:`, `feat:`, `chore:`, `docs:` — subject and body in English
+- Use the local git identity, do not override the author
+- Add the co-author/attribution trailer your own tool or session prescribes, if any
 - Do NOT auto-commit/push — prepare changes, let user review
