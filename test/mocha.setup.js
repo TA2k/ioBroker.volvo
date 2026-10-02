@@ -11,4 +11,5 @@ const { should, use } = require('chai');
 
 should();
 use(sinonChai);
-use(chaiAsPromised);
+// chai-as-promised >= 8 is ESM-only, require() returns the module namespace
+use(chaiAsPromised.default || chaiAsPromised);
