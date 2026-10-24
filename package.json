@@ -24,7 +24,7 @@
     "@iobroker/adapter-core": "^3.4.3",
     "axios": "^1.20.0",
     "json2iob": "^2.6.28",
-    "qs": "^6.16.0"
+    "qs": "^6.16.1"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^5.2.1",
