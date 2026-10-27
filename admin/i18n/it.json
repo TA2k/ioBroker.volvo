@@ -1,7 +1,7 @@
 {
     "accountSettings": "Impostazioni dell'account",
     "otpCode": "Codice OTP",
-    "otpDescription": "Salvare prima le impostazioni, poi fare clic su \"Avvia Login\" per ricevere una password monouso via email. Inserire il codice e fare clic su \"Invia OTP\". Se l'adattatore si chiude prima, inserire il codice OTP, salvare le impostazioni e riavviare l'adattatore - si collegherà automaticamente.",
+    "otpDescription": "Salvare prima le impostazioni, poi fare clic su \"Avvia Login\" per ricevere una password monouso via email. Inserire il codice e fare clic su \"Invia OTP\".",
     "otpLogin": "Accesso con password monouso",
     "startLoginButton": "Avvia accesso (Invia OTP)",
     "submitOtpButton": "Invia OTP",

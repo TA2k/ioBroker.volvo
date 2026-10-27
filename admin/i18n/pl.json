@@ -1,7 +1,7 @@
 {
     "accountSettings": "Ustawienia konta",
     "otpCode": "Kod OTP",
-    "otpDescription": "Najpierw zapisz ustawienia, następnie kliknij \"Rozpocznij logowanie\", aby otrzymać jednorazowe hasło e-mailem. Wprowadź kod i kliknij \"Zatwierdź OTP\". Jeśli adapter zakończy się wcześniej, po prostu wprowadź kod OTP, zapisz ustawienia i uruchom ponownie adapter - zaloguje się automatycznie.",
+    "otpDescription": "Najpierw zapisz ustawienia, następnie kliknij \"Rozpocznij logowanie\", aby otrzymać jednorazowe hasło e-mailem. Wprowadź kod i kliknij \"Zatwierdź OTP\".",
     "otpLogin": "Logowanie za pomocą jednorazowego hasła",
     "startLoginButton": "Rozpocznij logowanie (Wyślij OTP)",
     "submitOtpButton": "Wyślij OTP",

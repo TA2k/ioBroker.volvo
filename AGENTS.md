@@ -8,7 +8,7 @@
 - **Admin UI**: Admin5 / jsonConfig (`admin/jsonConfig.json`) — no Materialize, no jQuery, no `index_m.html`
 - **Localization**: Via `admin/i18n/{lang}/translations.json` (11 languages: de, en, es, fr, it, nl, pl, pt, ru, uk, zh-cn)
 - **Primary Language**: JavaScript (Node.js)
-- **Current Version**: 3.0.4
+- **Current Version**: 3.1.0
 
 ## Discovering Runtime Information
 
@@ -23,42 +23,39 @@
 
 ## Authentication Flow
 
-PingFederate multi-step OTP authentication for Volvo ID:
+Since 3.1.0 the adapter logs in like the Volvo Cars app: public client `mo2qy9h_10`, Authorization Code + PKCE (S256), redirect `vca://www.volvocars.com/l/vca/oauth/callback`, tokens bound to a DPoP key (ES256). The previous client `h4Yf0b` (PingFederate `pi.flow` JSON API) was disabled by Volvo on 2026-10-26 (`invalid_client`, issue #155); the app client is not allowed to use `pi.flow`.
 
-1. **POST /as/authorization.oauth2** with `client_id`, `response_type=code`, `response_mode=pi.flow` → Returns `flowId`
-2. **POST /pf-ws/authn/flows/{flowId}?action=checkUsernamePassword** → `OTP_REQUIRED`
-3. **POST /pf-ws/authn/flows/{flowId}?action=checkOtp** → `OTP_VERIFIED`
-4. **POST /pf-ws/authn/flows/{flowId}?action=continueAuthentication** → authorization `code`
-5. **POST /as/token.oauth2** with `grant_type=authorization_code` → tokens
+Volvo ID's PingFederate forwards the login to Keycloak (`auth.volvocars.com/realms/volvocars`, Keycloakify pages with an embedded `kcContext`). The adapter submits the HTML forms itself (`_authFetch()` follows redirects and keeps cookies per host):
+
+1. **GET /as/authorization.oauth2** (`client_id`, `redirect_uri`, `scope`, `code_challenge`, `acr_values=urn:volvoid:aal:bronze:2sv`) → redirects to Keycloak page `pageId: "login"`
+2. **POST `kcContext.url.loginAction`** with `username`, `password`, `credentialId=` → page `pageId: "login-otp-email"`, Volvo sends the OTP email
+3. **POST `loginAction` of the OTP page** with `otp` → 302 chain back through PingFederate → `Location: vca://…/callback?code=…` (wrong OTP: OTP page again with a new `loginAction`)
+4. **POST /as/token.oauth2** with `grant_type=authorization_code`, `client_id`, `code`, `redirect_uri`, `code_verifier` and a `DPoP` proof header → tokens (`token_type: DPoP`)
+
+Helpers for PKCE, DPoP proofs and parsing `kcContext` live in `lib/volvoAuth.js` (unit tests in `test/testVolvoAuth.js`).
 
 ### Critical Auth Details
 
-- **PingFederate cookies MANDATORY** between all auth steps — store and replay Set-Cookie headers
-- **http→https URL conversion**: Auth responses may contain `http://` URLs; must convert to `https://`
-- **X-XSRF-Header: PingFederate** required on ALL auth requests
-- **Client credentials**: Defined as constants in `main.js` (`AUTH_BASIC`, `AUTH_SCOPES`)
-- **Token Refresh**: Volvo doesn't always return a new `refresh_token` — **MUST preserve the old token** if new one is missing in the response
-- **Token Storage**: Persisted in `volvo.0.auth.refreshToken` ioBroker state
-- **Token Lifetimes** (measured, not documented for this client):
-  - Access token: 30 min (`expires_in: 1799`, JWT) — refreshed every 1499s
-  - Refresh token: opaque, **never rotated** (refresh response has no `refresh_token`), hard limit of **~180 days after the OTP login** (observed: login 2026-04-03 ~21:43 → `invalid_grant` 2026-09-30 21:43). Refreshing does not extend it.
-  - The "7 days + rotation" in the Volvo developer docs only applies to developer-portal OAuth apps, not to the app client (`h4Yf0b`) used here
+- **API calls** to `api.volvocars.com` use `Authorization: Bearer <access_token>` + `vcc-api-key`. The API accepts the DPoP-bound token as Bearer **without** a DPoP proof (scheme `DPoP` returns 401)
+- **Refresh** (`grant_type=refresh_token`, `client_id`) **requires a DPoP proof** signed with the same key (`invalid_dpop_proof` otherwise) → the private key is persisted as JWK in `auth.dpopKey`. A stored refresh token without `auth.dpopKey` is from the old client and is discarded on start
+- **DPoP proofs are single-use** (`jti`): `apiRequest()` accepts a config factory so each retry builds a fresh proof
+- **No client secret**, `AUTH_SCOPES` in `main.js` are the `conve:*`/`energy:*`/`location:read` subset of the app scopes
+- **Token Refresh**: Volvo doesn't return a new `refresh_token` — **MUST preserve the old token**
+- **Token Storage**: `auth.refreshToken` + `auth.dpopKey` ioBroker states
+- **Token Lifetimes**:
+  - Access token: 30 min (`expires_in: 1799`) — refreshed every 1499s
+  - Refresh token of the app client: lifetime **not measured yet**. The old client `h4Yf0b` had a hard limit of ~180 days after the OTP login without rotation; the expiry warning (`REFRESH_TOKEN_MAX_AGE_DAYS`) still assumes that
 - **Login Timestamp**: `auth.loginTimestamp` (ms) set on every OTP login; for older installs it is seeded once from the `lc` of `auth.refreshToken` (valid because the token never rotates). Used for a daily `warn` from 7 days before expiry (`REFRESH_TOKEN_MAX_AGE_DAYS` / `REFRESH_TOKEN_WARN_DAYS` in `main.js`)
 - **Session Expired**: `invalid_grant` on refresh → `_handleSessionExpired()`: one error log, polling + refresh intervals stopped, refresh token and login timestamp cleared, keep-alive until the next OTP login (`submitOtp` restarts the intervals because they are `null`)
 - **401 on data endpoints**: `updateDevice()` aborts the cycle on the first 401, logs one warning and triggers `refreshToken()` immediately
 - **Encrypted config**: `password` and `vccapikey` are in `encryptedNative` / `protectedNative` — ioBroker decrypts them automatically before passing to `this.config`
 
-### Restart-Resilient Auth Flow
+### OTP Login (admin UI only)
 
-The auth flow persists state across adapter restarts so OTP submission survives:
-
-- **Persisted states**: `auth.flowId`, `auth.flowCookies`, `auth.flowTimestamp`
-- Flow expires after ~8 min (Volvo server-side is ~10 min)
-- **Login paths** (in `newLogin()`):
-  1. Stored `refresh_token` → immediate login
-  2. OTP in config → try resume persisted flow OR do fresh full login
-  3. No token, no OTP → trigger OTP email automatically, wait for user
-- **OTP clearing**: After successful login, `_clearOtpFromConfig()` removes OTP from `native.otp` via `extendForeignObjectAsync` — this triggers a js-controller restart (expected). 3s delay added to let pending DB writes finish.
+- The OTP login is **only** started by the admin button "Start Login (Send OTP)" (`sendTo startLogin`) and finished with "Submit OTP" (`sendTo submitOtp`). The adapter never sends an OTP email on its own (user request)
+- The OTP field is `doNotSave` — saving the settings with an OTP and restarting is no longer a login path (it failed with Keycloak `login-error` in a test and was removed)
+- **Persisted flow states** (survive a restart between the two buttons): `auth.flowId` (OTP form action URL), `auth.flowVerifier` (PKCE), `auth.flowCookies` (JSON, per host)
+- **Login paths** (in `newLogin()`): stored `refresh_token` + `dpopKey` → immediate login; otherwise log a hint and wait for the buttons
 - **`isStopping` flag**: Set in `onUnload()`, checked in `lib/extractKeys.js` error handlers to suppress "DB closed" errors during shutdown
 
 ### Why the Adapter Sometimes Auto-Terminates
@@ -146,15 +143,15 @@ Note: `--allow-root` is required on systems running ioBroker as root.
 | Method | Purpose |
 |---|---|
 | `onReady()` | Startup: login, data fetch, intervals, OTP clear |
-| `newLogin()` | Three-path login dispatcher |
-| `_initAuthAndSendCredentials()` | Step 1+2 of PingFederate flow |
-| `_persistAuthFlowState()` | Save flowId/cookies to ioBroker states |
-| `_tryResumeAuthFlow()` | Resume persisted flow with OTP |
-| `_fullOtpLogin(otp)` | Fresh full flow with OTP |
-| `_exchangeCodeForTokens(code)` | Exchange auth code for access/refresh tokens |
+| `newLogin()` | Login with stored refresh token, otherwise wait for the admin buttons |
+| `_authFetch()` | Browser-like auth request: per-host cookies, follows redirects up to the `vca://` callback |
+| `_startLoginFlow()` | Steps 1+2: open login page, submit credentials (sends OTP email) |
+| `_submitOtp(otp)` | Step 3+4: submit OTP, exchange code |
+| `_persistAuthFlowState()` / `_loadAuthFlowState()` | Save/restore OTP form action, PKCE verifier, cookies |
+| `_exchangeCodeForTokens(code, verifier)` | Code → DPoP-bound tokens, creates the DPoP key |
+| `_refreshTokenConfig()` | Refresh request with DPoP proof |
 | `_clearAuthFlowState()` | Remove persisted flow states |
-| `_clearOtpFromConfig()` | Remove OTP from native config (triggers restart) |
-| `_persistTokens()` | Save tokens to ioBroker states |
+| `_persistTokens()` | Save refresh token + DPoP key to ioBroker states |
 | `onMessage(obj)` | Handle sendTo: startLogin, submitOtp, testConnection |
 | `getDeviceList()` | Fetch vehicle list + all status endpoints |
 | `updateDevice()` | Refresh all vehicle data |

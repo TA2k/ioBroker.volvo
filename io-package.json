@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "3.0.4",
+    "version": "3.1.0",
     "news": {
+      "3.1.0": {
+        "en": "New login method: Volvo disabled the old login client, the adapter now logs in like the Volvo Cars app. Please log in again once (\"Start login\" and enter the OTP from the email)",
+        "de": "Neue Login-Methode: Volvo hat den alten Login-Client abgeschaltet, der Adapter meldet sich jetzt wie die Volvo-Cars-App an. Bitte einmal neu anmelden („Login starten“ und den OTP aus der E-Mail eingeben)",
+        "ru": "Новый способ входа: Volvo отключил старый клиент входа, адаптер теперь входит как приложение Volvo Cars. Пожалуйста, войдите заново один раз («Начать вход» и введите OTP из письма)",
+        "pt": "Novo método de login: a Volvo desativou o cliente de login antigo, o adaptador agora faz login como a app Volvo Cars. Faça login novamente uma vez (\"Iniciar login\" e introduza o OTP do e-mail)",
+        "nl": "Nieuwe inlogmethode: Volvo heeft de oude login-client uitgeschakeld, de adapter logt nu in zoals de Volvo Cars-app. Log één keer opnieuw in (\"Login starten\" en voer de OTP uit de e-mail in)",
+        "fr": "Nouvelle méthode de connexion : Volvo a désactivé l'ancien client de connexion, l'adaptateur se connecte désormais comme l'application Volvo Cars. Veuillez vous reconnecter une fois (« Démarrer la connexion » et saisir l'OTP reçu par e-mail)",
+        "it": "Nuovo metodo di login: Volvo ha disattivato il vecchio client di login, l'adattatore ora accede come l'app Volvo Cars. Effettua di nuovo il login una volta (\"Avvia login\" e inserisci l'OTP dall'e-mail)",
+        "es": "Nuevo método de inicio de sesión: Volvo desactivó el cliente antiguo, el adaptador ahora inicia sesión como la app Volvo Cars. Inicie sesión de nuevo una vez (\"Iniciar sesión\" e introduzca el OTP del correo)",
+        "pl": "Nowa metoda logowania: Volvo wyłączyło starego klienta logowania, adapter loguje się teraz jak aplikacja Volvo Cars. Zaloguj się ponownie jeden raz („Rozpocznij logowanie” i wpisz OTP z e-maila)",
+        "uk": "Новий спосіб входу: Volvo вимкнула старий клієнт входу, адаптер тепер входить як застосунок Volvo Cars. Будь ласка, увійдіть ще раз один раз («Почати вхід» і введіть OTP з листа)",
+        "zh-cn": "新的登录方式：Volvo 已停用旧的登录客户端，适配器现在像 Volvo Cars 应用一样登录。请重新登录一次（“开始登录”并输入邮件中的 OTP）"
+      },
       "3.0.4": {
         "en": "Fix: Volvo disabled the login client (invalid_client) - log one clear error and pause updates instead of repeating errors every few minutes; dependency updates",
         "de": "Fix: Volvo hat den Login-Client abgeschaltet (invalid_client) – eine klare Fehlermeldung und pausierte Updates statt Fehlern alle paar Minuten; Abhängigkeiten aktualisiert",

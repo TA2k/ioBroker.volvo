@@ -1,7 +1,7 @@
 {
     "accountSettings": "Account Settings",
     "otpCode": "OTP Code",
-    "otpDescription": "Save settings first, then click 'Start Login' to receive a one-time password via email. Enter the code and click 'Submit OTP'. If the adapter terminates before you can submit, simply enter the OTP code, save settings, and restart the adapter - it will auto-login.",
+    "otpDescription": "Save settings first, then click 'Start Login' to receive a one-time password via email. Enter the code and click 'Submit OTP'.",
     "otpLogin": "Login with OTP",
     "startLoginButton": "Start Login (Send OTP)",
     "submitOtpButton": "Submit OTP",
