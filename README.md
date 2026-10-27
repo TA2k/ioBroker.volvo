@@ -89,7 +89,10 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ### 3.0.4
 - Fix: Volvo disabled the login client used by this adapter on 2026-10-26 (`invalid_client`). The adapter now logs one clear error and pauses updates instead of repeating errors every few minutes. Login does not work until a new login method is implemented, see [#155](https://github.com/TA2k/ioBroker.volvo/issues/155)
-- Chore: dev dependency updates
+- Chore: dependency updates
+  - `json2iob` 2.6.26 → 2.6.28
+  - `qs` 6.16.0 → 6.16.1
+  - `@iobroker/testing` 6.2.2 → 6.3.1, `@types/node` 22.20.4 → 22.20.5
 
 ### 3.0.3
 - Fix: no more log spam after the Volvo login (refresh token, ~180 days) expired; updates pause until you log in again
