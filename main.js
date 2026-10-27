@@ -18,6 +18,10 @@ const AUTH_BASIC = 'Basic aDRZZjBiOlU4WWtTYlZsNnh3c2c1WVFxWmZyZ1ZtSWFEcGhPc3kxUE
 const REFRESH_TOKEN_MAX_AGE_DAYS = 180;
 const REFRESH_TOKEN_WARN_DAYS = 7;
 const DAY_MS = 24 * 60 * 60 * 1000;
+const CLIENT_REJECTED_MESSAGE =
+  'Volvo rejected the OAuth client used by this adapter (invalid_client). Volvo has disabled this client ID, ' +
+  'so a new login will not help until the adapter is updated. Data updates are paused. ' +
+  'See https://github.com/TA2k/ioBroker.volvo/issues/155';
 const AUTH_SCOPES = [
   'openid',
   'conve:brake_status',
@@ -217,7 +221,11 @@ class Volvo extends utils.Adapter {
         this.setState('info.connection', true, true);
         await this._checkRefreshTokenAge();
         return;
-      } catch (_err) {
+      } catch (err) {
+        if (this._isClientRejected(err)) {
+          this.log.error(CLIENT_REJECTED_MESSAGE);
+          return;
+        }
         this.log.warn('Stored refresh token expired or invalid, need fresh OTP login');
       }
     }
@@ -1046,6 +1054,11 @@ class Volvo extends utils.Adapter {
           await this._handleSessionExpired();
           return;
         }
+        if (this._isClientRejected(error)) {
+          this.log.error(CLIENT_REJECTED_MESSAGE);
+          this._pauseUpdates();
+          return;
+        }
         this.log.error('Token refresh failed: ' + (error.message || error));
         if (error.response) {
           this.log.error(JSON.stringify(error.response.data));
@@ -1065,20 +1078,31 @@ class Volvo extends utils.Adapter {
       'Volvo session expired: the refresh token is no longer valid (maximum lifetime reached or revoked).' + age + ' ' +
         'Data updates are paused. Please log in again in the adapter settings ("Start login" and enter the OTP from the email).',
     );
+    this._pauseUpdates();
+    // Drop the dead token so a restart goes straight to the OTP flow
+    await this.setStateAsync('auth.refreshToken', '', true);
+    await this.setStateAsync('auth.loginTimestamp', 0, true);
+  }
+
+  /**
+   * Stop polling and token refresh, keep the adapter alive until the next login.
+   */
+  _pauseUpdates() {
     this.updateInterval && this.clearInterval(this.updateInterval);
     this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
     this.updateInterval = null;
     this.refreshTokenInterval = null;
     this.session = {};
     this.setState('info.connection', false, true);
-    // Drop the dead token so a restart goes straight to the OTP flow
-    await this.setStateAsync('auth.refreshToken', '', true);
-    await this.setStateAsync('auth.loginTimestamp', 0, true);
     if (!this.keepAliveInterval) {
       this.keepAliveInterval = this.setInterval(() => {
         this.log.debug('Waiting for login...');
       }, 60000);
     }
+  }
+
+  _isClientRejected(error) {
+    return !!(error && error.response && error.response.data && error.response.data.error === 'invalid_client');
   }
 
   /**

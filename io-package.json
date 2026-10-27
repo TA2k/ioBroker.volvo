@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "news": {
+      "3.0.4": {
+        "en": "Fix: Volvo disabled the login client (invalid_client) - log one clear error and pause updates instead of repeating errors every few minutes",
+        "de": "Fix: Volvo hat den Login-Client abgeschaltet (invalid_client) – eine klare Fehlermeldung und pausierte Updates statt Fehlern alle paar Minuten",
+        "ru": "Исправление: Volvo отключил клиент входа (invalid_client) — одно понятное сообщение об ошибке и приостановка обновлений вместо повторяющихся ошибок каждые несколько минут",
+        "pt": "Fix: a Volvo desativou o cliente de login (invalid_client) - uma mensagem de erro clara e atualizações pausadas em vez de erros a cada poucos minutos",
+        "nl": "Fix: Volvo heeft de login-client uitgeschakeld (invalid_client) - één duidelijke foutmelding en gepauzeerde updates in plaats van fouten om de paar minuten",
+        "fr": "Fix : Volvo a désactivé le client de connexion (invalid_client) - un seul message d'erreur clair et mises à jour suspendues au lieu d'erreurs toutes les quelques minutes",
+        "it": "Fix: Volvo ha disattivato il client di login (invalid_client) - un unico messaggio di errore chiaro e aggiornamenti sospesi invece di errori ogni pochi minuti",
+        "es": "Fix: Volvo desactivó el cliente de inicio de sesión (invalid_client) - un único mensaje de error claro y actualizaciones en pausa en lugar de errores cada pocos minutos",
+        "pl": "Fix: Volvo wyłączyło klienta logowania (invalid_client) - jeden czytelny komunikat błędu i wstrzymane aktualizacje zamiast błędów co kilka minut",
+        "uk": "Виправлення: Volvo вимкнула клієнт входу (invalid_client) — одне зрозуміле повідомлення про помилку та призупинені оновлення замість помилок кожні кілька хвилин",
+        "zh-cn": "修复：Volvo 已停用登录客户端（invalid_client）——只记录一条明确的错误并暂停更新，而不是每隔几分钟重复报错"
+      },
       "3.0.3": {
         "en": "Fix: no more log spam after the Volvo login expired, warning 7 days before expiry; dependency updates",
         "de": "Fix: kein Log-Spam mehr nach Ablauf des Volvo-Logins, Warnung 7 Tage vor Ablauf; Abhängigkeiten aktualisiert",
