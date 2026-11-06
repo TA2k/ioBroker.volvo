@@ -1,5 +1,8 @@
 # Older changes
 
+### 2.0.1
+- Update dependencies
+
 ### 2.0.0
 - BREAKING CHANGE: API key now stored encrypted, reenter of API key **required**
 

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "3.1.0",
+    "version": "4.0.0",
     "news": {
+      "4.0.0": {
+        "en": "Breaking: Volvo ID moves to a new login system (Keycloak). Please log in again once (\"Start login\" and enter the OTP from the email); the login then stays valid as long as the adapter runs",
+        "de": "Breaking: Volvo ID zieht auf ein neues Login-System (Keycloak) um. Bitte einmal neu anmelden („Login starten“ und den OTP aus der E-Mail eingeben); der Login bleibt danach gültig, solange der Adapter läuft",
+        "ru": "Важно: Volvo ID переходит на новую систему входа (Keycloak). Пожалуйста, войдите заново один раз («Начать вход» и введите OTP из письма); после этого вход действует, пока работает адаптер",
+        "pt": "Importante: o Volvo ID muda para um novo sistema de login (Keycloak). Faça login novamente uma vez (\"Iniciar login\" e introduza o OTP do e-mail); depois o login mantém-se válido enquanto o adaptador estiver a correr",
+        "nl": "Belangrijk: Volvo ID stapt over op een nieuw inlogsysteem (Keycloak). Log één keer opnieuw in (\"Login starten\" en voer de OTP uit de e-mail in); daarna blijft de login geldig zolang de adapter draait",
+        "fr": "Important : Volvo ID passe à un nouveau système de connexion (Keycloak). Veuillez vous reconnecter une fois (« Démarrer la connexion » et saisir l'OTP reçu par e-mail) ; la connexion reste ensuite valide tant que l'adaptateur fonctionne",
+        "it": "Importante: Volvo ID passa a un nuovo sistema di login (Keycloak). Effettua di nuovo il login una volta (\"Avvia login\" e inserisci l'OTP dall'e-mail); in seguito il login resta valido finché l'adattatore è in esecuzione",
+        "es": "Importante: Volvo ID cambia a un nuevo sistema de inicio de sesión (Keycloak). Inicie sesión de nuevo una vez (\"Iniciar sesión\" e introduzca el OTP del correo); después la sesión sigue siendo válida mientras el adaptador esté en marcha",
+        "pl": "Ważne: Volvo ID przechodzi na nowy system logowania (Keycloak). Zaloguj się ponownie jeden raz („Rozpocznij logowanie” i wpisz OTP z e-maila); potem logowanie pozostaje ważne, dopóki adapter działa",
+        "uk": "Важливо: Volvo ID переходить на нову систему входу (Keycloak). Будь ласка, увійдіть ще раз один раз («Почати вхід» і введіть OTP з листа); після цього вхід діє, поки працює адаптер",
+        "zh-cn": "重大变更：Volvo ID 迁移到新的登录系统（Keycloak）。请重新登录一次（“开始登录”并输入邮件中的 OTP）；之后只要适配器在运行，登录就一直有效"
+      },
       "3.1.0": {
         "en": "New login method: Volvo disabled the old login client, the adapter now logs in like the Volvo Cars app. Please log in again once (\"Start login\" and enter the OTP from the email)",
         "de": "Neue Login-Methode: Volvo hat den alten Login-Client abgeschaltet, der Adapter meldet sich jetzt wie die Volvo-Cars-App an. Bitte einmal neu anmelden („Login starten“ und den OTP aus der E-Mail eingeben)",
@@ -80,19 +93,6 @@
         "pl": "Adapter teraz wymaga node.js >= 22",
         "uk": "Адаптер теперь требует node.js >= 22",
         "zh-cn": "适配器现在需要 node.js >= 22"
-      },
-      "2.0.1": {
-        "en": "Update dependencies",
-        "de": "Abhängigkeiten aktualisieren",
-        "ru": "Обновление зависимостей",
-        "pt": "Atualizar dependências",
-        "nl": "Afhankelijkheden bijwerken",
-        "fr": "Mettre à jour les dépendances",
-        "it": "Aggiorna dipendenze",
-        "es": "Actualizar dependencias",
-        "pl": "Aktualizuj zależności",
-        "uk": "Оновление зависимостей",
-        "zh-cn": "更新依赖项"
       }
     },
     "messages": [

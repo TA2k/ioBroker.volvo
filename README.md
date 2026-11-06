@@ -46,9 +46,9 @@ The Volvo API uses a two-factor authentication flow with a one-time password (OT
 1. Click **"Start Login (Send OTP)"** in the adapter settings.
 2. Check your email for the OTP code from Volvo.
 3. Enter the code and click **"Submit OTP"**.
-4. The adapter will store the refresh token so you won't need to repeat this unless the token expires (typically weeks/months).
+4. The adapter stores the login and renews it automatically. You only need to repeat the OTP login if the adapter was stopped for about 90 days or Volvo ends the session (e.g. after a password change).
 
-> **Note:** If the refresh token expires, the adapter will show a warning in the log. Simply repeat the OTP login from the adapter settings.
+> **Note:** If the login is no longer valid, the adapter logs one error and pauses updates. Simply repeat the OTP login from the adapter settings.
 
 ---
 
@@ -87,6 +87,12 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ## Changelog
 
+### 4.0.0
+- **Breaking:** Volvo ID moves to a new login system (Keycloak) and the old one stops working after January 2027. The adapter now logs in like the current Volvo Cars app. **Please log in again once:** click "Start Login (Send OTP)" in the adapter settings and submit the OTP from the email
+- Change: the login stays valid as long as the adapter runs; a new OTP login is only needed after about 90 days without the adapter running
+- Removed: the warning before the fixed 180-day login limit, Volvo no longer has such a limit
+- Fix: when a car is removed from the Volvo ID (e.g. replaced by a new one), the adapter logs one warning and reloads the vehicle list instead of logging 403 errors every few minutes until a restart
+
 ### 3.1.0
 - New: login method of the Volvo Cars app (Authorization Code with PKCE, DPoP-bound tokens). Volvo disabled the client the adapter used before, see [#155](https://github.com/TA2k/ioBroker.volvo/issues/155). **Please log in again once:** click "Start Login (Send OTP)" in the adapter settings and submit the OTP from the email
 - Change: the OTP email is only sent when you click "Start Login (Send OTP)", no longer automatically on adapter start
@@ -123,9 +129,6 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ### 3.0.0
 - Adapter now requires node.js >= 22
-
-### 2.0.1
-- Update dependencies
 
 Older changes: [CHANGELOG_OLD.md](CHANGELOG_OLD.md)
 
