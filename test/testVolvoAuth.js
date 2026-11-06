@@ -1,6 +1,6 @@
 'use strict';
 
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 const { expect } = require('chai');
 const { createPkce, createDpopKey, createDpopProof, parseLoginPage } = require('../lib/volvoAuth');
 

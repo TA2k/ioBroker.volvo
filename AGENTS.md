@@ -96,7 +96,7 @@ Helpers for PKCE, DPoP proofs and parsing `kcContext` live in `lib/volvoAuth.js`
 
 ### Build
 1. Bump version in BOTH `package.json` AND `io-package.json`
-2. Add news entry in `io-package.json` `common.news` (all 11 languages)
+2. Add news entry in `io-package.json` `common.news` (all 11 languages) and **keep at most 7 entries**: remove the oldest ones (the repository builder truncates at 7, repository checker warning W1032). Older versions stay documented in the README changelog
 3. Update `## Changelog` in `README.md`
 4. `npm install` to update `package-lock.json`
 5. `npm pack` → Creates `iobroker.volvo-X.Y.Z.tgz`
@@ -189,6 +189,9 @@ Note: `--allow-root` is required on systems running ioBroker as root.
 - Always check `this.config.vccapikey` before calling `getDeviceList()` or `updateDevice()`
 - On fresh instances, the API key may not be configured yet
 - Log a `warn` and skip data fetch if key is missing
+
+### Node.js Built-ins
+- Require built-in modules with the `node:` prefix (`require('node:crypto')`), repository checker suggestion S5043
 
 ### ioBroker Object Management
 - `setObjectNotExistsAsync` won't update existing objects (role, type changes ignored)

@@ -93,32 +93,6 @@
         "pl": "Aktualizuj zależności",
         "uk": "Оновление зависимостей",
         "zh-cn": "更新依赖项"
-      },
-      "2.0.0": {
-        "en": "Breaking Change: API Key now stored encrypted",
-        "de": "Breaking Change: API Key wird jetzt verschlüsselt gespeichert",
-        "ru": "Breaking Change: ключ API теперь хранится в зашифрованном виде",
-        "pt": "Breaking Change: Chave de API agora armazenada criptografada",
-        "nl": "Breaking Change: API-sleutel nu versleuteld opgeslagen",
-        "fr": "Breaking Change : clé API désormais stockée de manière cryptée",
-        "it": "Breaking Change: Chiave API ora salvata in modo criptato",
-        "es": "Breaking Change: clave API ahora se guarda cifrada",
-        "pl": "Breaking Change: klucz API teraz przechowywany w formie zaszyfrowanej",
-        "uk": "Breaking Change: ключ API теперь хранится в зашифрованном виде",
-        "zh-cn": "Breaking Change: API 密钥现在以加密形式存储"
-      },
-      "1.0.0": {
-        "en": "First stable release! Vehicle details, retry logic, command status tracking, auto-refresh, jsonConfig Admin5 UI, connection test, vehicle info display",
-        "de": "Erstes stabiles Release! Fahrzeugdetails, Retry-Logik, Befehlsstatus-Tracking, Auto-Refresh, jsonConfig Admin5-UI, Verbindungstest, Fahrzeug-Info-Anzeige",
-        "ru": "Первый стабильный выпуск! Подробности автомобиля, логика повтора, отслеживание статуса команды, автообновление, интерфейс Admin5 jsonConfig, проверка подключения, отображение информации об автомобиле",
-        "pt": "Primeiro lançamento estável! Detalhes do veículo, lógica de repetição, rastreamento de status de comando, atualização automática, interface Admin5 jsonConfig, teste de conexão, exibição de informações do veículo",
-        "nl": "Eerste stabiele release! Voertuiggegevens, retry logica, command statustracking, auto-refresh, jsonConfig Admin5 UI, verbindingstest, voertuiginfo weergave",
-        "fr": "Première version stable ! Détails du véhicule, logique de retry, suivi de l'état des commandes, actualisation automatique, interface Admin5 jsonConfig, test de connexion, affichage des informations du véhicule",
-        "it": "Primo rilascio stabile! Dettagli del veicolo, logica di ripetizione, tracciamento dello stato del comando, aggiornamento automatico, interfaccia Admin5 jsonConfig, test di connessione, visualizzazione informazioni veicolo",
-        "es": "¡Primer lanzamiento estable! Detalles del vehículo, lógica de reintento, seguimiento del estado del comando, actualización automática, interfaz Admin5 jsonConfig, prueba de conexión, visualización de información del vehículo",
-        "pl": "Pierwsza stabilna wersja! Szczegóły pojazdu, logika ponawiania, śledzenie stanu polecenia, automatyczne odświeżanie, interfejs Admin5 jsonConfig, test połączenia, wyświetlanie informacji pojazdu",
-        "uk": "Перший стабільний випуск! Деталі автомобіля, логіка повтору, відстеження статусу команди, автооновлення, інтерфейс Admin5 jsonConfig, перевірка з'єднання, відображення інформації про автомобіль",
-        "zh-cn": "首个稳定版本!车辆详情、重试逻辑、命令状态跟踪、自动刷新、jsonConfig Admin5 UI、连接测试、车辆信息显示"
       }
     },
     "messages": [
