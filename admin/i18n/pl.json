@@ -10,5 +10,8 @@
     "vccApiKey": "Klucz API VCC",
     "vccApiKeyHelp": "Uzyskaj klucz API na developer.volvocars.com",
     "volvoIdEmail": "E-mail ID Volvo",
-    "volvoIdPassword": "Hasło ID Volvo"
+    "volvoIdPassword": "Hasło ID Volvo",
+    "wallboxIds": "ID EVSE Twojego wallboxa Volvo",
+    "wallboxIdsHelp": "ID EVSE znajduje się na dokumencie dostarczonym przez Volvo z wallboxem. Kilka ID oddziel przecinkami. Pozostaw puste, jeśli nie masz wallboxa Volvo. Po dodaniu wallboxa zaloguj się ponownie jeden raz, aby adapter otrzymał uprawnienia do wallboxa.",
+    "wallboxSettings": "Wallbox (tylko wallboxy Volvo)"
 }

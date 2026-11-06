@@ -17,6 +17,7 @@ This adapter connects your Volvo car to ioBroker using the [Volvo Connected Vehi
 - 📍 GPS location
 - 🔧 Diagnostics (service warnings, brake fluid, oil, tyres, lights)
 - 🔑 Remote commands (lock/unlock, honk, flash, climatization)
+- 🔌 Volvo wallbox (Energy Device API): wallbox info, charging sessions, start/pause charging, charging/discharging current limit
 - 🔄 Automatic data refresh at configurable intervals
 - 🔐 Token persistence — survives adapter restarts without re-login
 
@@ -83,6 +84,26 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 - `lock-reduced-guard` — Lock with reduced guard
 - `refresh` — Manually refresh all data
 
+## Volvo Wallbox (optional)
+
+Only Volvo wallboxes are supported (Energy Device API). Volvo's API cannot list your wallboxes, so enter the **EVSE ID** from the document Volvo provided with the wallbox in the adapter settings (several IDs separated by commas). Leave the field empty if you have no Volvo wallbox — the adapter then makes no wallbox requests.
+
+If you add a wallbox after your last login, log in again once with the OTP so the adapter gets the wallbox permissions.
+
+Data points under `volvo.0.wallbox.<EVSE ID>` (characters like `*` are replaced by `_`):
+
+| Path | Description |
+|---|---|
+| `info.*` | Wallbox information from the API |
+| `chargingSessions.count` / `totalEnergy` / `json` | Charging sessions of the last 7 days |
+| `chargingSessions.last.*` | Latest charging session |
+| `remote.start` / `remote.pause` | Start or pause charging |
+| `remote.chargingAmpLimit` / `remote.dischargingAmpLimit` | Write a current limit in A |
+| `remote.refresh` | Refresh the wallbox data |
+| `remote.lastCommandStatus` | Result of the last command (JSON) |
+
+> **Note:** The wallbox support was built from Volvo's API documentation without a device to test with. Please report problems in a GitHub issue.
+
 ---
 
 ## Changelog
@@ -90,6 +111,7 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 ### 4.0.0
 - **Breaking:** Volvo ID moves to a new login system (Keycloak) and the old one stops working after January 2027. The adapter now logs in like the current Volvo Cars app. **Please log in again once:** click "Start Login (Send OTP)" in the adapter settings and submit the OTP from the email
 - Change: the login stays valid as long as the adapter runs; a new OTP login is only needed after about 90 days without the adapter running
+- New: Volvo wallbox support via the Energy Device API (wallbox info, charging sessions, start/pause, current limits); enter the EVSE ID in the settings. Built from the documentation without a test device
 - Removed: the warning before the fixed 180-day login limit, Volvo no longer has such a limit
 - Fix: when a car is removed from the Volvo ID (e.g. replaced by a new one), the adapter logs one warning and reloads the vehicle list instead of logging 403 errors every few minutes until a restart
 

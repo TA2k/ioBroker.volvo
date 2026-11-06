@@ -86,6 +86,15 @@ Helpers for PKCE, DPoP proofs, JWT claims and parsing `kcContext` live in `lib/v
 - **CRITICAL**: Response is at ROOT level (NOT wrapped in `{data: {...}}`)
 - Returns 404 for non-EV vehicles — handled gracefully
 
+### Energy Device API (Volvo wallboxes)
+- Base `https://api.volvocars.com/energy-device/v1` (docs: developer portal "Energy Device API v1", OpenAPI only as data URL on the specification page, readable via Playwright)
+- Scopes `energy_device:wallbox:read` (info, sessions), `:control` (start/pause), `:write` (schedule, amp limits) — accepted by the Keycloak app client (authorize check 2026-11-06), part of `AUTH_SCOPES`; tokens from logins before that don't have them (403 → hint to log in again)
+- **No list endpoint**: wallboxes are addressed by the EVSE ID from the owner's document → setting `wallboxIds` (comma separated). Empty → no wallbox requests at all
+- The Volvo app lists wallboxes via an internal GraphQL gateway (`energy-management-gateway.weu-prod.ecpaz.volvocars.biz/…/graphql`, `sites { wallboxes { evseId } }`) — not public, deliberately not used
+- Implemented: `GET /wallbox/{id}` → `wallbox.<objId>.info`, `GET /wallbox/{id}/chargingsessions?start&end` (last 7 days) → count/totalEnergy/json/last, `POST /wallbox/{id}/start|pause`, `POST /wallbox/{id}/setChargingAmpLimit|setDischargingAmpLimit?limit=`. Not implemented: ID tokens (RFID), `readIdToken`, `chargingSchedule`
+- Errors: 409/422 carry `{message, code}` (`WALLBOX_OFFLINE`, `WALLBOX_INCORRECT_STATUS`, `WALLBOX_IN_COOLDOWN`, `NOT_SUPPORTED_BY_WALLBOX`); polling problems are logged once per EVSE ID + status (`_wallboxProblem()`), then debug
+- **Untested** — built from the documentation, no device available. Pure helpers in `lib/wallbox.js` (unit tests `test/testWallbox.js`)
+
 ### Remote Commands
 - `POST /connected-vehicle/v2/vehicles/{vin}/commands/{command}`
 - **Content-Type**: Must be `application/json` (NOT vendor-specific headers)
@@ -163,6 +172,9 @@ Note: `--allow-root` is required on systems running ioBroker as root.
 | `_handleSessionExpired()` | Refresh token dead (`invalid_grant`): stop polling, wait for OTP login |
 | `_handleUnauthorized()` | 401 during update: warn once, refresh token immediately |
 | `_handleUnlinkedVehicles(vins)` | 403 "no relationship": warn once, reload vehicle list, fetch new VINs |
+| `_setupWallboxes()` | Objects for the EVSE IDs from `wallboxIds` |
+| `updateWallboxes(objId?)` | Wallbox info + charging sessions (called at the end of `updateDevice()`) |
+| `_handleWallboxCommand(id, state)` | start/pause/refresh buttons and amp limits under `wallbox.<objId>.remote` |
 | `_getLoginTimestamp()` | Last OTP login from `auth.loginTimestamp` (0 if unknown) |
 
 ### Key Libraries

@@ -10,5 +10,8 @@
     "vccApiKey": "VCC API 密钥",
     "vccApiKeyHelp": "在 developer.volvocars.com 获取您的 API 密钥",
     "volvoIdEmail": "沃尔沃 ID 电子邮件",
-    "volvoIdPassword": "沃尔沃 ID 密码"
+    "volvoIdPassword": "沃尔沃 ID 密码",
+    "wallboxIds": "您的 Volvo 墙盒的 EVSE ID",
+    "wallboxIdsHelp": "EVSE ID 位于 Volvo 随墙盒提供的文件上。多个 ID 用逗号分隔。如果您没有 Volvo 墙盒，请留空。添加墙盒后请重新登录一次，以便适配器获得墙盒权限。",
+    "wallboxSettings": "充电墙盒（仅限 Volvo 墙盒）"
 }

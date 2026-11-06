@@ -49,6 +49,24 @@
     "_divider1": {
       "type": "divider"
     },
+    "_wallboxHeader": {
+      "type": "header",
+      "text": "wallboxSettings",
+      "size": 4
+    },
+    "wallboxIds": {
+      "type": "text",
+      "label": "wallboxIds",
+      "help": "wallboxIdsHelp",
+      "xs": 12,
+      "sm": 12,
+      "md": 12,
+      "lg": 12,
+      "xl": 12
+    },
+    "_dividerWallbox": {
+      "type": "divider"
+    },
     "_otpHeader": {
       "type": "header",
       "text": "otpLogin",

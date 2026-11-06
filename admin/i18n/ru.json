@@ -10,5 +10,8 @@
     "vccApiKey": "Ключ API VCC",
     "vccApiKeyHelp": "Получите ключ API на developer.volvocars.com",
     "volvoIdEmail": "Электронная почта Volvo ID",
-    "volvoIdPassword": "Пароль Volvo ID"
+    "volvoIdPassword": "Пароль Volvo ID",
+    "wallboxIds": "EVSE ID вашей зарядной станции Volvo",
+    "wallboxIdsHelp": "EVSE ID указан в документе, который Volvo передала вместе с зарядной станцией. Несколько ID через запятую. Оставьте пустым, если у вас нет зарядной станции Volvo. После добавления станции войдите заново один раз, чтобы адаптер получил права на неё.",
+    "wallboxSettings": "Wallbox (только зарядные станции Volvo)"
 }
