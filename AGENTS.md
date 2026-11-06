@@ -96,8 +96,8 @@ Helpers for PKCE, DPoP proofs and parsing `kcContext` live in `lib/volvoAuth.js`
 
 ### Build
 1. Bump version in BOTH `package.json` AND `io-package.json`
-2. Add news entry in `io-package.json` `common.news` (all 11 languages) and **keep at most 7 entries**: remove the oldest ones (the repository builder truncates at 7, repository checker warning W1032). Older versions stay documented in the README changelog
-3. Update `## Changelog` in `README.md`
+2. Add news entry in `io-package.json` `common.news` (all 11 languages) and **keep at most 7 entries**: remove the oldest ones (the repository builder truncates at 7, repository checker warning W1032)
+3. Update `## Changelog` in `README.md` and keep the **same 7 versions** there: move older entries to the top of `CHANGELOG_OLD.md` (linked at the end of the README changelog)
 4. `npm install` to update `package-lock.json`
 5. `npm pack` → Creates `iobroker.volvo-X.Y.Z.tgz`
 
