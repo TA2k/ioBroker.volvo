@@ -2,7 +2,7 @@
 
 const crypto = require('node:crypto');
 const { expect } = require('chai');
-const { createPkce, createDpopKey, createDpopProof, parseLoginPage } = require('../lib/volvoAuth');
+const { createPkce, createDpopKey, createDpopProof, parseLoginPage, readJwtClaims } = require('../lib/volvoAuth');
 
 const decode = (part) => JSON.parse(Buffer.from(part, 'base64url').toString('utf8'));
 
@@ -52,5 +52,14 @@ describe('volvoAuth', () => {
   it('returns nulls for pages without kcContext', () => {
     expect(parseLoginPage('<html></html>')).to.deep.equal({ pageId: null, action: null, message: null });
     expect(parseLoginPage(undefined).pageId).to.equal(null);
+  });
+
+  it('reads JWT claims and returns null for opaque tokens', () => {
+    const enc = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
+    const jwt = enc({ alg: 'HS512' }) + '.' + enc({ iss: 'https://auth.example.com/realms/x', typ: 'Refresh' }) + '.sig';
+    expect(readJwtClaims(jwt)).to.include({ iss: 'https://auth.example.com/realms/x', typ: 'Refresh' });
+    expect(readJwtClaims('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789abcdef')).to.equal(null);
+    expect(readJwtClaims('a.!!!.c')).to.equal(null);
+    expect(readJwtClaims(undefined)).to.equal(null);
   });
 });

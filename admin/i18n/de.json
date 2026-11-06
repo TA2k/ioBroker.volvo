@@ -1,5 +1,6 @@
 {
     "accountSettings": "Kontoeinstellungen",
+    "mainTab": "Allgemein",
     "otpCode": "Einmalpasswort",
     "otpDescription": "Einstellungen zuerst speichern, dann 'Login starten' klicken um ein Einmalpasswort per E-Mail zu erhalten. Code eingeben und 'OTP bestätigen' klicken.",
     "otpLogin": "Anmeldung mit Einmalpasswort",
@@ -10,5 +11,8 @@
     "vccApiKey": "VCC API-Schlüssel",
     "vccApiKeyHelp": "API-Schlüssel unter developer.volvocars.com beziehen",
     "volvoIdEmail": "Volvo ID E-Mail",
-    "volvoIdPassword": "Volvo ID Passwort"
+    "volvoIdPassword": "Volvo ID Passwort",
+    "wallboxIds": "EVSE-ID(s) deiner Volvo-Wallbox",
+    "wallboxIdsHelp": "Die EVSE-ID steht auf dem Dokument, das Volvo zur Wallbox mitgeliefert hat. Mehrere IDs mit Komma trennen. Leer lassen, wenn du keine Volvo-Wallbox hast. Nach dem Hinzufügen einer Wallbox einmal neu anmelden, damit der Adapter die Wallbox-Berechtigungen erhält.",
+    "wallboxSettings": "Wallbox (nur Volvo-Wallboxen)"
 }

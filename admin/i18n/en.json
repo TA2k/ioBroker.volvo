@@ -1,5 +1,6 @@
 {
     "accountSettings": "Account Settings",
+    "mainTab": "General",
     "otpCode": "OTP Code",
     "otpDescription": "Save settings first, then click 'Start Login' to receive a one-time password via email. Enter the code and click 'Submit OTP'.",
     "otpLogin": "Login with OTP",
@@ -10,5 +11,8 @@
     "vccApiKey": "VCC API Key",
     "vccApiKeyHelp": "Get your API key at developer.volvocars.com",
     "volvoIdEmail": "Volvo ID Email",
-    "volvoIdPassword": "Volvo ID Password"
+    "volvoIdPassword": "Volvo ID Password",
+    "wallboxIds": "EVSE ID(s) of your Volvo wallbox",
+    "wallboxIdsHelp": "The EVSE ID is on the document Volvo provided with the wallbox. Several IDs separated by commas. Leave empty if you have no Volvo wallbox. After adding a wallbox, log in again once so the adapter gets the wallbox permissions.",
+    "wallboxSettings": "Wallbox (Volvo wallboxes only)"
 }
