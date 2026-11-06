@@ -1,5 +1,6 @@
 {
     "accountSettings": "Impostazioni dell'account",
+    "mainTab": "Generale",
     "otpCode": "Codice OTP",
     "otpDescription": "Salvare prima le impostazioni, poi fare clic su \"Avvia Login\" per ricevere una password monouso via email. Inserire il codice e fare clic su \"Invia OTP\".",
     "otpLogin": "Accesso con password monouso",

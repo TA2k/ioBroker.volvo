@@ -1,5 +1,6 @@
 {
     "accountSettings": "Accountinstellingen",
+    "mainTab": "Algemeen",
     "otpCode": "OTP-code",
     "otpDescription": "Sla de instellingen eerst op en klik op \"Login starten\" om een eenmalig wachtwoord per e-mail te ontvangen. Voer de code in en klik op \"OTP bevestigen\".",
     "otpLogin": "Inloggen met eenmalig wachtwoord",

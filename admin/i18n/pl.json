@@ -1,5 +1,6 @@
 {
     "accountSettings": "Ustawienia konta",
+    "mainTab": "Ogólne",
     "otpCode": "Kod OTP",
     "otpDescription": "Najpierw zapisz ustawienia, następnie kliknij \"Rozpocznij logowanie\", aby otrzymać jednorazowe hasło e-mailem. Wprowadź kod i kliknij \"Zatwierdź OTP\".",
     "otpLogin": "Logowanie za pomocą jednorazowego hasła",

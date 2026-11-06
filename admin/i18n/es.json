@@ -1,5 +1,6 @@
 {
     "accountSettings": "Configuración de cuenta",
+    "mainTab": "General",
     "otpCode": "Código OTP",
     "otpDescription": "Guarde la configuración primero, luego haga clic en \"Iniciar sesión\" para recibir una contraseña de un solo uso por correo electrónico. Ingrese el código y haga clic en \"Enviar OTP\".",
     "otpLogin": "Iniciar sesión con contraseña única",

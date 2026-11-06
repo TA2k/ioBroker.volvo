@@ -1,5 +1,6 @@
 {
     "accountSettings": "Account Settings",
+    "mainTab": "General",
     "otpCode": "OTP Code",
     "otpDescription": "Save settings first, then click 'Start Login' to receive a one-time password via email. Enter the code and click 'Submit OTP'.",
     "otpLogin": "Login with OTP",

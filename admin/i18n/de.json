@@ -1,5 +1,6 @@
 {
     "accountSettings": "Kontoeinstellungen",
+    "mainTab": "Allgemein",
     "otpCode": "Einmalpasswort",
     "otpDescription": "Einstellungen zuerst speichern, dann 'Login starten' klicken um ein Einmalpasswort per E-Mail zu erhalten. Code eingeben und 'OTP bestätigen' klicken.",
     "otpLogin": "Anmeldung mit Einmalpasswort",

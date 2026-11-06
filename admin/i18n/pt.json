@@ -1,5 +1,6 @@
 {
     "accountSettings": "Configurações da conta",
+    "mainTab": "Geral",
     "otpCode": "Código OTP",
     "otpDescription": "Salve as configurações primeiro, depois clique em \"Iniciar Login\" para receber uma senha descartável por e-mail. Insira o código e clique em \"Enviar OTP\".",
     "otpLogin": "Login com senha única",
