@@ -8,7 +8,7 @@
 - **Admin UI**: Admin5 / jsonConfig (`admin/jsonConfig.json`) — no Materialize, no jQuery, no `index_m.html`
 - **Localization**: Via `admin/i18n/{lang}/translations.json` (11 languages: de, en, es, fr, it, nl, pl, pt, ru, uk, zh-cn)
 - **Primary Language**: JavaScript (Node.js)
-- **Current Version**: 4.0.0 (not released yet, branch `feat/keycloak`)
+- **Current Version**: 4.0.0
 
 ## Discovering Runtime Information
 
@@ -111,8 +111,9 @@ Helpers for PKCE, DPoP proofs, JWT claims and parsing `kcContext` live in `lib/v
 1. Bump version in BOTH `package.json` AND `io-package.json`
 2. Add news entry in `io-package.json` `common.news` (all 11 languages) and **keep at most 7 entries**: remove the oldest ones (the repository builder truncates at 7, repository checker warning W1032)
 3. Update `## Changelog` in `README.md` and keep the **same 7 versions** there: move older entries to the top of `CHANGELOG_OLD.md` (linked at the end of the README changelog)
-4. `npm install` to update `package-lock.json`
-5. `npm pack` → Creates `iobroker.volvo-X.Y.Z.tgz`
+4. Breaking changes that need user action (e.g. a new login): add an upgrade dialog to `io-package.json` `common.messages` (condition `oldVersion<X.0.0` + `newVersion>=X.0.0`, `level: warn`, buttons `agree`/`cancel`, all 11 languages, button names exactly as in `admin/i18n`). The admin shows it before the update; outdated messages are removed (since 4.0.0 only the Keycloak re-login message)
+5. `npm install` to update `package-lock.json`
+6. `npm pack` → Creates `iobroker.volvo-X.Y.Z.tgz`
 
 ### Deploy to ioBroker
 1. `scp` the tgz to the ioBroker server: `scp iobroker.volvo-X.Y.Z.tgz root@SERVER:/tmp/`
