@@ -17,6 +17,7 @@ This adapter connects your Volvo car to ioBroker using the [Volvo Connected Vehi
 - 📍 GPS location
 - 🔧 Diagnostics (service warnings, brake fluid, oil, tyres, lights)
 - 🔑 Remote commands (lock/unlock, honk, flash, climatization)
+- 🔌 Volvo wallbox (Energy Device API): wallbox info, charging sessions, start/pause charging, charging/discharging current limit
 - 🔄 Automatic data refresh at configurable intervals
 - 🔐 Token persistence — survives adapter restarts without re-login
 
@@ -46,9 +47,9 @@ The Volvo API uses a two-factor authentication flow with a one-time password (OT
 1. Click **"Start Login (Send OTP)"** in the adapter settings.
 2. Check your email for the OTP code from Volvo.
 3. Enter the code and click **"Submit OTP"**.
-4. The adapter will store the refresh token so you won't need to repeat this unless the token expires (typically weeks/months).
+4. The adapter stores the login and renews it automatically. You only need to repeat the OTP login if the adapter was stopped for about 90 days or Volvo ends the session (e.g. after a password change).
 
-> **Note:** If the refresh token expires, the adapter will show a warning in the log. Simply repeat the OTP login from the adapter settings.
+> **Note:** If the login is no longer valid, the adapter logs one error and pauses updates. Simply repeat the OTP login from the adapter settings.
 
 ---
 
@@ -83,9 +84,36 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 - `lock-reduced-guard` — Lock with reduced guard
 - `refresh` — Manually refresh all data
 
+## Volvo Wallbox (optional)
+
+Only Volvo wallboxes are supported (Energy Device API). Volvo's API cannot list your wallboxes, so enter the **EVSE ID** from the document Volvo provided with the wallbox in the adapter settings (several IDs separated by commas). Leave the field empty if you have no Volvo wallbox — the adapter then makes no wallbox requests.
+
+If you add a wallbox after your last login, log in again once with the OTP so the adapter gets the wallbox permissions.
+
+Data points under `volvo.0.wallbox.<EVSE ID>` (characters like `*` are replaced by `_`):
+
+| Path | Description |
+|---|---|
+| `info.*` | Wallbox information from the API |
+| `chargingSessions.count` / `totalEnergy` / `json` | Charging sessions of the last 7 days |
+| `chargingSessions.last.*` | Latest charging session |
+| `remote.start` / `remote.pause` | Start or pause charging |
+| `remote.chargingAmpLimit` / `remote.dischargingAmpLimit` | Write a current limit in A |
+| `remote.refresh` | Refresh the wallbox data |
+| `remote.lastCommandStatus` | Result of the last command (JSON) |
+
+> **Note:** The wallbox support was built from Volvo's API documentation without a device to test with. Please report problems in a GitHub issue.
+
 ---
 
 ## Changelog
+
+### 4.0.0
+- **Breaking:** Volvo ID moves to a new login system (Keycloak) and the old one stops working after January 2027. The adapter now logs in like the current Volvo Cars app. **Please log in again once:** click "Start Login (Send OTP)" in the adapter settings and submit the OTP from the email
+- Change: the login stays valid as long as the adapter runs; a new OTP login is only needed after about 90 days without the adapter running
+- New: Volvo wallbox support via the Energy Device API (wallbox info, charging sessions, start/pause, current limits); enter the EVSE ID in the settings. Built from the documentation without a test device
+- Removed: the warning before the fixed 180-day login limit, Volvo no longer has such a limit
+- Fix: when a car is removed from the Volvo ID (e.g. replaced by a new one), the adapter logs one warning and reloads the vehicle list instead of logging 403 errors every few minutes until a restart
 
 ### 3.1.0
 - New: login method of the Volvo Cars app (Authorization Code with PKCE, DPoP-bound tokens). Volvo disabled the client the adapter used before, see [#155](https://github.com/TA2k/ioBroker.volvo/issues/155). **Please log in again once:** click "Start Login (Send OTP)" in the adapter settings and submit the OTP from the email
@@ -123,9 +151,6 @@ Use the buttons under `volvo.0.<VIN>.remote` to control your vehicle:
 
 ### 3.0.0
 - Adapter now requires node.js >= 22
-
-### 2.0.1
-- Update dependencies
 
 Older changes: [CHANGELOG_OLD.md](CHANGELOG_OLD.md)
 

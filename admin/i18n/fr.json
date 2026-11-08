@@ -1,5 +1,6 @@
 {
     "accountSettings": "Paramètres du compte",
+    "mainTab": "Général",
     "otpCode": "Code OTP",
     "otpDescription": "Enregistrez d'abord les paramètres, puis cliquez sur «Démarrer la connexion» pour recevoir un mot de passe à usage unique par e-mail. Entrez le code et cliquez sur «Soumettre OTP».",
     "otpLogin": "Connexion avec mot de passe unique",
@@ -10,5 +11,8 @@
     "vccApiKey": "Clé API VCC",
     "vccApiKeyHelp": "Obtenez votre clé API sur developer.volvocars.com",
     "volvoIdEmail": "E-mail Volvo ID",
-    "volvoIdPassword": "Mot de passe Volvo ID"
+    "volvoIdPassword": "Mot de passe Volvo ID",
+    "wallboxIds": "ID EVSE de votre wallbox Volvo",
+    "wallboxIdsHelp": "L'ID EVSE figure sur le document fourni par Volvo avec la wallbox. Plusieurs ID séparés par des virgules. Laissez vide si vous n'avez pas de wallbox Volvo. Après l'ajout d'une wallbox, reconnectez-vous une fois pour que l'adaptateur obtienne les autorisations de la wallbox.",
+    "wallboxSettings": "Wallbox (wallbox Volvo uniquement)"
 }

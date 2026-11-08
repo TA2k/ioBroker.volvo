@@ -1,122 +1,149 @@
 {
   "i18n": true,
-  "type": "panel",
+  "type": "tabs",
   "items": {
-    "_settingsHeader": {
-      "type": "header",
-      "text": "accountSettings",
-      "size": 4
-    },
-    "user": {
-      "type": "text",
-      "label": "volvoIdEmail",
-      "xs": 12,
-      "sm": 12,
-      "md": 6,
-      "lg": 6,
-      "xl": 6
-    },
-    "password": {
-      "type": "password",
-      "label": "volvoIdPassword",
-      "xs": 12,
-      "sm": 12,
-      "md": 6,
-      "lg": 6,
-      "xl": 6
-    },
-    "vccapikey": {
-      "type": "password",
-      "label": "vccApiKey",
-      "help": "vccApiKeyHelp",
-      "xs": 12,
-      "sm": 12,
-      "md": 6,
-      "lg": 6,
-      "xl": 6
-    },
-    "interval": {
-      "type": "number",
-      "label": "updateInterval",
-      "min": 1,
-      "max": 1440,
-      "xs": 12,
-      "sm": 12,
-      "md": 6,
-      "lg": 6,
-      "xl": 6
-    },
-    "_divider1": {
-      "type": "divider"
-    },
-    "_otpHeader": {
-      "type": "header",
-      "text": "otpLogin",
-      "size": 4
-    },
-    "_otpDescription": {
-      "type": "staticText",
-      "text": "otpDescription",
-      "xs": 12,
-      "sm": 12,
-      "md": 12,
-      "lg": 12,
-      "xl": 12,
-      "style": {
-        "marginBottom": 16
+    "_mainTab": {
+      "type": "panel",
+      "label": "mainTab",
+      "items": {
+        "_settingsHeader": {
+          "type": "header",
+          "text": "accountSettings",
+          "size": 4
+        },
+        "user": {
+          "type": "text",
+          "label": "volvoIdEmail",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "password": {
+          "type": "password",
+          "label": "volvoIdPassword",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "vccapikey": {
+          "type": "password",
+          "label": "vccApiKey",
+          "help": "vccApiKeyHelp",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "interval": {
+          "type": "number",
+          "label": "updateInterval",
+          "min": 1,
+          "max": 1440,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "_divider1": {
+          "type": "divider"
+        },
+        "_otpHeader": {
+          "type": "header",
+          "text": "otpLogin",
+          "size": 4
+        },
+        "_otpDescription": {
+          "type": "staticText",
+          "text": "otpDescription",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12,
+          "style": {
+            "marginBottom": 16
+          }
+        },
+        "_startLogin": {
+          "type": "sendTo",
+          "label": "startLoginButton",
+          "command": "startLogin",
+          "jsonData": "{\"user\": \"${data.user}\", \"password\": \"${data.password}\"}",
+          "variant": "contained",
+          "color": "primary",
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4
+        },
+        "otp": {
+          "type": "text",
+          "label": "otpCode",
+          "noTranslation": true,
+          "doNotSave": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4
+        },
+        "_submitOtp": {
+          "type": "sendTo",
+          "label": "submitOtpButton",
+          "command": "submitOtp",
+          "jsonData": "{\"otp\": \"${data.otp}\"}",
+          "variant": "contained",
+          "color": "secondary",
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4
+        },
+        "_divider2": {
+          "type": "divider"
+        },
+        "_testConnection": {
+          "type": "sendTo",
+          "label": "testConnectionButton",
+          "command": "testConnection",
+          "jsonData": "{\"vccapikey\": \"${data.vccapikey}\"}",
+          "variant": "outlined",
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4
+        }
       }
     },
-    "_startLogin": {
-      "type": "sendTo",
-      "label": "startLoginButton",
-      "command": "startLogin",
-      "jsonData": "{\"user\": \"${data.user}\", \"password\": \"${data.password}\"}",
-      "variant": "contained",
-      "color": "primary",
-      "xs": 12,
-      "sm": 12,
-      "md": 4,
-      "lg": 4,
-      "xl": 4
-    },
-    "otp": {
-      "type": "text",
-      "label": "otpCode",
-      "noTranslation": true,
-      "doNotSave": true,
-      "xs": 12,
-      "sm": 12,
-      "md": 4,
-      "lg": 4,
-      "xl": 4
-    },
-    "_submitOtp": {
-      "type": "sendTo",
-      "label": "submitOtpButton",
-      "command": "submitOtp",
-      "jsonData": "{\"otp\": \"${data.otp}\"}",
-      "variant": "contained",
-      "color": "secondary",
-      "xs": 12,
-      "sm": 12,
-      "md": 4,
-      "lg": 4,
-      "xl": 4
-    },
-    "_divider2": {
-      "type": "divider"
-    },
-    "_testConnection": {
-      "type": "sendTo",
-      "label": "testConnectionButton",
-      "command": "testConnection",
-      "jsonData": "{\"vccapikey\": \"${data.vccapikey}\"}",
-      "variant": "outlined",
-      "xs": 12,
-      "sm": 12,
-      "md": 4,
-      "lg": 4,
-      "xl": 4
+    "_wallboxTab": {
+      "type": "panel",
+      "label": "wallboxSettings",
+      "items": {
+        "_wallboxHeader": {
+          "type": "header",
+          "text": "wallboxSettings",
+          "size": 4
+        },
+        "wallboxIds": {
+          "type": "text",
+          "label": "wallboxIds",
+          "help": "wallboxIdsHelp",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        }
+      }
     }
   }
 }

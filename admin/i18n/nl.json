@@ -1,5 +1,6 @@
 {
     "accountSettings": "Accountinstellingen",
+    "mainTab": "Algemeen",
     "otpCode": "OTP-code",
     "otpDescription": "Sla de instellingen eerst op en klik op \"Login starten\" om een eenmalig wachtwoord per e-mail te ontvangen. Voer de code in en klik op \"OTP bevestigen\".",
     "otpLogin": "Inloggen met eenmalig wachtwoord",
@@ -10,5 +11,8 @@
     "vccApiKey": "VCC API-sleutel",
     "vccApiKeyHelp": "Haal uw API-sleutel op bij developer.volvocars.com",
     "volvoIdEmail": "Volvo ID e-mail",
-    "volvoIdPassword": "Volvo ID wachtwoord"
+    "volvoIdPassword": "Volvo ID wachtwoord",
+    "wallboxIds": "EVSE-ID(s) van je Volvo-wallbox",
+    "wallboxIdsHelp": "De EVSE-ID staat op het document dat Volvo bij de wallbox heeft geleverd. Meerdere ID's scheiden met komma's. Leeg laten als je geen Volvo-wallbox hebt. Log na het toevoegen van een wallbox één keer opnieuw in, zodat de adapter de wallbox-rechten krijgt.",
+    "wallboxSettings": "Wallbox (alleen Volvo-wallboxen)"
 }
