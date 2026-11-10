@@ -97,7 +97,7 @@ Helpers for PKCE, DPoP proofs, JWT claims and parsing `kcContext` live in `lib/v
 
 ### Remote Commands
 - `POST /connected-vehicle/v2/vehicles/{vin}/commands/{command}`
-- **Content-Type**: Must be `application/json` (NOT vendor-specific headers)
+- **Content-Type**: Must be `application/json` (NOT vendor-specific headers) **with a JSON body**: `{}` for all commands (spec: "Empty request body"), `{"runtimeMinutes": 0-15}` for `engine-start` (adapter sends 15). Without a body Volvo answers `415 UNSUPPORTED_MEDIA_TYPE` (seen 2026-11-10)
 - "Refresh" is NOT an API command — must call `updateDevice()` directly in code
 
 ### Dead/Deprecated Endpoints

@@ -1287,6 +1287,8 @@ class Volvo extends utils.Adapter {
             'vcc-api-key': this.config.vccapikey,
             Authorization: 'Bearer ' + this.session.access_token,
           },
+          // Volvo answers 415 to commands without a JSON body; engine-start needs a runtime (0-15 min)
+          data: command === 'engine-start' ? { runtimeMinutes: 15 } : {},
         })
           .then(async (res) => {
             this.log.info('Command ' + command + ' response: ' + JSON.stringify(res.data));

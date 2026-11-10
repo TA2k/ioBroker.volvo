@@ -1,5 +1,8 @@
 # Older changes
 
+### 3.0.0
+- Adapter now requires node.js >= 22
+
 ### 2.0.1
 - Update dependencies
 

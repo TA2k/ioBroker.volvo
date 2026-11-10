@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "volvo",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "news": {
+      "4.0.1": {
+        "en": "Fix: remote commands (lock, unlock, climatization) failed with error 415, Volvo now requires a JSON body",
+        "de": "Fix: Fernbefehle (Verriegeln, Entriegeln, Klimatisierung) schlugen mit Fehler 415 fehl, Volvo verlangt jetzt einen JSON-Body",
+        "ru": "Исправлено: удалённые команды (блокировка, разблокировка, климат) завершались ошибкой 415, Volvo теперь требует тело JSON",
+        "pt": "Correção: os comandos remotos (trancar, destrancar, climatização) falhavam com o erro 415, a Volvo exige agora um corpo JSON",
+        "nl": "Fix: opdrachten op afstand (vergrendelen, ontgrendelen, klimaatregeling) mislukten met fout 415, Volvo vereist nu een JSON-body",
+        "fr": "Correctif : les commandes à distance (verrouillage, déverrouillage, climatisation) échouaient avec l'erreur 415, Volvo exige désormais un corps JSON",
+        "it": "Correzione: i comandi remoti (blocco, sblocco, climatizzazione) fallivano con l'errore 415, Volvo ora richiede un corpo JSON",
+        "es": "Corrección: los comandos remotos (bloquear, desbloquear, climatización) fallaban con el error 415, Volvo ahora requiere un cuerpo JSON",
+        "pl": "Poprawka: polecenia zdalne (blokowanie, odblokowanie, klimatyzacja) kończyły się błędem 415, Volvo wymaga teraz treści JSON",
+        "uk": "Виправлено: віддалені команди (блокування, розблокування, клімат) завершувалися помилкою 415, Volvo тепер вимагає тіло JSON",
+        "zh-cn": "修复：远程命令（上锁、解锁、空调）因错误 415 失败，Volvo 现在要求 JSON 请求体"
+      },
       "4.0.0": {
         "en": "Breaking: Volvo ID moves to a new login system (Keycloak). Please log in again once (\"Start login\" and enter the OTP from the email); the login then stays valid as long as the adapter runs; new: Volvo wallbox support via the Energy Device API (enter the EVSE ID in the settings)",
         "de": "Breaking: Volvo ID zieht auf ein neues Login-System (Keycloak) um. Bitte einmal neu anmelden („Login starten“ und den OTP aus der E-Mail eingeben); der Login bleibt danach gültig, solange der Adapter läuft; neu: Unterstützung für Volvo-Wallboxen über die Energy Device API (EVSE-ID in den Einstellungen eintragen)",
@@ -80,19 +93,6 @@
         "pl": "Fix: naprawiono ostrzeżenia weryfikatora repozytorium ioBroker (konfiguracja eslint, prettier, licencja, this.setInterval/setTimeout, krótki format i18n)",
         "uk": "Виправлення: усунено зауваження перевірки репозиторію ioBroker (конфігурація eslint, prettier, ліцензія, this.setInterval/setTimeout, короткий формат i18n)",
         "zh-cn": "修复：解决 ioBroker 仓库检查器报告的问题（eslint 配置、prettier、许可证、this.setInterval/setTimeout、i18n 简短格式）"
-      },
-      "3.0.0": {
-        "en": "Adapter now requires node.js >= 22",
-        "de": "Adapter benötigt jetzt node.js >= 22",
-        "ru": "Адаптер теперь требует node.js >= 22",
-        "pt": "O adaptador agora requer node.js >= 22",
-        "nl": "Adapter vereist nu node.js >= 22",
-        "fr": "L'adaptateur nécessite désormais node.js >= 22",
-        "it": "L'adattatore ora richiede node.js >= 22",
-        "es": "El adaptador ahora requiere node.js >= 22",
-        "pl": "Adapter teraz wymaga node.js >= 22",
-        "uk": "Адаптер теперь требует node.js >= 22",
-        "zh-cn": "适配器现在需要 node.js >= 22"
       }
     },
     "messages": [

@@ -108,6 +108,9 @@ Data points under `volvo.0.wallbox.<EVSE ID>` (characters like `*` are replaced 
 
 ## Changelog
 
+### 4.0.1
+- Fix: remote commands (lock, unlock, climatization, …) failed with error 415, Volvo now requires a JSON body for commands
+
 ### 4.0.0
 - **Breaking:** Volvo ID moves to a new login system (Keycloak) and the old one stops working after January 2027. The adapter now logs in like the current Volvo Cars app. **Please log in again once:** click "Start Login (Send OTP)" in the adapter settings and submit the OTP from the email
 - Change: the login stays valid as long as the adapter runs; a new OTP login is only needed after about 90 days without the adapter running
@@ -148,9 +151,6 @@ Data points under `volvo.0.wallbox.<EVSE ID>` (characters like `*` are replaced 
   - License copyright line updated to `(c)` format
   - All `setInterval`/`setTimeout` migrated to `this.setInterval`/`this.setTimeout`
   - i18n migrated to short format (`{lang}.json`)
-
-### 3.0.0
-- Adapter now requires node.js >= 22
 
 Older changes: [CHANGELOG_OLD.md](CHANGELOG_OLD.md)
 
